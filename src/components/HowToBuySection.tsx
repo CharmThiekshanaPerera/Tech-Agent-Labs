@@ -1,4 +1,6 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Copy, Check } from "lucide-react";
+import { useState } from "react";
+import { toast } from "@/hooks/use-toast";
 
 const steps = [
   {
@@ -35,7 +37,29 @@ const steps = [
   },
 ];
 
+const CONTRACT_ADDRESS = "AgentX7k9mNp3qRs5tUv8wXy2zAb4cDe6fGh8iJkLmNo";
+
 const HowToBuySection = () => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(CONTRACT_ADDRESS);
+      setCopied(true);
+      toast({
+        title: "Copied!",
+        description: "Contract address copied to clipboard",
+      });
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      toast({
+        title: "Failed to copy",
+        description: "Please try again or copy manually",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <section id="howtobuy" className="relative py-20 md:py-32">
       <div className="container mx-auto px-4 md:px-6">
@@ -52,7 +76,7 @@ const HowToBuySection = () => {
 
         {/* Steps Grid */}
         <div className="grid md:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto">
-          {steps.map((step, index) => (
+          {steps.map((step) => (
             <div
               key={step.number}
               className="gradient-border rounded-2xl p-6 md:p-8 card-glow hover:card-glow-hover transition-all duration-300 hover:-translate-y-1"
@@ -93,21 +117,21 @@ const HowToBuySection = () => {
           </h3>
           <div className="gradient-border rounded-xl p-4 flex items-center justify-between gap-4">
             <code className="font-mono text-xs md:text-sm text-muted-foreground truncate">
-              XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              {CONTRACT_ADDRESS}
             </code>
             <button
-              className="shrink-0 w-10 h-10 rounded-lg bg-primary/10 border border-primary/30 flex items-center justify-center hover:bg-primary/20 transition-colors"
-              onClick={() => navigator.clipboard.writeText("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")}
+              onClick={handleCopy}
+              className={`shrink-0 w-10 h-10 rounded-lg border flex items-center justify-center transition-all duration-300 ${
+                copied 
+                  ? "bg-primary/20 border-primary/50 text-primary" 
+                  : "bg-primary/10 border-primary/30 hover:bg-primary/20 text-primary"
+              }`}
             >
-              <svg
-                className="w-4 h-4 text-primary"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-              </svg>
+              {copied ? (
+                <Check className="w-4 h-4 animate-scale-in" />
+              ) : (
+                <Copy className="w-4 h-4" />
+              )}
             </button>
           </div>
         </div>
