@@ -1,8 +1,10 @@
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import FeaturesSection from "@/components/FeaturesSection";
-import TokenomicsSection from "@/components/TokenomicsSection";
+import ServicesSection from "@/components/ServicesSection";
+import GrowthSection from "@/components/GrowthSection";
 import HowToBuySection from "@/components/HowToBuySection";
+import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import ParticleBackground from "@/components/ParticleBackground";
 
@@ -14,8 +16,10 @@ const Index = () => {
       <main className="relative z-10">
         <HeroSection />
         <FeaturesSection />
-        <TokenomicsSection />
+        <ServicesSection />
+        <GrowthSection />
         <HowToBuySection />
+        <ContactSection />
       </main>
       <Footer />
     </div>
