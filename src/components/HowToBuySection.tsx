@@ -1,76 +1,59 @@
-import { ArrowRight, Copy, Check } from "lucide-react";
-import { useState } from "react";
-import { toast } from "@/hooks/use-toast";
+import { ArrowRight, Package, Link2, Settings, Rocket } from "lucide-react";
 
 const steps = [
   {
     number: "1",
-    title: "Create Phantom Wallet",
+    icon: Package,
+    title: "Choose Your Package",
     description:
-      "Download and install the Phantom wallet extension for your browser. This will be your gateway to the Solana ecosystem.",
-    cta: "GET PHANTOM",
-    link: "#",
+      "Select the Agent X plan that fits your business needs—from starter packages for small teams to enterprise solutions for large organizations.",
   },
   {
     number: "2",
-    title: "Get SOL",
+    icon: Link2,
+    title: "Connect Your Systems",
     description:
-      "Purchase SOL from your preferred exchange and transfer it to your Phantom wallet address.",
-    cta: "VIEW EXCHANGES",
-    link: "#",
+      "Integrate Agent X with your existing tools and platforms. We support 100+ integrations including CRM, email, analytics, and more.",
   },
   {
     number: "3",
-    title: "Connect To Raydium",
+    icon: Settings,
+    title: "Customization & Training",
     description:
-      "Visit Raydium and connect your Phantom wallet to start trading.",
-    cta: "GO TO RAYDIUM",
-    link: "#",
+      "Our team fully sets up, customizes, and trains Agent X specifically for your company's workflows, brand voice, and unique requirements.",
   },
   {
     number: "4",
-    title: "Swap For $EVOLVE",
+    icon: Rocket,
+    title: "Launch & Scale",
     description:
-      "Copy and paste the contract address below and simply swap your SOL for $EVOLVE tokens.",
-    cta: null,
-    link: null,
+      "Go live with confidence. Agent X begins working immediately, with ongoing support and optimization as your business grows.",
   },
 ];
 
-const CONTRACT_ADDRESS = "AgentX7k9mNp3qRs5tUv8wXy2zAb4cDe6fGh8iJkLmNo";
-
 const HowToBuySection = () => {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(CONTRACT_ADDRESS);
-      setCopied(true);
-      toast({
-        title: "Copied!",
-        description: "Contract address copied to clipboard",
-      });
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      toast({
-        title: "Failed to copy",
-        description: "Please try again or copy manually",
-        variant: "destructive",
-      });
+  const handleScrollToContact = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const element = document.querySelector("#contact");
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
   return (
     <section id="howtobuy" className="relative py-20 md:py-32">
-      <div className="container mx-auto px-4 md:px-6">
+      {/* Background Effect */}
+      <div className="absolute inset-0 matrix-grid opacity-20" />
+      
+      <div className="container mx-auto px-4 md:px-6 relative z-10">
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="font-mono text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-primary text-glow">
-            How To Buy
+            Getting Started
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-base">
-            Follow these simple steps to join the agentX community and start your
-            journey to financial growth.
+            Implementing Agent X is simple. Our team handles the heavy lifting so you can 
+            focus on running your business.
           </p>
         </div>
 
@@ -79,12 +62,17 @@ const HowToBuySection = () => {
           {steps.map((step) => (
             <div
               key={step.number}
-              className="gradient-border rounded-2xl p-6 md:p-8 card-glow hover:card-glow-hover transition-all duration-300 hover:-translate-y-1"
+              className="gradient-border rounded-2xl p-6 md:p-8 card-glow hover:card-glow-hover transition-all duration-300 hover:-translate-y-1 group"
             >
-              {/* Step Number */}
-              <span className="font-mono text-4xl md:text-5xl font-bold text-primary/30 mb-4 block">
-                {step.number}
-              </span>
+              {/* Step Number & Icon */}
+              <div className="flex items-center gap-4 mb-4">
+                <span className="font-mono text-4xl md:text-5xl font-bold text-primary/30">
+                  {step.number}
+                </span>
+                <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/30 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                  <step.icon className="w-5 h-5 text-primary" />
+                </div>
+              </div>
 
               {/* Title */}
               <h3 className="font-mono text-lg md:text-xl font-bold text-foreground mb-3">
@@ -92,48 +80,23 @@ const HowToBuySection = () => {
               </h3>
 
               {/* Description */}
-              <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+              <p className="text-muted-foreground text-sm leading-relaxed">
                 {step.description}
               </p>
-
-              {/* CTA */}
-              {step.cta && (
-                <a
-                  href={step.link}
-                  className="inline-flex items-center gap-2 text-primary font-mono text-sm font-semibold hover:gap-3 transition-all"
-                >
-                  {step.cta}
-                  <ArrowRight size={16} />
-                </a>
-              )}
             </div>
           ))}
         </div>
 
-        {/* Contract Address */}
-        <div className="mt-16 max-w-xl mx-auto text-center">
-          <h3 className="font-mono text-xl md:text-2xl font-bold text-foreground mb-6">
-            Contract Address
-          </h3>
-          <div className="gradient-border rounded-xl p-4 flex items-center justify-between gap-4">
-            <code className="font-mono text-xs md:text-sm text-muted-foreground truncate">
-              {CONTRACT_ADDRESS}
-            </code>
-            <button
-              onClick={handleCopy}
-              className={`shrink-0 w-10 h-10 rounded-lg border flex items-center justify-center transition-all duration-300 ${
-                copied 
-                  ? "bg-primary/20 border-primary/50 text-primary" 
-                  : "bg-primary/10 border-primary/30 hover:bg-primary/20 text-primary"
-              }`}
-            >
-              {copied ? (
-                <Check className="w-4 h-4 animate-scale-in" />
-              ) : (
-                <Copy className="w-4 h-4" />
-              )}
-            </button>
-          </div>
+        {/* CTA */}
+        <div className="mt-16 text-center">
+          <a
+            href="#contact"
+            onClick={handleScrollToContact}
+            className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-mono font-semibold rounded-xl hover:bg-primary/90 transition-all card-glow group"
+          >
+            Start Your Journey
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          </a>
         </div>
       </div>
     </section>

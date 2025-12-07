@@ -1,23 +1,29 @@
-import { Shield, Users, Sprout } from "lucide-react";
+import { Brain, Database, Layers, Rocket } from "lucide-react";
 
 const features = [
   {
-    icon: Shield,
-    title: "SECURE",
+    icon: Brain,
+    title: "ADVANCED REASONING",
     description:
-      "Built on advanced blockchain technology with multiple security layers, audited smart contracts, and robust decentralized infrastructure to ensure maximum protection.",
+      "Agent X uses cutting-edge AI to understand complex problems, analyze data patterns, and make intelligent decisions that drive real business outcomes.",
   },
   {
-    icon: Users,
-    title: "DAO GOVERNANCE",
+    icon: Database,
+    title: "LONG-TERM MEMORY",
     description:
-      "Introduction of a DAO allowing mechanism empowers the community to vote on project decisions, ensuring that the future of agentX is in the hands of its users.",
+      "Unlike basic chatbots, Agent X remembers context across conversations, learns from interactions, and builds knowledge specific to your business needs.",
   },
   {
-    icon: Sprout,
-    title: "ORGANIC EVOLUTION",
+    icon: Layers,
+    title: "MULTI-SYSTEM INTEGRATION",
     description:
-      "agentX evolves like a living organism, adapting to the needs of its community and responding to the changing environment of the crypto space.",
+      "Seamlessly connect with your existing tools—CRM, email, analytics, databases, and more. Agent X works across your entire tech stack.",
+  },
+  {
+    icon: Rocket,
+    title: "ENTERPRISE PERFORMANCE",
+    description:
+      "Built for scale with enterprise-grade security, reliability, and speed. Reduce workload and boost productivity instantly across your organization.",
   },
 ];
 
@@ -30,16 +36,16 @@ const FeaturesSection = () => {
           <h2 className="font-mono text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
             Why Choose
             <br />
-            <span className="text-primary text-glow">AgentX</span>
+            <span className="text-primary text-glow">Agent X</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-base">
-            AgentX Represents The Next Evolution In Cryptocurrency, Combining Cutting-Edge Blockchain
-            Technology With Innovative Tokenomics Designed For Sustainable Growth.
+            Discover what makes Agent X truly unique—advanced AI capabilities designed 
+            to transform how your business operates and scales.
           </p>
         </div>
 
         {/* Features Grid */}
-        <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
           {features.map((feature, index) => (
             <div
               key={feature.title}

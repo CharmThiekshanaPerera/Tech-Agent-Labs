@@ -6,9 +6,11 @@ const Navbar = () => {
 
   const navLinks = [
     { name: "Home", href: "#home" },
-    { name: "About", href: "#about" },
-    { name: "Tokenomics", href: "#tokenomics" },
-    { name: "How to Buy", href: "#howtobuy" },
+    { name: "Why Us", href: "#about" },
+    { name: "Services", href: "#services" },
+    { name: "Growth", href: "#growth" },
+    { name: "Get Started", href: "#howtobuy" },
+    { name: "Contact", href: "#contact" },
   ];
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -34,38 +36,38 @@ const Navbar = () => {
               <span className="text-primary text-lg md:text-xl font-mono font-bold">X</span>
             </div>
             <span className="font-mono font-bold text-lg md:text-xl text-foreground">
-              agent<span className="text-primary text-glow">X</span>
+              Agent<span className="text-primary text-glow">X</span>
             </span>
           </a>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-6">
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
-                className="text-muted-foreground hover:text-primary transition-colors font-medium text-sm uppercase tracking-wider"
+                className="text-muted-foreground hover:text-primary transition-colors font-medium text-sm"
               >
                 {link.name}
               </a>
             ))}
           </div>
 
-          {/* CTA Buttons */}
+          {/* CTA Button */}
           <div className="hidden md:flex items-center gap-4">
-            <span className="text-muted-foreground text-sm font-mono">CA : SOON</span>
             <a
-              href="#"
-              className="px-4 py-2 bg-primary text-primary-foreground font-mono font-semibold text-sm rounded-lg hover:bg-primary/90 transition-all card-glow"
+              href="#contact"
+              onClick={(e) => handleNavClick(e, "#contact")}
+              className="px-5 py-2.5 bg-primary text-primary-foreground font-mono font-semibold text-sm rounded-lg hover:bg-primary/90 transition-all card-glow"
             >
-              CA NOW
+              Get a Demo
             </a>
           </div>
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden text-foreground p-2"
+            className="lg:hidden text-foreground p-2"
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -74,7 +76,7 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="md:hidden py-4 border-t border-border/50 animate-fade-up">
+          <div className="lg:hidden py-4 border-t border-border/50 animate-fade-up">
             <div className="flex flex-col gap-4">
               {navLinks.map((link) => (
                 <a
@@ -87,10 +89,11 @@ const Navbar = () => {
                 </a>
               ))}
               <a
-                href="#"
+                href="#contact"
+                onClick={(e) => handleNavClick(e, "#contact")}
                 className="px-4 py-3 bg-primary text-primary-foreground font-mono font-semibold text-sm rounded-lg text-center mt-2"
               >
-                CA NOW
+                Get a Demo
               </a>
             </div>
           </div>
