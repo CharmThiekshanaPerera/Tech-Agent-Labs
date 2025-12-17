@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Menu, X, Sparkles } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,12 +32,11 @@ const Navbar = () => {
             onClick={(e) => handleNavClick(e, "#home")}
             className="flex items-center gap-2 group"
           >
-            <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg bg-primary/20 border border-primary/50 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
-              <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-primary" />
-            </div>
-            <span className="font-bold text-base md:text-lg text-foreground">
-              Tech Agent <span className="text-primary text-glow">Labs</span>
-            </span>
+            <img 
+              src={logo} 
+              alt="Tech Agent Labs" 
+              className="h-10 md:h-12 w-auto object-contain"
+            />
           </a>
 
           {/* Desktop Nav */}
