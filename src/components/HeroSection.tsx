@@ -1,10 +1,18 @@
 import mascot from "@/assets/mascot.png";
-import { ArrowRight, Zap } from "lucide-react";
+import { ArrowRight, Play, ShoppingCart } from "lucide-react";
 
 const HeroSection = () => {
   const handleScrollToContact = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     const element = document.querySelector("#contact");
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const handleScrollToServices = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const element = document.querySelector("#services");
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
@@ -33,23 +41,25 @@ const HeroSection = () => {
           <div className="flex-1 text-center lg:text-left">
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 mb-6 animate-fade-up">
-              <Zap className="w-4 h-4 text-primary" />
-              <span className="text-primary text-sm font-medium">Next-Generation AI Agent</span>
+              <span className="text-lg">🚀</span>
+              <span className="text-primary text-sm font-medium">AI Agents That Actually Work</span>
             </div>
 
             {/* Title */}
-            <h1 className="font-mono text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 animate-fade-up" style={{ animationDelay: '0.1s' }}>
-              <span className="text-primary text-glow-intense">Agent</span>
-              <span className="text-foreground">X</span>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 animate-fade-up leading-tight" style={{ animationDelay: '0.1s' }}>
+              <span className="text-foreground">Meet Your New</span>
               <br />
-              <span className="text-foreground text-2xl md:text-3xl lg:text-4xl">Your Digital Partner</span>
+              <span className="text-primary text-glow-intense">AI Teammates</span>
             </h1>
 
             {/* Subtitle */}
-            <p className="text-muted-foreground text-base md:text-lg max-w-xl mb-8 leading-relaxed animate-fade-up" style={{ animationDelay: '0.2s' }}>
-              Power your business into the future with speed, intelligence, and automation. 
-              Agent X works 24/7 to streamline operations, manage tasks, respond to customers, 
-              create content, and execute actions with human-like understanding.
+            <p className="text-muted-foreground text-lg md:text-xl max-w-xl mb-4 leading-relaxed animate-fade-up" style={{ animationDelay: '0.2s' }}>
+              We build, sell, and customize <strong className="text-foreground">production-ready AI agents</strong> that handle your busywork—so you can focus on what matters.
+            </p>
+            
+            <p className="text-muted-foreground text-base max-w-xl mb-8 animate-fade-up" style={{ animationDelay: '0.25s' }}>
+              Sales. Support. Operations. Analytics. Internal tools. <br className="hidden sm:block" />
+              <span className="text-primary">Deploy in days, not months.</span> ⚡
             </p>
 
             {/* CTA Buttons */}
@@ -57,36 +67,35 @@ const HeroSection = () => {
               <a
                 href="#contact"
                 onClick={handleScrollToContact}
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-mono font-semibold rounded-xl hover:bg-primary/90 transition-all card-glow group"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/90 transition-all card-glow group"
               >
-                Get Started
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <Play className="w-5 h-5" />
+                Start a Demo
               </a>
               <a
                 href="#services"
-                onClick={(e) => {
-                  e.preventDefault();
-                  document.querySelector("#services")?.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 gradient-border rounded-xl font-mono font-semibold text-foreground hover:bg-secondary/50 transition-all"
+                onClick={handleScrollToServices}
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 gradient-border rounded-xl font-semibold text-foreground hover:bg-secondary/50 transition-all"
               >
-                Explore Services
+                <ShoppingCart className="w-5 h-5" />
+                Browse Agents
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </a>
             </div>
 
-            {/* Stats */}
+            {/* Trust Indicators */}
             <div className="grid grid-cols-3 gap-6 mt-12 animate-fade-up" style={{ animationDelay: '0.4s' }}>
-              <div>
-                <p className="font-mono text-2xl md:text-3xl font-bold text-primary">24/7</p>
-                <p className="text-muted-foreground text-sm">Always Active</p>
+              <div className="text-center lg:text-left">
+                <p className="text-2xl md:text-3xl font-bold text-primary">500+</p>
+                <p className="text-muted-foreground text-sm">Agents Deployed</p>
               </div>
-              <div>
-                <p className="font-mono text-2xl md:text-3xl font-bold text-primary">99%</p>
-                <p className="text-muted-foreground text-sm">Task Accuracy</p>
+              <div className="text-center lg:text-left">
+                <p className="text-2xl md:text-3xl font-bold text-primary">98%</p>
+                <p className="text-muted-foreground text-sm">Client Satisfaction</p>
               </div>
-              <div>
-                <p className="font-mono text-2xl md:text-3xl font-bold text-primary">10x</p>
-                <p className="text-muted-foreground text-sm">Faster Ops</p>
+              <div className="text-center lg:text-left">
+                <p className="text-2xl md:text-3xl font-bold text-primary">24h</p>
+                <p className="text-muted-foreground text-sm">Avg. Setup Time</p>
               </div>
             </div>
           </div>
@@ -96,7 +105,7 @@ const HeroSection = () => {
             <div className="absolute inset-0 bg-primary/20 rounded-full blur-[100px] scale-75" />
             <img
               src={mascot}
-              alt="Agent X AI Assistant"
+              alt="Tech Agent Labs AI Assistant - Your friendly automation partner"
               className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 object-contain drop-shadow-[0_0_40px_rgba(34,255,102,0.4)]"
             />
           </div>
