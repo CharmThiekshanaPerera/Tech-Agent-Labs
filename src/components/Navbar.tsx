@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Sparkles } from "lucide-react";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -7,10 +7,9 @@ const Navbar = () => {
   const navLinks = [
     { name: "Home", href: "#home" },
     { name: "Why Us", href: "#about" },
-    { name: "Services", href: "#services" },
-    { name: "Growth", href: "#growth" },
-    { name: "Get Started", href: "#howtobuy" },
-    { name: "Contact", href: "#contact" },
+    { name: "Agents", href: "#services" },
+    { name: "Results", href: "#growth" },
+    { name: "How It Works", href: "#howtobuy" },
   ];
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -23,8 +22,8 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
-      <div className="container mx-auto px-4 md:px-6">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
+      <nav className="container mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <a 
@@ -32,11 +31,11 @@ const Navbar = () => {
             onClick={(e) => handleNavClick(e, "#home")}
             className="flex items-center gap-2 group"
           >
-            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-primary/20 border border-primary/50 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
-              <span className="text-primary text-lg md:text-xl font-mono font-bold">X</span>
+            <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg bg-primary/20 border border-primary/50 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
+              <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-primary" />
             </div>
-            <span className="font-mono font-bold text-lg md:text-xl text-foreground">
-              Agent<span className="text-primary text-glow">X</span>
+            <span className="font-bold text-base md:text-lg text-foreground">
+              Tech Agent <span className="text-primary text-glow">Labs</span>
             </span>
           </a>
 
@@ -59,9 +58,9 @@ const Navbar = () => {
             <a
               href="#contact"
               onClick={(e) => handleNavClick(e, "#contact")}
-              className="px-5 py-2.5 bg-primary text-primary-foreground font-mono font-semibold text-sm rounded-lg hover:bg-primary/90 transition-all card-glow"
+              className="px-5 py-2.5 bg-primary text-primary-foreground font-semibold text-sm rounded-lg hover:bg-primary/90 transition-all card-glow"
             >
-              Get a Demo
+              Start a Demo ✨
             </a>
           </div>
 
@@ -69,6 +68,7 @@ const Navbar = () => {
           <button
             className="lg:hidden text-foreground p-2"
             onClick={() => setIsOpen(!isOpen)}
+            aria-label="Toggle navigation menu"
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -91,15 +91,15 @@ const Navbar = () => {
               <a
                 href="#contact"
                 onClick={(e) => handleNavClick(e, "#contact")}
-                className="px-4 py-3 bg-primary text-primary-foreground font-mono font-semibold text-sm rounded-lg text-center mt-2"
+                className="px-4 py-3 bg-primary text-primary-foreground font-semibold text-sm rounded-lg text-center mt-2"
               >
-                Get a Demo
+                Start a Demo ✨
               </a>
             </div>
           </div>
         )}
-      </div>
-    </nav>
+      </nav>
+    </header>
   );
 };
 

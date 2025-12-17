@@ -1,11 +1,12 @@
-import { Twitter, Linkedin, Youtube } from "lucide-react";
+import { Twitter, Linkedin, Youtube, Sparkles } from "lucide-react";
 
 const Footer = () => {
   const navLinks = [
     { name: "Home", href: "#home" },
     { name: "Why Us", href: "#about" },
-    { name: "Services", href: "#services" },
-    { name: "Get Started", href: "#howtobuy" },
+    { name: "Agents", href: "#services" },
+    { name: "Results", href: "#growth" },
+    { name: "How It Works", href: "#howtobuy" },
     { name: "Contact", href: "#contact" },
   ];
 
@@ -23,11 +24,11 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-full bg-primary/20 border border-primary/50 flex items-center justify-center">
-              <span className="text-primary text-xl font-mono font-bold">X</span>
+            <div className="w-9 h-9 rounded-lg bg-primary/20 border border-primary/50 flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-primary" />
             </div>
-            <span className="font-mono font-bold text-xl text-foreground">
-              Agent<span className="text-primary text-glow">X</span>
+            <span className="font-bold text-lg text-foreground">
+              Tech Agent <span className="text-primary text-glow">Labs</span>
             </span>
           </div>
 
@@ -45,19 +46,19 @@ const Footer = () => {
             ))}
           </nav>
 
-          {/* Links */}
+          {/* Legal Links */}
           <div className="flex items-center gap-4">
             <a
               href="#"
               className="text-muted-foreground hover:text-primary transition-colors text-sm underline"
             >
-              Privacy Policy
+              Privacy
             </a>
             <a
               href="#"
               className="text-muted-foreground hover:text-primary transition-colors text-sm underline"
             >
-              Terms of Service
+              Terms
             </a>
           </div>
         </div>
@@ -68,27 +69,30 @@ const Footer = () => {
           <div className="flex items-center gap-4">
             <a
               href="#"
+              aria-label="Follow us on Twitter"
               className="w-10 h-10 rounded-lg bg-secondary border border-border/50 flex items-center justify-center hover:bg-primary/10 hover:border-primary/30 transition-colors"
             >
               <Twitter className="w-4 h-4 text-foreground" />
             </a>
             <a
               href="#"
+              aria-label="Connect on LinkedIn"
               className="w-10 h-10 rounded-lg bg-secondary border border-border/50 flex items-center justify-center hover:bg-primary/10 hover:border-primary/30 transition-colors"
             >
               <Linkedin className="w-4 h-4 text-foreground" />
             </a>
             <a
               href="#"
+              aria-label="Watch on YouTube"
               className="w-10 h-10 rounded-lg bg-secondary border border-border/50 flex items-center justify-center hover:bg-primary/10 hover:border-primary/30 transition-colors"
             >
               <Youtube className="w-4 h-4 text-foreground" />
             </a>
           </div>
 
-          {/* Copyright */}
+          {/* Copyright & Tagline */}
           <p className="text-muted-foreground text-xs md:text-sm text-center">
-            Copyright © 2024 Agent X. All Rights Reserved.
+            © 2024 Tech Agent Labs. Made with 💚 for growing teams.
           </p>
         </div>
       </div>
