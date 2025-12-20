@@ -35,7 +35,7 @@ const Navbar = () => {
             <img 
               src={logo} 
               alt="Tech Agent Labs" 
-              className="h-10 md:h-12 w-auto object-contain"
+              className="h-10 md:h-12 w-auto object-contain hover:scale-105 transition-transform duration-300 drop-shadow-[0_0_15px_rgba(34,255,102,0.3)] hover:drop-shadow-[0_0_25px_rgba(34,255,102,0.5)]"
             />
           </a>
 

@@ -1,4 +1,4 @@
-import mascot from "@/assets/mascot.png";
+import logo from "@/assets/logo.png";
 import { ArrowRight, Play, ShoppingCart } from "lucide-react";
 
 const HeroSection = () => {
@@ -100,14 +100,17 @@ const HeroSection = () => {
             </div>
           </div>
 
-          {/* Mascot */}
-          <div className="flex-1 relative animate-float">
+          {/* Logo / Mascot */}
+          <div className="flex-1 relative flex items-center justify-center">
             <div className="absolute inset-0 bg-primary/20 rounded-full blur-[100px] scale-75" />
-            <img
-              src={mascot}
-              alt="Tech Agent Labs AI Assistant - Your friendly automation partner"
-              className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 object-contain drop-shadow-[0_0_40px_rgba(34,255,102,0.4)]"
-            />
+            <div className="relative animate-float">
+              <div className="absolute inset-0 bg-primary/30 rounded-full blur-[60px] animate-pulse-glow scale-90" />
+              <img
+                src={logo}
+                alt="Tech Agent Labs AI Assistant - Your friendly automation partner"
+                className="relative w-72 h-72 md:w-96 md:h-96 lg:w-[28rem] lg:h-[28rem] object-contain drop-shadow-[0_0_50px_rgba(34,255,102,0.5)] hover:drop-shadow-[0_0_70px_rgba(34,255,102,0.7)] transition-all duration-500 hover:scale-105"
+              />
+            </div>
           </div>
         </div>
       </div>
