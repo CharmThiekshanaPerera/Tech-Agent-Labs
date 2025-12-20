@@ -10,6 +10,16 @@ import {
   Settings,
   ArrowRight
 } from "lucide-react";
+
+// Agent images
+import supportAgentImg from "@/assets/agents/support-agent.png";
+import marketingAgentImg from "@/assets/agents/marketing-agent.png";
+import analyticsAgentImg from "@/assets/agents/analytics-agent.png";
+import operationsAgentImg from "@/assets/agents/operations-agent.png";
+import salesAgentImg from "@/assets/agents/sales-agent.png";
+import contentAgentImg from "@/assets/agents/content-agent.png";
+import webAgentImg from "@/assets/agents/web-agent.png";
+import customAgentImg from "@/assets/agents/custom-agent.png";
 import AgentDetailModal from "./AgentDetailModal";
 
 const agents = [
@@ -41,6 +51,7 @@ const agents = [
       { label: "CSAT Improvement", value: "+25%" }
     ],
     youtubeId: "dQw4w9WgXcQ",
+    image: supportAgentImg,
     pricing: "$299/mo",
     setupTime: "24-48 hours"
   },
@@ -72,6 +83,7 @@ const agents = [
       { label: "Ad Spend Managed", value: "$5M+" }
     ],
     youtubeId: "dQw4w9WgXcQ",
+    image: marketingAgentImg,
     pricing: "$499/mo",
     setupTime: "1-2 days"
   },
@@ -103,6 +115,7 @@ const agents = [
       { label: "Insights/Week", value: "30+" }
     ],
     youtubeId: "dQw4w9WgXcQ",
+    image: analyticsAgentImg,
     pricing: "$399/mo",
     setupTime: "2-3 days"
   },
@@ -134,6 +147,7 @@ const agents = [
       { label: "Actions/Day", value: "10K+" }
     ],
     youtubeId: "dQw4w9WgXcQ",
+    image: operationsAgentImg,
     pricing: "$349/mo",
     setupTime: "1-2 days"
   },
@@ -165,6 +179,7 @@ const agents = [
       { label: "Pipeline Value", value: "+$2M" }
     ],
     youtubeId: "dQw4w9WgXcQ",
+    image: salesAgentImg,
     pricing: "$599/mo",
     setupTime: "24 hours"
   },
@@ -196,6 +211,7 @@ const agents = [
       { label: "Engagement", value: "+60%" }
     ],
     youtubeId: "dQw4w9WgXcQ",
+    image: contentAgentImg,
     pricing: "$249/mo",
     setupTime: "Same day"
   },
@@ -227,6 +243,7 @@ const agents = [
       { label: "Issues Fixed", value: "500+" }
     ],
     youtubeId: "dQw4w9WgXcQ",
+    image: webAgentImg,
     pricing: "$199/mo",
     setupTime: "Same day"
   },
@@ -258,6 +275,7 @@ const agents = [
       { label: "Support", value: "24/7" }
     ],
     youtubeId: "dQw4w9WgXcQ",
+    image: customAgentImg,
     pricing: "Custom",
     setupTime: "2-4 weeks"
   },
