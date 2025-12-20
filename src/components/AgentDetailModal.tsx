@@ -23,6 +23,7 @@ interface AgentDetail {
   howItWorks: { step: number; title: string; description: string }[];
   stats: { label: string; value: string }[];
   youtubeId: string;
+  image: string;
   pricing: string;
   setupTime: string;
 }
@@ -64,16 +65,29 @@ const AgentDetailModal = ({ agent, isOpen, onClose, onContactClick }: AgentDetai
         </DialogHeader>
 
         <div className="space-y-8 mt-6">
-          {/* Video Preview */}
-          <div className="relative rounded-xl overflow-hidden bg-secondary/30 border border-border/50">
-            <div className="aspect-video">
-              <iframe
-                src={`https://www.youtube.com/embed/${agent.youtubeId}`}
-                title={`${agent.title} Demo Video`}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full"
+          {/* Agent Image & Video */}
+          <div className="grid md:grid-cols-2 gap-4">
+            {/* Agent Illustration */}
+            <div className="relative rounded-xl overflow-hidden bg-gradient-to-br from-primary/10 to-secondary/30 border border-border/50 p-6 flex items-center justify-center">
+              <div className="absolute inset-0 bg-primary/5 rounded-full blur-[60px] scale-50" />
+              <img 
+                src={agent.image} 
+                alt={`${agent.title} illustration`}
+                className="relative w-48 h-48 md:w-56 md:h-56 object-contain drop-shadow-[0_0_30px_rgba(34,255,102,0.4)] animate-float"
               />
+            </div>
+            
+            {/* Video Preview */}
+            <div className="relative rounded-xl overflow-hidden bg-secondary/30 border border-border/50">
+              <div className="aspect-video h-full">
+                <iframe
+                  src={`https://www.youtube.com/embed/${agent.youtubeId}`}
+                  title={`${agent.title} Demo Video`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full"
+                />
+              </div>
             </div>
           </div>
 
