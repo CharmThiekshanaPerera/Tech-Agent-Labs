@@ -1,14 +1,23 @@
 import { useEffect, useRef } from "react";
 
+import techcorpLogo from "@/assets/partners/techcorp.png";
+import innovatelabsLogo from "@/assets/partners/innovatelabs.png";
+import futureaiLogo from "@/assets/partners/futureai.png";
+import dataflowLogo from "@/assets/partners/dataflow.png";
+import cloudnineLogo from "@/assets/partners/cloudnine.png";
+import smartsysLogo from "@/assets/partners/smartsys.png";
+import nextgenLogo from "@/assets/partners/nextgen.png";
+import aiventuresLogo from "@/assets/partners/aiventures.png";
+
 const partners = [
-  { name: "TechCorp", logo: "https://via.placeholder.com/150x60/1a1a2e/ffffff?text=TechCorp" },
-  { name: "InnovateLabs", logo: "https://via.placeholder.com/150x60/1a1a2e/ffffff?text=InnovateLabs" },
-  { name: "FutureAI", logo: "https://via.placeholder.com/150x60/1a1a2e/ffffff?text=FutureAI" },
-  { name: "DataFlow", logo: "https://via.placeholder.com/150x60/1a1a2e/ffffff?text=DataFlow" },
-  { name: "CloudNine", logo: "https://via.placeholder.com/150x60/1a1a2e/ffffff?text=CloudNine" },
-  { name: "SmartSys", logo: "https://via.placeholder.com/150x60/1a1a2e/ffffff?text=SmartSys" },
-  { name: "NextGen", logo: "https://via.placeholder.com/150x60/1a1a2e/ffffff?text=NextGen" },
-  { name: "AIVentures", logo: "https://via.placeholder.com/150x60/1a1a2e/ffffff?text=AIVentures" },
+  { name: "TechCorp", logo: techcorpLogo },
+  { name: "InnovateLabs", logo: innovatelabsLogo },
+  { name: "FutureAI", logo: futureaiLogo },
+  { name: "DataFlow", logo: dataflowLogo },
+  { name: "CloudNine", logo: cloudnineLogo },
+  { name: "SmartSys", logo: smartsysLogo },
+  { name: "NextGen", logo: nextgenLogo },
+  { name: "AIVentures", logo: aiventuresLogo },
 ];
 
 const PartnersSection = () => {
@@ -72,11 +81,11 @@ const PartnersSection = () => {
             key={`${partner.name}-${index}`}
             className="flex-shrink-0 group cursor-pointer"
           >
-            <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl px-8 py-6 transition-all duration-300 hover:border-primary/50 hover:bg-card/80 hover:scale-105 hover:shadow-lg hover:shadow-primary/20">
+            <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl px-6 py-4 transition-all duration-300 hover:border-primary/50 hover:bg-card/80 hover:scale-105 hover:shadow-lg hover:shadow-primary/20">
               <img
                 src={partner.logo}
                 alt={partner.name}
-                className="h-12 w-auto opacity-70 group-hover:opacity-100 transition-opacity duration-300 grayscale group-hover:grayscale-0"
+                className="h-16 w-auto object-contain opacity-80 group-hover:opacity-100 transition-opacity duration-300"
               />
             </div>
           </div>
