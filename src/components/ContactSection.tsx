@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Mail, Phone, MapPin, Send, Check, Calendar, ShoppingCart, Wrench } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import QuickActionModals from "./QuickActionModals";
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +13,7 @@ const ContactSection = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [activeModal, setActiveModal] = useState<"demo" | "buy" | "custom" | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData((prev) => ({
@@ -108,20 +110,31 @@ const ContactSection = () => {
             <div className="gradient-border rounded-2xl p-6 card-glow">
               <h4 className="text-sm font-semibold text-primary mb-4">Quick Actions</h4>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <button className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium bg-secondary border border-border/50 rounded-lg hover:bg-primary/10 hover:border-primary/30 transition-colors">
+                <button 
+                  onClick={() => setActiveModal("demo")}
+                  className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium bg-secondary border border-border/50 rounded-lg hover:bg-primary/10 hover:border-primary/30 transition-colors"
+                >
                   <Calendar className="w-4 h-4 text-primary" />
                   Book Demo
                 </button>
-                <button className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium bg-secondary border border-border/50 rounded-lg hover:bg-primary/10 hover:border-primary/30 transition-colors">
+                <button 
+                  onClick={() => setActiveModal("buy")}
+                  className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium bg-secondary border border-border/50 rounded-lg hover:bg-primary/10 hover:border-primary/30 transition-colors"
+                >
                   <ShoppingCart className="w-4 h-4 text-primary" />
                   Buy Agent
                 </button>
-                <button className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium bg-secondary border border-border/50 rounded-lg hover:bg-primary/10 hover:border-primary/30 transition-colors">
+                <button 
+                  onClick={() => setActiveModal("custom")}
+                  className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium bg-secondary border border-border/50 rounded-lg hover:bg-primary/10 hover:border-primary/30 transition-colors"
+                >
                   <Wrench className="w-4 h-4 text-primary" />
                   Custom Build
                 </button>
               </div>
             </div>
+
+            <QuickActionModals activeModal={activeModal} onClose={() => setActiveModal(null)} />
 
             {/* Response Time */}
             <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 text-center">
