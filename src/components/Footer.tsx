@@ -41,37 +41,37 @@ const Footer = () => {
   return (
     <footer className="relative bg-secondary/30 border-t border-border/50">
       {/* Main Footer */}
-      <div className="container mx-auto px-4 md:px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
+      <div className="container mx-auto px-4 sm:px-6 py-10 sm:py-12 lg:py-16">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 lg:gap-10">
           {/* Brand Column */}
-          <div className="lg:col-span-2">
-            <div className="flex items-center gap-3 mb-6">
+          <div className="col-span-2 sm:col-span-2 md:col-span-3 lg:col-span-2">
+            <div className="flex items-center gap-3 mb-4 sm:mb-6">
               <img 
                 src={logo} 
                 alt="Tech Agent Labs" 
-                className="w-12 h-12 object-contain drop-shadow-[0_0_10px_rgba(0,255,128,0.3)]"
+                className="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-[0_0_10px_rgba(0,255,128,0.3)]"
               />
-              <span className="font-bold text-xl text-foreground">
+              <span className="font-bold text-lg sm:text-xl text-foreground">
                 Tech Agent <span className="text-primary text-glow">Labs</span>
               </span>
             </div>
-            <p className="text-muted-foreground text-sm mb-6 max-w-sm">
+            <p className="text-muted-foreground text-xs sm:text-sm mb-4 sm:mb-6 max-w-sm">
               Empowering businesses with cutting-edge AI agents that automate workflows, 
               boost productivity, and drive growth. Join 500+ companies transforming their operations.
             </p>
             
             {/* Contact Info */}
-            <div className="space-y-3">
-              <a href="mailto:hello@techagentlabs.com" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-colors">
-                <Mail className="w-4 h-4 text-primary" />
+            <div className="space-y-2 sm:space-y-3">
+              <a href="mailto:hello@techagentlabs.com" className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors">
+                <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary flex-shrink-0" />
                 hello@techagentlabs.com
               </a>
-              <a href="tel:+1-888-555-0123" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-colors">
-                <Phone className="w-4 h-4 text-primary" />
+              <a href="tel:+1-888-555-0123" className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors">
+                <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary flex-shrink-0" />
                 +1 (888) 555-0123
               </a>
-              <p className="flex items-center gap-3 text-sm text-muted-foreground">
-                <MapPin className="w-4 h-4 text-primary" />
+              <p className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
+                <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary flex-shrink-0" />
                 San Francisco, CA & Worldwide
               </p>
             </div>
@@ -79,14 +79,14 @@ const Footer = () => {
 
           {/* Navigation Column */}
           <div>
-            <h4 className="font-semibold text-foreground mb-4">Navigation</h4>
-            <ul className="space-y-3">
+            <h4 className="font-semibold text-foreground text-sm sm:text-base mb-3 sm:mb-4">Navigation</h4>
+            <ul className="space-y-2 sm:space-y-3">
               {navLinks.map((link) => (
                 <li key={link.name}>
                   <a
                     href={link.href}
                     onClick={(e) => handleNavClick(e, link.href)}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    className="text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors"
                   >
                     {link.name}
                   </a>
@@ -97,14 +97,14 @@ const Footer = () => {
 
           {/* Agents Column */}
           <div>
-            <h4 className="font-semibold text-foreground mb-4">AI Agents</h4>
-            <ul className="space-y-3">
+            <h4 className="font-semibold text-foreground text-sm sm:text-base mb-3 sm:mb-4">AI Agents</h4>
+            <ul className="space-y-2 sm:space-y-3">
               {agentLinks.map((link) => (
                 <li key={link.name}>
                   <a
                     href={link.href}
                     onClick={(e) => handleNavClick(e, link.href)}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    className="text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors"
                   >
                     {link.name}
                   </a>
@@ -115,16 +115,16 @@ const Footer = () => {
 
           {/* Resources Column */}
           <div>
-            <h4 className="font-semibold text-foreground mb-4">Resources</h4>
-            <ul className="space-y-3">
+            <h4 className="font-semibold text-foreground text-sm sm:text-base mb-3 sm:mb-4">Resources</h4>
+            <ul className="space-y-2 sm:space-y-3">
               {resourceLinks.map((link) => (
                 <li key={link.name}>
                   <a
                     href={link.href}
                     {...(link.download ? { download: true } : {})}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1.5"
+                    className="text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1.5"
                   >
-                    {link.download && <FileDown className="w-3.5 h-3.5" />}
+                    {link.download && <FileDown className="w-3 h-3 sm:w-3.5 sm:h-3.5" />}
                     {link.name}
                   </a>
                 </li>
@@ -136,19 +136,19 @@ const Footer = () => {
 
       {/* Newsletter Section */}
       <div className="border-t border-border/30">
-        <div className="container mx-auto px-4 md:px-6 py-8">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
-            <div>
-              <h4 className="font-semibold text-foreground mb-1">Subscribe to our newsletter</h4>
-              <p className="text-sm text-muted-foreground">Get the latest AI insights and product updates delivered to your inbox.</p>
+        <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-6">
+            <div className="text-center lg:text-left">
+              <h4 className="font-semibold text-foreground text-sm sm:text-base mb-1">Subscribe to our newsletter</h4>
+              <p className="text-xs sm:text-sm text-muted-foreground">Get the latest AI insights and product updates delivered to your inbox.</p>
             </div>
-            <div className="flex w-full lg:w-auto gap-3">
+            <div className="flex w-full lg:w-auto gap-2 sm:gap-3">
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-1 lg:w-72 px-4 py-3 bg-secondary border border-border/50 rounded-lg text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 text-sm"
+                className="flex-1 lg:w-60 xl:w-72 px-3 sm:px-4 py-2.5 sm:py-3 bg-secondary border border-border/50 rounded-lg text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 text-xs sm:text-sm"
               />
-              <button className="px-6 py-3 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors whitespace-nowrap">
+              <button className="px-4 sm:px-6 py-2.5 sm:py-3 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors whitespace-nowrap text-xs sm:text-sm">
                 Subscribe
               </button>
             </div>
@@ -158,56 +158,58 @@ const Footer = () => {
 
       {/* Bottom Bar */}
       <div className="border-t border-border/30">
-        <div className="container mx-auto px-4 md:px-6 py-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            {/* Copyright */}
-            <p className="text-muted-foreground text-xs md:text-sm text-center md:text-left">
-              © 2024 Tech Agent Labs. All rights reserved. Made with 💚 for growing teams.
-            </p>
-
-            {/* Legal Links */}
-            <div className="flex items-center gap-6">
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                Privacy Policy
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                Terms of Service
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                Cookie Policy
-              </a>
-            </div>
-
-            {/* Social Icons */}
-            <div className="flex items-center gap-3">
+        <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6">
+          <div className="flex flex-col gap-4 sm:gap-6">
+            {/* Social Icons - Top on mobile */}
+            <div className="flex items-center justify-center gap-2 sm:gap-3 order-1 md:order-none">
               <a
                 href="#"
                 aria-label="Follow us on Twitter"
-                className="w-9 h-9 rounded-lg bg-secondary border border-border/50 flex items-center justify-center hover:bg-primary/10 hover:border-primary/30 transition-colors"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-secondary border border-border/50 flex items-center justify-center hover:bg-primary/10 hover:border-primary/30 transition-colors"
               >
-                <Twitter className="w-4 h-4 text-foreground" />
+                <Twitter className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-foreground" />
               </a>
               <a
                 href="#"
                 aria-label="Connect on LinkedIn"
-                className="w-9 h-9 rounded-lg bg-secondary border border-border/50 flex items-center justify-center hover:bg-primary/10 hover:border-primary/30 transition-colors"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-secondary border border-border/50 flex items-center justify-center hover:bg-primary/10 hover:border-primary/30 transition-colors"
               >
-                <Linkedin className="w-4 h-4 text-foreground" />
+                <Linkedin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-foreground" />
               </a>
               <a
                 href="#"
                 aria-label="Watch on YouTube"
-                className="w-9 h-9 rounded-lg bg-secondary border border-border/50 flex items-center justify-center hover:bg-primary/10 hover:border-primary/30 transition-colors"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-secondary border border-border/50 flex items-center justify-center hover:bg-primary/10 hover:border-primary/30 transition-colors"
               >
-                <Youtube className="w-4 h-4 text-foreground" />
+                <Youtube className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-foreground" />
               </a>
               <a
                 href="#"
                 aria-label="View on GitHub"
-                className="w-9 h-9 rounded-lg bg-secondary border border-border/50 flex items-center justify-center hover:bg-primary/10 hover:border-primary/30 transition-colors"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-secondary border border-border/50 flex items-center justify-center hover:bg-primary/10 hover:border-primary/30 transition-colors"
               >
-                <Github className="w-4 h-4 text-foreground" />
+                <Github className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-foreground" />
               </a>
+            </div>
+
+            {/* Copyright & Legal */}
+            <div className="flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4">
+              <p className="text-muted-foreground text-[10px] sm:text-xs md:text-sm text-center md:text-left">
+                © 2024 Tech Agent Labs. All rights reserved. Made with 💚 for growing teams.
+              </p>
+
+              {/* Legal Links */}
+              <div className="flex items-center gap-4 sm:gap-6 flex-wrap justify-center">
+                <a href="#" className="text-muted-foreground hover:text-primary transition-colors text-[10px] sm:text-xs md:text-sm">
+                  Privacy Policy
+                </a>
+                <a href="#" className="text-muted-foreground hover:text-primary transition-colors text-[10px] sm:text-xs md:text-sm">
+                  Terms of Service
+                </a>
+                <a href="#" className="text-muted-foreground hover:text-primary transition-colors text-[10px] sm:text-xs md:text-sm">
+                  Cookie Policy
+                </a>
+              </div>
             </div>
           </div>
         </div>

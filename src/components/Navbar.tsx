@@ -24,8 +24,8 @@ const Navbar = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
-      <nav className="container mx-auto px-4 md:px-6">
-        <div className="flex items-center justify-between h-16 md:h-20">
+      <nav className="container mx-auto px-4 sm:px-6">
+        <div className="flex items-center justify-between h-14 sm:h-16 md:h-20">
           {/* Logo */}
           <a 
             href="#home" 
@@ -35,12 +35,12 @@ const Navbar = () => {
             <img 
               src={logo} 
               alt="Tech Agent Labs" 
-              className="h-10 md:h-12 w-auto object-contain hover:scale-105 transition-transform duration-300 drop-shadow-[0_0_15px_rgba(34,255,102,0.3)] hover:drop-shadow-[0_0_25px_rgba(34,255,102,0.5)]"
+              className="h-8 sm:h-10 md:h-12 w-auto object-contain hover:scale-105 transition-transform duration-300 drop-shadow-[0_0_15px_rgba(34,255,102,0.3)] hover:drop-shadow-[0_0_25px_rgba(34,255,102,0.5)]"
             />
           </a>
 
           {/* Desktop Nav */}
-          <div className="hidden lg:flex items-center gap-6">
+          <div className="hidden lg:flex items-center gap-4 xl:gap-6">
             {navLinks.map((link) => (
               <a
                 key={link.name}
@@ -54,11 +54,11 @@ const Navbar = () => {
           </div>
 
           {/* CTA Button */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden sm:flex items-center gap-3 sm:gap-4">
             <a
               href="#contact"
               onClick={(e) => handleNavClick(e, "#contact")}
-              className="px-5 py-2.5 bg-primary text-primary-foreground font-semibold text-sm rounded-lg hover:bg-primary/90 transition-all card-glow"
+              className="px-4 sm:px-5 py-2 sm:py-2.5 bg-primary text-primary-foreground font-semibold text-xs sm:text-sm rounded-lg hover:bg-primary/90 transition-all card-glow"
             >
               Start a Demo ✨
             </a>
@@ -70,19 +70,19 @@ const Navbar = () => {
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle navigation menu"
           >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
+            {isOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
 
         {/* Mobile Menu */}
         {isOpen && (
           <div className="lg:hidden py-4 border-t border-border/50 animate-fade-up">
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
               {navLinks.map((link) => (
                 <a
                   key={link.name}
                   href={link.href}
-                  className="text-muted-foreground hover:text-primary transition-colors font-medium py-2"
+                  className="text-muted-foreground hover:text-primary transition-colors font-medium py-2 text-sm"
                   onClick={(e) => handleNavClick(e, link.href)}
                 >
                   {link.name}
