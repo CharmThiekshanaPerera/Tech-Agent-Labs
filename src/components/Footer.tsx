@@ -1,4 +1,4 @@
-import { Twitter, Linkedin, Youtube, Github, Mail, Phone, MapPin } from "lucide-react";
+import { Twitter, Linkedin, Youtube, Github, Mail, Phone, MapPin, FileDown } from "lucide-react";
 import logo from "@/assets/logo.png";
 
 const Footer = () => {
@@ -25,6 +25,7 @@ const Footer = () => {
     { name: "Blog", href: "#" },
     { name: "Case Studies", href: "#" },
     { name: "Help Center", href: "#" },
+    { name: "Project Proposal", href: "/documents/Tech_Agent_Labs_Project_Proposal.pdf", download: true },
   ];
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -120,8 +121,10 @@ const Footer = () => {
                 <li key={link.name}>
                   <a
                     href={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    {...(link.download ? { download: true } : {})}
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1.5"
                   >
+                    {link.download && <FileDown className="w-3.5 h-3.5" />}
                     {link.name}
                   </a>
                 </li>

@@ -1,5 +1,5 @@
 import logo from "@/assets/logo.png";
-import { ArrowRight, Play, ShoppingCart } from "lucide-react";
+import { ArrowRight, Play, ShoppingCart, FileDown } from "lucide-react";
 
 const HeroSection = () => {
   const handleScrollToContact = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -63,7 +63,7 @@ const HeroSection = () => {
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-up" style={{ animationDelay: '0.3s' }}>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-up flex-wrap" style={{ animationDelay: '0.3s' }}>
               <a
                 href="#contact"
                 onClick={handleScrollToContact}
@@ -80,6 +80,14 @@ const HeroSection = () => {
                 <ShoppingCart className="w-5 h-5" />
                 Browse Agents
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </a>
+              <a
+                href="/documents/Tech_Agent_Labs_Project_Proposal.pdf"
+                download="Tech_Agent_Labs_Project_Proposal.pdf"
+                className="inline-flex items-center justify-center gap-2 px-6 py-4 bg-secondary/60 border border-primary/30 rounded-xl font-semibold text-foreground hover:bg-primary/10 hover:border-primary/50 transition-all"
+              >
+                <FileDown className="w-5 h-5 text-primary" />
+                Download Proposal
               </a>
             </div>
 
