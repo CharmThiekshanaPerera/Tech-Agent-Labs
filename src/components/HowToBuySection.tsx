@@ -37,55 +37,55 @@ const HowToBuySection = () => {
   };
 
   return (
-    <section id="howtobuy" className="relative py-20 md:py-32">
+    <section id="howtobuy" className="relative py-12 sm:py-16 md:py-24 lg:py-32">
       {/* Background Effect */}
       <div className="absolute inset-0 matrix-grid opacity-20" />
       
-      <div className="container mx-auto px-4 md:px-6 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
         {/* Section Header */}
-        <div className="text-center mb-16">
-          <p className="text-primary font-medium mb-3">Simple, Human Process</p>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-primary text-glow">
+        <div className="text-center mb-10 sm:mb-12 lg:mb-16">
+          <p className="text-primary font-medium text-sm sm:text-base mb-2 sm:mb-3">Simple, Human Process</p>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 text-primary text-glow">
             How It Works 🤔
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto text-base md:text-lg">
+          <p className="text-muted-foreground max-w-2xl mx-auto text-sm sm:text-base md:text-lg px-2">
             Getting started is easy. We handle the technical stuff so you don't have to. 
             No coding required—just results.
           </p>
         </div>
 
         {/* Steps */}
-        <div className="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 lg:gap-6 xl:gap-8 max-w-5xl mx-auto">
           {steps.map((step, index) => (
             <article
               key={step.number}
-              className="gradient-border rounded-2xl p-6 md:p-8 card-glow hover:card-glow-hover transition-all duration-300 hover:-translate-y-1 group relative"
+              className="gradient-border rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 card-glow hover:card-glow-hover transition-all duration-300 hover:-translate-y-1 group relative"
             >
               {/* Connector Line */}
               {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-1/2 -right-4 lg:-right-5 w-8 lg:w-10 h-0.5 bg-gradient-to-r from-primary/50 to-transparent" />
+                <div className="hidden md:block absolute top-1/2 -right-3 lg:-right-4 xl:-right-5 w-6 lg:w-8 xl:w-10 h-0.5 bg-gradient-to-r from-primary/50 to-transparent" />
               )}
               
               {/* Step Number & Icon */}
-              <div className="flex items-center gap-4 mb-4">
-                <span className="text-5xl md:text-6xl font-bold text-primary/20">
+              <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+                <span className="text-4xl sm:text-5xl md:text-6xl font-bold text-primary/20">
                   {step.number}
                 </span>
                 <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/30 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                    <step.icon className="w-5 h-5 text-primary" />
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-primary/10 border border-primary/30 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                    <step.icon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                   </div>
-                  <span className="text-2xl">{step.emoji}</span>
+                  <span className="text-xl sm:text-2xl">{step.emoji}</span>
                 </div>
               </div>
 
               {/* Title */}
-              <h3 className="text-lg md:text-xl font-bold text-foreground mb-3">
+              <h3 className="text-base sm:text-lg md:text-xl font-bold text-foreground mb-2 sm:mb-3">
                 {step.title}
               </h3>
 
               {/* Description */}
-              <p className="text-muted-foreground text-sm leading-relaxed">
+              <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed">
                 {step.description}
               </p>
             </article>
@@ -93,18 +93,18 @@ const HowToBuySection = () => {
         </div>
 
         {/* CTA */}
-        <div className="mt-16 text-center space-y-4">
-          <p className="text-muted-foreground">
+        <div className="mt-10 sm:mt-12 lg:mt-16 text-center space-y-3 sm:space-y-4">
+          <p className="text-muted-foreground text-sm sm:text-base">
             Ready to meet your new AI teammate? <span className="text-primary">Let's chat.</span>
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
             <a
               href="#contact"
               onClick={handleScrollToContact}
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/90 transition-all card-glow group"
+              className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/90 transition-all card-glow group text-sm sm:text-base"
             >
               Start a Demo
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
             </a>
             <a
               href="#services"
@@ -112,7 +112,7 @@ const HowToBuySection = () => {
                 e.preventDefault();
                 document.querySelector("#services")?.scrollIntoView({ behavior: "smooth" });
               }}
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 gradient-border rounded-xl font-semibold text-foreground hover:bg-secondary/50 transition-all"
+              className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 gradient-border rounded-xl font-semibold text-foreground hover:bg-secondary/50 transition-all text-sm sm:text-base"
             >
               Browse Agents
             </a>

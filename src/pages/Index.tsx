@@ -8,12 +8,14 @@ import HowToBuySection from "@/components/HowToBuySection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import ParticleBackground from "@/components/ParticleBackground";
+import SocialMediaWidget from "@/components/SocialMediaWidget";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background scroll-smooth">
       <ParticleBackground />
       <Navbar />
+      <SocialMediaWidget />
       <main className="relative z-10">
         <HeroSection />
         <FeaturesSection />
