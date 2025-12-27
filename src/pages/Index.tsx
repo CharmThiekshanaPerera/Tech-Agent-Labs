@@ -5,10 +5,13 @@ import ServicesSection from "@/components/ServicesSection";
 import PartnersSection from "@/components/PartnersSection";
 import GrowthSection from "@/components/GrowthSection";
 import HowToBuySection from "@/components/HowToBuySection";
+import TestimonialsSection from "@/components/TestimonialsSection";
+import FAQSection from "@/components/FAQSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import ParticleBackground from "@/components/ParticleBackground";
 import SocialMediaWidget from "@/components/SocialMediaWidget";
+import ScrollToTopButton from "@/components/ScrollToTopButton";
 
 const Index = () => {
   return (
@@ -16,6 +19,7 @@ const Index = () => {
       <ParticleBackground />
       <Navbar />
       <SocialMediaWidget />
+      <ScrollToTopButton />
       <main className="relative z-10">
         <HeroSection />
         <FeaturesSection />
@@ -23,6 +27,8 @@ const Index = () => {
         <PartnersSection />
         <GrowthSection />
         <HowToBuySection />
+        <TestimonialsSection />
+        <FAQSection />
         <ContactSection />
       </main>
       <Footer />
