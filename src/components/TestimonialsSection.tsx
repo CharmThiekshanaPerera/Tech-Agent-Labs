@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AnimatedSection } from "@/hooks/useScrollAnimation";
 
 const testimonials = [
   {
@@ -84,7 +85,7 @@ const TestimonialsSection = () => {
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         {/* Section Header */}
-        <div className="text-center mb-12 md:mb-16">
+        <AnimatedSection className="text-center mb-12 md:mb-16">
           <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">
             Testimonials
           </span>
@@ -94,10 +95,10 @@ const TestimonialsSection = () => {
           <p className="text-muted-foreground max-w-2xl mx-auto text-base md:text-lg">
             Discover how businesses are transforming their operations with our AI agents
           </p>
-        </div>
+        </AnimatedSection>
 
         {/* Testimonial Carousel */}
-        <div className="max-w-4xl mx-auto">
+        <AnimatedSection className="max-w-4xl mx-auto" animation="scale">
           <div className="relative">
             {/* Main Testimonial Card */}
             <div className="bg-card border border-border rounded-2xl p-6 md:p-10 shadow-xl relative overflow-hidden">
@@ -169,7 +170,7 @@ const TestimonialsSection = () => {
               </Button>
             </div>
           </div>
-        </div>
+        </AnimatedSection>
       </div>
     </section>
   );
