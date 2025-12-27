@@ -15,6 +15,7 @@ import Footer from "@/components/Footer";
 import ParticleBackground from "@/components/ParticleBackground";
 import SocialMediaWidget from "@/components/SocialMediaWidget";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
+import ChatBot from "@/components/ChatBot";
 
 const Index = () => {
   return (
@@ -23,6 +24,7 @@ const Index = () => {
       <Navbar />
       <SocialMediaWidget />
       <ScrollToTopButton />
+      <ChatBot />
       <main className="relative z-10">
         <HeroSection />
         <FeaturesSection />
