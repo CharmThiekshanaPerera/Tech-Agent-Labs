@@ -16,6 +16,7 @@ import ParticleBackground from "@/components/ParticleBackground";
 import SocialMediaWidget from "@/components/SocialMediaWidget";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import ChatBot from "@/components/ChatBot";
+import WhatsAppButton from "@/components/WhatsAppButton";
 
 const Index = () => {
   return (
@@ -23,6 +24,7 @@ const Index = () => {
       <ParticleBackground />
       <Navbar />
       <SocialMediaWidget />
+      <WhatsAppButton />
       <ScrollToTopButton />
       <ChatBot />
       <main className="relative z-10">
