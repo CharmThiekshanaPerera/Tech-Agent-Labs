@@ -19,7 +19,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center pt-16 sm:pt-20 pb-8 overflow-hidden">
+    <section id="home" aria-label="Hero Section - Meet Your AI Teammates" className="relative min-h-screen flex items-center justify-center pt-16 sm:pt-20 pb-8 overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 grid-pattern opacity-50" />
       <div className="absolute top-1/4 left-1/4 w-48 sm:w-72 lg:w-96 h-48 sm:h-72 lg:h-96 bg-primary/10 rounded-full blur-[80px] sm:blur-[120px]" />
@@ -52,8 +52,8 @@ const HeroSection = () => {
               <span className="text-primary text-glow-intense">AI Teammates</span>
             </h1>
 
-            {/* Subtitle */}
-            <p className="text-muted-foreground text-base sm:text-lg md:text-xl max-w-xl mx-auto lg:mx-0 mb-3 sm:mb-4 leading-relaxed animate-fade-up" style={{ animationDelay: '0.2s' }}>
+            {/* Subtitle - Optimized for AEO/Voice Search */}
+            <p className="hero-description text-muted-foreground text-base sm:text-lg md:text-xl max-w-xl mx-auto lg:mx-0 mb-3 sm:mb-4 leading-relaxed animate-fade-up" style={{ animationDelay: '0.2s' }}>
               We build, sell, and customize <strong className="text-foreground">production-ready AI agents</strong> that handle your busywork—so you can focus on what matters.
             </p>
             
