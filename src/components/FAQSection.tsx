@@ -43,7 +43,7 @@ const faqs = [
 
 const FAQSection = () => {
   return (
-    <section id="faq" className="py-16 md:py-24 bg-background relative overflow-hidden">
+    <section id="faq" aria-label="Frequently Asked Questions about AI Agents" className="py-16 md:py-24 bg-background relative overflow-hidden" itemScope itemType="https://schema.org/FAQPage">
       {/* Background decoration */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
         <div className="absolute top-1/2 left-1/4 w-48 h-48 md:w-96 md:h-96 bg-primary/5 rounded-full blur-3xl transform -translate-y-1/2" />
@@ -72,12 +72,20 @@ const FAQSection = () => {
                 key={index}
                 value={`item-${index}`}
                 className="bg-card border border-border rounded-xl px-4 md:px-6 overflow-hidden data-[state=open]:border-primary/50 transition-colors"
+                itemScope
+                itemProp="mainEntity"
+                itemType="https://schema.org/Question"
               >
                 <AccordionTrigger className="text-left text-base md:text-lg font-medium text-foreground hover:text-primary py-4 md:py-5 hover:no-underline [&[data-state=open]]:text-primary">
-                  {faq.question}
+                  <span itemProp="name">{faq.question}</span>
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground text-sm md:text-base pb-4 md:pb-5 leading-relaxed">
-                  {faq.answer}
+                <AccordionContent 
+                  className="faq-answer text-muted-foreground text-sm md:text-base pb-4 md:pb-5 leading-relaxed"
+                  itemScope
+                  itemProp="acceptedAnswer"
+                  itemType="https://schema.org/Answer"
+                >
+                  <span itemProp="text">{faq.answer}</span>
                 </AccordionContent>
               </AccordionItem>
             ))}
