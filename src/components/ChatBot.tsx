@@ -129,7 +129,7 @@ const ChatBot = () => {
       {/* Chat Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group ${
+        className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 hover:shadow-xl transition-all duration-300 flex items-center justify-center group ${
           isOpen ? "scale-0 opacity-0" : "scale-100 opacity-100"
         }`}
         aria-label="Open chat"
@@ -142,7 +142,7 @@ const ChatBot = () => {
 
       {/* Chat Window */}
       <div
-        className={`fixed bottom-6 right-6 z-50 w-[380px] max-w-[calc(100vw-48px)] bg-card border border-border rounded-2xl shadow-2xl transition-all duration-300 overflow-hidden ${
+        className={`fixed bottom-24 right-6 z-50 w-[380px] max-w-[calc(100vw-48px)] bg-card border border-border rounded-2xl shadow-2xl transition-all duration-300 overflow-hidden ${
           isOpen
             ? "scale-100 opacity-100 translate-y-0"
             : "scale-95 opacity-0 translate-y-4 pointer-events-none"
