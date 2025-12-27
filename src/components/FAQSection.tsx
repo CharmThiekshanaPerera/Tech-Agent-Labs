@@ -4,6 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { AnimatedSection } from "@/hooks/useScrollAnimation";
 
 const faqs = [
   {
@@ -51,7 +52,7 @@ const FAQSection = () => {
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         {/* Section Header */}
-        <div className="text-center mb-12 md:mb-16">
+        <AnimatedSection className="text-center mb-12 md:mb-16">
           <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">
             FAQ
           </span>
@@ -61,10 +62,10 @@ const FAQSection = () => {
           <p className="text-muted-foreground max-w-2xl mx-auto text-base md:text-lg">
             Find answers to common questions about our AI agents and services
           </p>
-        </div>
+        </AnimatedSection>
 
         {/* FAQ Accordion */}
-        <div className="max-w-3xl mx-auto">
+        <AnimatedSection className="max-w-3xl mx-auto">
           <Accordion type="single" collapsible className="space-y-4">
             {faqs.map((faq, index) => (
               <AccordionItem
@@ -81,7 +82,7 @@ const FAQSection = () => {
               </AccordionItem>
             ))}
           </Accordion>
-        </div>
+        </AnimatedSection>
 
         {/* Contact CTA */}
         <div className="text-center mt-12">

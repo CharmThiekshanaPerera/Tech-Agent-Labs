@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Mail, Phone, MapPin, Send, Check, Calendar, ShoppingCart, Wrench } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import QuickActionModals from "./QuickActionModals";
+import { AnimatedSection } from "@/hooks/useScrollAnimation";
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({
@@ -46,7 +47,7 @@ const ContactSection = () => {
     <section id="contact" className="relative py-12 sm:py-16 md:py-24 lg:py-32">
       <div className="container mx-auto px-4 sm:px-6">
         {/* Section Header */}
-        <div className="text-center mb-10 sm:mb-12 lg:mb-16">
+        <AnimatedSection className="text-center mb-10 sm:mb-12 lg:mb-16">
           <p className="text-primary font-medium text-sm sm:text-base mb-2 sm:mb-3">Let's Talk</p>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4">
             Ready to Get
@@ -57,11 +58,11 @@ const ContactSection = () => {
             Whether you want a demo, need pricing info, or have questions about custom agents—
             we're here to help. No pressure, just answers.
           </p>
-        </div>
+        </AnimatedSection>
 
         <div className="grid lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 max-w-5xl mx-auto">
           {/* Contact Info */}
-          <div className="space-y-4 sm:space-y-6">
+          <AnimatedSection animation="fade-right" className="space-y-4 sm:space-y-6">
             <div className="gradient-border rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 card-glow">
               <h3 className="text-lg sm:text-xl font-bold text-foreground mb-4 sm:mb-6">
                 Get in Touch 👋
@@ -142,11 +143,12 @@ const ContactSection = () => {
                 ⚡ <span className="text-foreground font-medium">Average response time: 2 hours</span> during business hours
               </p>
             </div>
-          </div>
+          </AnimatedSection>
 
           {/* Contact Form */}
-          <div className="gradient-border rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 card-glow">
-            <h3 className="text-lg sm:text-xl font-bold text-foreground mb-1 sm:mb-2">
+          <AnimatedSection animation="fade-left" delay={200}>
+            <div className="gradient-border rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 card-glow">
+              <h3 className="text-lg sm:text-xl font-bold text-foreground mb-1 sm:mb-2">
               Send Us a Message
             </h3>
             <p className="text-muted-foreground text-xs sm:text-sm mb-4 sm:mb-6">
@@ -267,8 +269,9 @@ const ContactSection = () => {
                   </>
                 )}
               </button>
-            </form>
-          </div>
+              </form>
+            </div>
+          </AnimatedSection>
         </div>
       </div>
     </section>

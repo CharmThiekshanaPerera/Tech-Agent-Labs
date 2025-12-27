@@ -1,4 +1,5 @@
 import { Linkedin, Twitter, Github } from "lucide-react";
+import { AnimatedSection } from "@/hooks/useScrollAnimation";
 
 const teamMembers = [
   {
@@ -56,7 +57,7 @@ const TeamSection = () => {
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         {/* Section Header */}
-        <div className="text-center mb-12 md:mb-16">
+        <AnimatedSection className="text-center mb-12 md:mb-16">
           <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">
             Our Team
           </span>
@@ -66,15 +67,15 @@ const TeamSection = () => {
           <p className="text-muted-foreground max-w-2xl mx-auto text-base md:text-lg">
             A passionate team of innovators, engineers, and visionaries dedicated to revolutionizing business automation
           </p>
-        </div>
+        </AnimatedSection>
 
         {/* Team Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
           {teamMembers.map((member, index) => (
-            <div
-              key={index}
-              className="group bg-card border border-border rounded-2xl p-6 text-center transition-all duration-300 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5"
-            >
+            <AnimatedSection key={index} animation="fade-up" delay={index * 100}>
+              <div
+                className="group bg-card border border-border rounded-2xl p-6 text-center transition-all duration-300 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5 h-full"
+              >
               {/* Avatar */}
               <div className="relative mx-auto mb-5">
                 <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center text-2xl md:text-3xl font-bold text-primary mx-auto group-hover:scale-105 transition-transform duration-300">
@@ -125,11 +126,12 @@ const TeamSection = () => {
                 )}
               </div>
             </div>
+            </AnimatedSection>
           ))}
         </div>
 
         {/* Join Team CTA */}
-        <div className="text-center mt-12 md:mt-16">
+        <AnimatedSection className="text-center mt-12 md:mt-16" delay={600}>
           <div className="inline-block bg-card border border-border rounded-2xl p-6 md:p-8">
             <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2">
               Want to join our team?
@@ -144,7 +146,7 @@ const TeamSection = () => {
               View Open Positions
             </a>
           </div>
-        </div>
+        </AnimatedSection>
       </div>
     </section>
   );

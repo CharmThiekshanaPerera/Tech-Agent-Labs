@@ -1,5 +1,6 @@
 import { Check, Zap, Crown, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AnimatedSection } from "@/hooks/useScrollAnimation";
 
 const plans = [
   {
@@ -81,7 +82,7 @@ const PricingSection = () => {
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         {/* Section Header */}
-        <div className="text-center mb-12 md:mb-16">
+        <AnimatedSection className="text-center mb-12 md:mb-16">
           <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">
             Pricing
           </span>
@@ -91,77 +92,78 @@ const PricingSection = () => {
           <p className="text-muted-foreground max-w-2xl mx-auto text-base md:text-lg">
             Flexible pricing options designed to scale with your business needs
           </p>
-        </div>
+        </AnimatedSection>
 
         {/* Pricing Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
           {plans.map((plan, index) => {
             const IconComponent = plan.icon;
             return (
-              <div
-                key={index}
-                className={`relative bg-card border rounded-2xl p-6 md:p-8 transition-all duration-300 hover:shadow-xl ${
-                  plan.popular
-                    ? "border-primary shadow-lg shadow-primary/10 scale-[1.02] lg:scale-105"
-                    : "border-border hover:border-primary/50"
-                }`}
-              >
-                {/* Popular Badge */}
-                {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-primary text-primary-foreground text-sm font-medium px-4 py-1.5 rounded-full">
-                      Most Popular
-                    </span>
-                  </div>
-                )}
-
-                {/* Plan Header */}
-                <div className="text-center mb-6">
-                  <div className={`inline-flex items-center justify-center w-14 h-14 rounded-xl mb-4 ${
-                    plan.popular ? "bg-primary/20" : "bg-muted"
-                  }`}>
-                    <IconComponent className={`w-7 h-7 ${plan.popular ? "text-primary" : "text-muted-foreground"}`} />
-                  </div>
-                  <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2">
-                    {plan.name}
-                  </h3>
-                  <p className="text-muted-foreground text-sm mb-4">
-                    {plan.description}
-                  </p>
-                  <div className="flex items-baseline justify-center gap-1">
-                    <span className="text-4xl md:text-5xl font-bold text-foreground">
-                      {plan.price}
-                    </span>
-                    {plan.period && (
-                      <span className="text-muted-foreground">{plan.period}</span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Features List */}
-                <ul className="space-y-3 mb-8">
-                  {plan.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="flex items-start gap-3">
-                      <div className="flex-shrink-0 w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center mt-0.5">
-                        <Check className="w-3 h-3 text-primary" />
-                      </div>
-                      <span className="text-foreground/80 text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                {/* CTA Button */}
-                <Button
-                  className={`w-full py-6 text-base font-medium ${
+              <AnimatedSection key={index} animation="scale" delay={index * 100}>
+                <div
+                  className={`relative bg-card border rounded-2xl p-6 md:p-8 transition-all duration-300 hover:shadow-xl h-full ${
                     plan.popular
-                      ? "bg-primary hover:bg-primary/90 text-primary-foreground"
-                      : "bg-muted hover:bg-muted/80 text-foreground border border-border"
+                      ? "border-primary shadow-lg shadow-primary/10 scale-[1.02] lg:scale-105"
+                      : "border-border hover:border-primary/50"
                   }`}
-                  variant={plan.popular ? "default" : "outline"}
                 >
-                  {plan.buttonText}
-                </Button>
-              </div>
+                  {/* Popular Badge */}
+                  {plan.popular && (
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                      <span className="bg-primary text-primary-foreground text-sm font-medium px-4 py-1.5 rounded-full">
+                        Most Popular
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Plan Header */}
+                  <div className="text-center mb-6">
+                    <div className={`inline-flex items-center justify-center w-14 h-14 rounded-xl mb-4 ${
+                      plan.popular ? "bg-primary/20" : "bg-muted"
+                    }`}>
+                      <IconComponent className={`w-7 h-7 ${plan.popular ? "text-primary" : "text-muted-foreground"}`} />
+                    </div>
+                    <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2">
+                      {plan.name}
+                    </h3>
+                    <p className="text-muted-foreground text-sm mb-4">
+                      {plan.description}
+                    </p>
+                    <div className="flex items-baseline justify-center gap-1">
+                      <span className="text-4xl md:text-5xl font-bold text-foreground">
+                        {plan.price}
+                      </span>
+                      {plan.period && (
+                        <span className="text-muted-foreground">{plan.period}</span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Features List */}
+                  <ul className="space-y-3 mb-8">
+                    {plan.features.map((feature, featureIndex) => (
+                      <li key={featureIndex} className="flex items-start gap-3">
+                        <div className="flex-shrink-0 w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center mt-0.5">
+                          <Check className="w-3 h-3 text-primary" />
+                        </div>
+                        <span className="text-foreground/80 text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* CTA Button */}
+                  <Button
+                    className={`w-full py-6 text-base font-medium ${
+                      plan.popular
+                        ? "bg-primary hover:bg-primary/90 text-primary-foreground"
+                        : "bg-muted hover:bg-muted/80 text-foreground border border-border"
+                    }`}
+                    variant={plan.popular ? "default" : "outline"}
+                  >
+                    {plan.buttonText}
+                  </Button>
+                </div>
+              </AnimatedSection>
             );
           })}
         </div>
@@ -174,7 +176,7 @@ const PricingSection = () => {
         </div>
 
         {/* Feature Comparison Table */}
-        <div className="mt-16 md:mt-24">
+        <AnimatedSection className="mt-16 md:mt-24">
           <h3 className="text-2xl md:text-3xl font-bold text-foreground text-center mb-8">
             Feature Comparison
           </h3>
@@ -240,7 +242,7 @@ const PricingSection = () => {
               </tbody>
             </table>
           </div>
-        </div>
+        </AnimatedSection>
       </div>
     </section>
   );
