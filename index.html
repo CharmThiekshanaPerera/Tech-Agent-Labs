@@ -4,10 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tech Agent Labs | AI Agents Marketplace & Custom Development Studio</title>
+
+    <!-- Primary -->
     <meta name="description" content="Buy production-ready AI agents or get custom-built automation for your business. Plug-and-play workflow bots for sales, support, operations & more. Fast deployment, enterprise security." />
     <meta name="keywords" content="AI agents, automation, workflow bots, plug-and-play AI, custom AI agents, AI for businesses, business automation, AI marketplace, chatbot, AI assistant, sales automation, customer support AI" />
     <meta name="author" content="Tech Agent Labs" />
-    <link rel="canonical" href="https://techagentlabs.com" />
+    <link rel="canonical" href="https://techagentlabs.com/" />
+    <meta http-equiv="content-language" content="en" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="googlebot" content="index, follow" />
     <meta name="bingbot" content="index, follow" />
@@ -16,7 +19,7 @@
     <meta property="og:title" content="Tech Agent Labs | AI Agents That Actually Work" />
     <meta property="og:description" content="Production-ready AI agents for sales, support, operations & analytics. Buy plug-and-play or get custom-built automation. Deploy in days, not months." />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://techagentlabs.com" />
+    <meta property="og:url" content="https://techagentlabs.com/" />
     <meta property="og:image" content="https://techagentlabs.com/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -37,7 +40,26 @@
     <meta name="msapplication-TileColor" content="#0a0a0f" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
 
-    <!-- Speakable for Voice Search / AEO -->
+    <!-- PWA + Icons -->
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <meta name="msapplication-config" content="/browserconfig.xml" />
+
+    <!-- Hreflang examples (add actual language pages) -->
+    <link rel="alternate" href="https://techagentlabs.com/" hreflang="en" />
+    <!-- <link rel="alternate" href="https://techagentlabs.com/si/" hreflang="si" /> -->
+
+    <!-- Styles & Vite entry -->
+    <link rel="stylesheet" href="/src/index.css" />
+
+    <!-- ===========================
+         Structured data (JSON-LD)
+         Replace any REPLACE_ME_* values
+         =========================== -->
+
+    <!-- WebSite + SearchAction -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -48,10 +70,7 @@
       "description": "AI agents marketplace and custom development studio for business automation",
       "potentialAction": {
         "@type": "SearchAction",
-        "target": {
-          "@type": "EntryPoint",
-          "urlTemplate": "https://techagentlabs.com/?search={search_term_string}"
-        },
+        "target": "https://techagentlabs.com/?s={search_term_string}",
         "query-input": "required name=search_term_string"
       },
       "speakable": {
@@ -61,7 +80,7 @@
     }
     </script>
 
-    <!-- Organization Schema -->
+    <!-- Organization -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -72,183 +91,162 @@
       "url": "https://techagentlabs.com",
       "logo": "https://techagentlabs.com/logo.png",
       "foundingDate": "2023",
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "telephone": "+1-555-AI-AGENT",
-        "contactType": "customer service",
-        "availableLanguage": ["English"]
-      },
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "contactType": "customer service",
+          "email": "contact@techagentlabs.com",
+          "availableLanguage": ["English"],
+          "areaServed": "Worldwide"
+        }
+      ],
       "sameAs": [
         "https://twitter.com/TechAgentLabs",
         "https://linkedin.com/company/techagentlabs",
-        "https://github.com/techagentlabs"
+        "https://github.com/techagentlabs",
+        "https://facebook.com/techagentlabs"
       ],
-      "knowsAbout": [
-        "Artificial Intelligence",
-        "AI Agents",
-        "Business Automation",
-        "Machine Learning",
-        "Chatbots",
-        "Customer Support Automation",
-        "Sales Automation"
-      ]
+      "knowsAbout": ["Artificial Intelligence", "AI Agents", "Business Automation", "Machine Learning", "Chatbots", "Customer Support Automation", "Sales Automation"]
     }
     </script>
 
-    <!-- Product Schema for AI Agents -->
+    <!-- WebPage + Speakable -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Product",
-      "name": "AI Agents by Tech Agent Labs",
-      "description": "Production-ready AI agents for sales, support, operations & analytics. Deploy in days, not months.",
-      "brand": {
-        "@type": "Brand",
-        "name": "Tech Agent Labs"
-      },
-      "category": "Software > Artificial Intelligence > Business Automation",
-      "offers": {
-        "@type": "AggregateOffer",
-        "priceCurrency": "USD",
-        "lowPrice": "49",
-        "highPrice": "499",
-        "offerCount": "8"
-      },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.9",
-        "reviewCount": "500",
-        "bestRating": "5",
-        "worstRating": "1"
+      "@type": "WebPage",
+      "url": "https://techagentlabs.com/",
+      "name": "Tech Agent Labs — AI Agents Marketplace",
+      "description": "Buy production-ready AI agents or get custom-built automation for your business.",
+      "speakable": {
+        "@type": "SpeakableSpecification",
+        "xpath": ["/html/head/title", "//h1", "//meta[@name='description']/@content"]
       }
     }
     </script>
 
-    <!-- FAQ Schema for AEO -->
+    <!-- BreadcrumbList -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
+      "@type": "BreadcrumbList",
+      "itemListElement": [
         {
-          "@type": "Question",
-          "name": "What are AI Agents and how do they work?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "AI Agents are autonomous software programs powered by artificial intelligence that can perform tasks, make decisions, and interact with systems on your behalf. Our agents use advanced machine learning algorithms to understand context, learn from interactions, and continuously improve their performance over time."
-          }
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://techagentlabs.com/"
         },
         {
-          "@type": "Question",
-          "name": "How long does it take to implement an AI Agent?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Implementation time varies based on complexity and customization needs. Standard agents can be deployed within 1-2 weeks, while custom solutions may take 4-6 weeks. We provide comprehensive onboarding and support throughout the process to ensure a smooth transition."
-          }
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Services",
+          "item": "https://techagentlabs.com/services"
         },
         {
-          "@type": "Question",
-          "name": "Can AI Agents integrate with my existing systems?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes! Our AI Agents are designed to integrate seamlessly with most popular business tools, CRMs, communication platforms, and custom software. We support APIs, webhooks, and direct integrations with platforms like Salesforce, HubSpot, Slack, and many more."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How secure is my data with AI Agents?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Security is our top priority. We implement enterprise-grade encryption, comply with GDPR and SOC 2 standards, and follow strict data handling protocols. Your data is never shared with third parties, and you maintain full ownership and control over all information processed by our agents."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What is the pricing model for AI Agents?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "We offer flexible pricing models including per-agent licensing, usage-based pricing, and enterprise packages. Pricing depends on the type of agent, usage volume, and customization requirements. Contact us for a personalized quote tailored to your specific needs."
-          }
+          "@type": "ListItem",
+          "position": 3,
+          "name": "AI Agents",
+          "item": "https://techagentlabs.com/services/ai-agents"
         }
       ]
     }
     </script>
 
-    <!-- HowTo Schema for AEO -->
+    <!-- Product schema (example single product listing) -->
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
-      "@type": "HowTo",
-      "name": "How to Get Started with AI Agents",
-      "description": "A step-by-step guide to implementing AI agents in your business",
-      "step": [
-        {
-          "@type": "HowToStep",
-          "name": "Schedule a Demo",
-          "text": "Contact Tech Agent Labs to schedule a free consultation and demo of our AI agents."
-        },
-        {
-          "@type": "HowToStep",
-          "name": "Choose Your Agent",
-          "text": "Select from our marketplace of production-ready agents or request a custom solution."
-        },
-        {
-          "@type": "HowToStep",
-          "name": "Integration Setup",
-          "text": "Our team helps integrate the AI agent with your existing systems and workflows."
-        },
-        {
-          "@type": "HowToStep",
-          "name": "Deploy and Monitor",
-          "text": "Launch your AI agent and monitor performance with our analytics dashboard."
-        }
-      ]
+      "@context":"https://schema.org",
+      "@type":"Product",
+      "name":"Sales Agent — Lead Qualifier",
+      "description":"AI-powered Sales Agent that qualifies leads, books meetings, and pushes data into your CRM.",
+      "image":["https://techagentlabs.com/products/sales-agent-1200x630.png"],
+      "brand":{"@type":"Brand","name":"Tech Agent Labs"},
+      "offers":{"@type":"Offer","url":"https://techagentlabs.com/products/sales-agent","priceCurrency":"USD","price":"99.00","availability":"https://schema.org/InStock"}
     }
     </script>
 
-    <!-- Service Schema -->
+    <!-- Service + OfferCatalog -->
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
-      "@type": "Service",
-      "serviceType": "AI Agent Development and Deployment",
-      "provider": {
-        "@type": "Organization",
-        "name": "Tech Agent Labs"
-      },
-      "areaServed": "Worldwide",
-      "hasOfferCatalog": {
-        "@type": "OfferCatalog",
-        "name": "AI Agent Services",
-        "itemListElement": [
+      "@context":"https://schema.org",
+      "@type":"Service",
+      "serviceType":"AI Agent Development & Deployment",
+      "provider":{"@type":"Organization","name":"Tech Agent Labs"},
+      "areaServed":"Worldwide",
+      "hasOfferCatalog":{
+        "@type":"OfferCatalog",
+        "name":"AI Agent Catalog",
+        "itemListElement":[
           {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Sales Agent",
-              "description": "AI-powered sales automation and lead qualification"
-            }
+            "@type":"OfferCatalog",
+            "name":"Sales Agents",
+            "itemListElement":[
+              {"@type":"Offer","itemOffered":{"@type":"Service","name":"Sales Agent"}}
+            ]
           },
           {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Support Agent",
-              "description": "24/7 automated customer support and ticket resolution"
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Analytics Agent",
-              "description": "Intelligent data analysis and business insights"
-            }
+            "@type":"OfferCatalog",
+            "name":"Support Agents",
+            "itemListElement":[
+              {"@type":"Offer","itemOffered":{"@type":"Service","name":"Support Agent"}}
+            ]
           }
         ]
       }
     }
     </script>
+
+    <!-- FAQPage -->
+    <script type="application/ld+json">
+    {
+      "@context":"https://schema.org",
+      "@type":"FAQPage",
+      "mainEntity":[
+        {
+          "@type":"Question",
+          "name":"What are AI Agents and how do they work?",
+          "acceptedAnswer":{"@type":"Answer","text":"AI Agents are autonomous software programs that perform tasks, interact with systems, and automate workflows. They use ML models, prompts, and connectors to act on your behalf."}
+        },
+        {
+          "@type":"Question",
+          "name":"How long does it take to implement an AI Agent?",
+          "acceptedAnswer":{"@type":"Answer","text":"Implementation time varies. Prebuilt agents deploy in days; custom solutions can take a few weeks depending on integrations and scope."}
+        }
+      ]
+    }
+    </script>
+
+    <!-- HowTo (quickstart) -->
+    <script type="application/ld+json">
+    {
+      "@context":"https://schema.org",
+      "@type":"HowTo",
+      "name":"How to Get Started with an AI Agent",
+      "description":"A short how-to for deploying a marketplace AI agent.",
+      "step":[
+        {"@type":"HowToStep","position":1,"name":"Choose an agent","text":"Pick a prebuilt agent from the marketplace."},
+        {"@type":"HowToStep","position":2,"name":"Connect systems","text":"Add your API keys and connectors."},
+        {"@type":"HowToStep","position":3,"name":"Deploy and monitor","text":"Turn the agent on and review analytics."}
+      ]
+    }
+    </script>
+
+    <!-- SoftwareApplication (dashboard) -->
+    <script type="application/ld+json">
+    {
+      "@context":"https://schema.org",
+      "@type":"SoftwareApplication",
+      "name":"Tech Agent Labs Dashboard",
+      "operatingSystem":"All",
+      "applicationCategory":"BusinessApplication",
+      "url":"https://techagentlabs.com/dashboard",
+      "description":"Dashboard to deploy and manage AI agents for your organization.",
+      "offers":{"@type":"Offer","price":"0.00","priceCurrency":"USD"}
+    }
+    </script>
+
+    <!-- end JSON-LD -->
   </head>
 
   <body>
