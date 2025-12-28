@@ -12,3 +12,6 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+Sitemap: https://techagentlabs.com/sitemap.xml
+Host: https://techagentlabs.com

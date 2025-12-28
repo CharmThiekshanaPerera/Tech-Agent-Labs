@@ -1,0 +1,12 @@
+/* TEAM */
+Tech Agent Labs | AI Agents Marketplace & Custom Development Studio
+Site: https://techagentlabs.com
+Contact: info@techagentlabs.com
+Founding: 2025
+
+/* THANKS */
+Design: Tech Agent Labs
+Dev: Tech Agent Labs Team
+
+/* PRINCIPLES */
+Built with performance, accessibility, and privacy in mind.
