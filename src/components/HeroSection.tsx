@@ -1,8 +1,9 @@
 import logo from "@/assets/logo.png";
-import { ArrowRight, Play, ShoppingCart, FileDown } from "lucide-react";
+import { ArrowRight, Play, ShoppingCart, FileDown, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const HeroSection = () => {
-  const handleScrollToContact = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleScrollToContact = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
     e.preventDefault();
     const element = document.querySelector("#contact");
     if (element) {
@@ -10,7 +11,7 @@ const HeroSection = () => {
     }
   };
 
-  const handleScrollToServices = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleScrollToServices = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
     e.preventDefault();
     const element = document.querySelector("#services");
     if (element) {
@@ -64,31 +65,42 @@ const HeroSection = () => {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start animate-fade-up" style={{ animationDelay: '0.3s' }}>
-              <a
-                href="#contact"
+              <Button
+                variant="glow"
+                size="responsive"
                 onClick={handleScrollToContact}
-                className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/90 transition-all card-glow group text-sm sm:text-base"
+                className="group"
               >
-                <Play className="w-4 h-4 sm:w-5 sm:h-5" />
+                <Play className="group-hover:scale-110 transition-transform" />
                 Start a Demo
-              </a>
-              <a
-                href="#services"
+                <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 opacity-70 group-hover:opacity-100 group-hover:rotate-12 transition-all" />
+              </Button>
+              
+              <Button
+                variant="gradientBorder"
+                size="responsive"
                 onClick={handleScrollToServices}
-                className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 gradient-border rounded-xl font-semibold text-foreground hover:bg-secondary/50 transition-all text-sm sm:text-base"
+                className="group"
               >
-                <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
+                <ShoppingCart className="group-hover:scale-110 transition-transform" />
                 Browse Agents
-                <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
-              </a>
-              <a
-                href="/documents/Tech_Agent_Labs_Project_Proposal.pdf"
-                download="Tech_Agent_Labs_Project_Proposal.pdf"
-                className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3 sm:py-4 bg-secondary/60 border border-primary/30 rounded-xl font-semibold text-foreground hover:bg-primary/10 hover:border-primary/50 transition-all text-sm sm:text-base"
+                <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
+              </Button>
+              
+              <Button
+                variant="download"
+                size="responsive"
+                asChild
               >
-                <FileDown className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-                Download Proposal
-              </a>
+                <a
+                  href="/documents/Tech_Agent_Labs_Project_Proposal.pdf"
+                  download="Tech_Agent_Labs_Project_Proposal.pdf"
+                  className="group"
+                >
+                  <FileDown className="text-primary group-hover:scale-110 transition-transform" />
+                  Download Proposal
+                </a>
+              </Button>
             </div>
 
             {/* Trust Indicators */}
