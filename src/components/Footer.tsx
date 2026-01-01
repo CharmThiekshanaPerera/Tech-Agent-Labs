@@ -1,4 +1,4 @@
-import { Twitter, Linkedin, Youtube, Github, Mail, Phone, MapPin, FileDown } from "lucide-react";
+import { Twitter, Linkedin, Youtube, Facebook, Instagram, Mail, Phone, MapPin, FileDown } from "lucide-react";
 import logo from "@/assets/logo.png";
 
 const Footer = () => {
@@ -163,32 +163,49 @@ const Footer = () => {
             {/* Social Icons - Top on mobile */}
             <div className="flex items-center justify-center gap-2 sm:gap-3 order-1 md:order-none">
               <a
-                href="#"
+                href="https://facebook.com/techagentlabs"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Follow us on Facebook"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-secondary border border-border/50 flex items-center justify-center hover:bg-primary/10 hover:border-primary/30 transition-colors"
+              >
+                <Facebook className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-foreground" />
+              </a>
+              <a
+                href="https://instagram.com/techagentlabs"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Follow us on Instagram"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-secondary border border-border/50 flex items-center justify-center hover:bg-primary/10 hover:border-primary/30 transition-colors"
+              >
+                <Instagram className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-foreground" />
+              </a>
+              <a
+                href="https://twitter.com/techagentlabs"
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="Follow us on Twitter"
                 className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-secondary border border-border/50 flex items-center justify-center hover:bg-primary/10 hover:border-primary/30 transition-colors"
               >
                 <Twitter className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-foreground" />
               </a>
               <a
-                href="#"
+                href="https://linkedin.com/company/techagentlabs"
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="Connect on LinkedIn"
                 className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-secondary border border-border/50 flex items-center justify-center hover:bg-primary/10 hover:border-primary/30 transition-colors"
               >
                 <Linkedin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-foreground" />
               </a>
               <a
-                href="#"
+                href="https://youtube.com/@techagentlabs"
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="Watch on YouTube"
                 className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-secondary border border-border/50 flex items-center justify-center hover:bg-primary/10 hover:border-primary/30 transition-colors"
               >
                 <Youtube className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-foreground" />
-              </a>
-              <a
-                href="#"
-                aria-label="View on GitHub"
-                className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-secondary border border-border/50 flex items-center justify-center hover:bg-primary/10 hover:border-primary/30 transition-colors"
-              >
-                <Github className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-foreground" />
               </a>
             </div>
 
