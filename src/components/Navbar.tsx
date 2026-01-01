@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Sparkles } from "lucide-react";
 import logo from "@/assets/logo.png";
+import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,6 +16,14 @@ const Navbar = () => {
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    setIsOpen(false);
+  };
+
+  const handleButtonClick = (href: string) => {
     const element = document.querySelector(href);
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -55,13 +64,15 @@ const Navbar = () => {
 
           {/* CTA Button */}
           <div className="hidden sm:flex items-center gap-3 sm:gap-4">
-            <a
-              href="#contact"
-              onClick={(e) => handleNavClick(e, "#contact")}
-              className="px-4 sm:px-5 py-2 sm:py-2.5 bg-primary text-primary-foreground font-semibold text-xs sm:text-sm rounded-lg hover:bg-primary/90 transition-all card-glow"
+            <Button
+              variant="glow"
+              size="sm"
+              onClick={() => handleButtonClick("#contact")}
+              className="group"
             >
-              Start a Demo ✨
-            </a>
+              Start a Demo
+              <Sparkles className="w-3.5 h-3.5 opacity-70 group-hover:opacity-100 group-hover:rotate-12 transition-all" />
+            </Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -88,13 +99,15 @@ const Navbar = () => {
                   {link.name}
                 </a>
               ))}
-              <a
-                href="#contact"
-                onClick={(e) => handleNavClick(e, "#contact")}
-                className="px-4 py-3 bg-primary text-primary-foreground font-semibold text-sm rounded-lg text-center mt-2"
+              <Button
+                variant="glow"
+                size="default"
+                onClick={() => handleButtonClick("#contact")}
+                className="mt-2 group"
               >
-                Start a Demo ✨
-              </a>
+                Start a Demo
+                <Sparkles className="w-4 h-4 opacity-70 group-hover:opacity-100 group-hover:rotate-12 transition-all" />
+              </Button>
             </div>
           </div>
         )}
