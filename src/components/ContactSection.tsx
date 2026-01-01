@@ -75,8 +75,8 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <p className="text-xs sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">Email us anytime</p>
-                    <a href="mailto:hello@techagentlabs.com" className="text-foreground hover:text-primary transition-colors font-medium text-sm sm:text-base">
-                      hello@techagentlabs.com
+                    <a href="mailto:info@techagentlabs.com" className="text-foreground hover:text-primary transition-colors font-medium text-sm sm:text-base">
+                      info@techagentlabs.com
                     </a>
                   </div>
                 </div>
@@ -86,9 +86,9 @@ const ContactSection = () => {
                     <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                   </div>
                   <div>
-                    <p className="text-xs sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">Call or text</p>
-                    <a href="tel:+1-888-555-0123" className="text-foreground hover:text-primary transition-colors font-medium text-sm sm:text-base">
-                      +1 (888) 555-0123
+                    <p className="text-xs sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">Call or WhatsApp</p>
+                    <a href="tel:+94789587000" className="text-foreground hover:text-primary transition-colors font-medium text-sm sm:text-base">
+                      078 95 87 000
                     </a>
                   </div>
                 </div>
@@ -98,9 +98,9 @@ const ContactSection = () => {
                     <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                   </div>
                   <div>
-                    <p className="text-xs sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">We're remote-first</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">Our Location</p>
                     <p className="text-foreground text-sm sm:text-base">
-                      San Francisco, CA & Worldwide 🌍
+                      27/14 Ananda Rajakaruna Road,<br />Colombo 10, Sri Lanka 🇱🇰
                     </p>
                   </div>
                 </div>
