@@ -1,7 +1,21 @@
-import { Twitter, Linkedin, Youtube, Github, MessageCircle } from "lucide-react";
+import { Twitter, Linkedin, Youtube, Facebook, Instagram, MessageCircle } from "lucide-react";
 import { useState } from "react";
 
 const socialLinks = [
+  { 
+    name: "Facebook", 
+    icon: Facebook, 
+    href: "https://facebook.com/techagentlabs",
+    color: "hover:bg-[#1877F2]",
+    bgColor: "bg-[#1877F2]/10"
+  },
+  { 
+    name: "Instagram", 
+    icon: Instagram, 
+    href: "https://instagram.com/techagentlabs",
+    color: "hover:bg-[#E4405F]",
+    bgColor: "bg-[#E4405F]/10"
+  },
   { 
     name: "Twitter", 
     icon: Twitter, 
@@ -22,13 +36,6 @@ const socialLinks = [
     href: "https://youtube.com/@techagentlabs",
     color: "hover:bg-[#FF0000]",
     bgColor: "bg-[#FF0000]/10"
-  },
-  { 
-    name: "GitHub", 
-    icon: Github, 
-    href: "https://github.com/techagentlabs",
-    color: "hover:bg-[#333333]",
-    bgColor: "bg-[#333333]/10"
   },
 ];
 
