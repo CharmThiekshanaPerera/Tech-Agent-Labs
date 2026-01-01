@@ -1,7 +1,7 @@
 import { Phone } from "lucide-react";
 
 const WhatsAppButton = () => {
-  const whatsappNumber = "18885550123"; // Replace with actual WhatsApp number
+  const whatsappNumber = "94789587000"; // Tech Agent Labs WhatsApp
   const message = "Hi! I'm interested in learning more about Tech Agent Labs AI agents.";
   
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;

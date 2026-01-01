@@ -62,18 +62,18 @@ const Footer = () => {
             
             {/* Contact Info */}
             <div className="space-y-2 sm:space-y-3">
-              <a href="mailto:hello@techagentlabs.com" className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors">
+              <a href="mailto:info@techagentlabs.com" className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors">
                 <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary flex-shrink-0" />
-                hello@techagentlabs.com
+                info@techagentlabs.com
               </a>
-              <a href="tel:+1-888-555-0123" className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors">
+              <a href="tel:+94789587000" className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors">
                 <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary flex-shrink-0" />
-                +1 (888) 555-0123
+                078 95 87 000
               </a>
-              <p className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
-                <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary flex-shrink-0" />
-                San Francisco, CA & Worldwide
-              </p>
+              <div className="flex items-start gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
+                <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary flex-shrink-0 mt-0.5" />
+                <span>27/14 Ananda Rajakaruna Road,<br />Colombo 10, Sri Lanka</span>
+              </div>
             </div>
           </div>
 
