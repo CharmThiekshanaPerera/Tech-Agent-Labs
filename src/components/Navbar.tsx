@@ -12,6 +12,9 @@ const Navbar = () => {
     { name: "Agents", href: "#services" },
     { name: "Results", href: "#growth" },
     { name: "How It Works", href: "#howtobuy" },
+    { name: "Testimonials", href: "#testimonials" },
+    { name: "FAQ", href: "#faq" },
+    { name: "Contact", href: "#contact" },
   ];
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
