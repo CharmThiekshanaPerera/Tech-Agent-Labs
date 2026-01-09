@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Mail, Phone, MapPin, Send, Check, Calendar, ShoppingCart, Wrench } from "lucide-react";
+import { Mail, Phone, MapPin, Send, Check, Calendar, Wrench } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import QuickActionModals from "./QuickActionModals";
 import { AnimatedSection } from "@/hooks/useScrollAnimation";
@@ -14,7 +14,7 @@ const ContactSection = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [activeModal, setActiveModal] = useState<"demo" | "buy" | "custom" | null>(null);
+  const [activeModal, setActiveModal] = useState<"demo" | "custom" | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData((prev) => ({
@@ -110,7 +110,7 @@ const ContactSection = () => {
             {/* Quick Actions */}
             <div className="gradient-border rounded-xl sm:rounded-2xl p-4 sm:p-6 card-glow">
               <h4 className="text-xs sm:text-sm font-semibold text-primary mb-3 sm:mb-4">Quick Actions</h4>
-              <div className="grid grid-cols-3 gap-2 sm:gap-3">
+              <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 <button 
                   onClick={() => setActiveModal("demo")}
                   className="flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-medium bg-secondary border border-border/50 rounded-lg hover:bg-primary/10 hover:border-primary/30 transition-colors"
@@ -119,18 +119,11 @@ const ContactSection = () => {
                   <span className="hidden sm:inline">Book</span> Demo
                 </button>
                 <button 
-                  onClick={() => setActiveModal("buy")}
-                  className="flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-medium bg-secondary border border-border/50 rounded-lg hover:bg-primary/10 hover:border-primary/30 transition-colors"
-                >
-                  <ShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
-                  <span className="hidden sm:inline">Buy</span> Agent
-                </button>
-                <button 
                   onClick={() => setActiveModal("custom")}
                   className="flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-medium bg-secondary border border-border/50 rounded-lg hover:bg-primary/10 hover:border-primary/30 transition-colors"
                 >
                   <Wrench className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
-                  Custom
+                  Custom Requirements
                 </button>
               </div>
             </div>
