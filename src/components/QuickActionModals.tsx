@@ -1,18 +1,33 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Calendar, ShoppingCart, Wrench, Clock, Users, Zap, Check, ArrowRight, Star, MessageSquare } from "lucide-react";
+import { Calendar, Wrench, Clock, Users, Zap, MessageSquare, Building2, Target, Cog, FileText } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface QuickActionModalsProps {
-  activeModal: "demo" | "buy" | "custom" | null;
+  activeModal: "demo" | "custom" | null;
   onClose: () => void;
 }
 
 const QuickActionModals = ({ activeModal, onClose }: QuickActionModalsProps) => {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
-  const [selectedAgent, setSelectedAgent] = useState("");
+  
+  // Custom requirement form state
+  const [customForm, setCustomForm] = useState({
+    companyName: "",
+    contactName: "",
+    email: "",
+    phone: "",
+    industry: "",
+    companySize: "",
+    currentChallenges: "",
+    desiredOutcome: "",
+    existingSystems: "",
+    budget: "",
+    timeline: "",
+    additionalNotes: "",
+  });
 
   const handleBookDemo = () => {
     if (!selectedDate || !selectedTime) {
@@ -32,40 +47,41 @@ const QuickActionModals = ({ activeModal, onClose }: QuickActionModalsProps) => 
     setSelectedTime("");
   };
 
-  const handleBuyAgent = () => {
-    if (!selectedAgent) {
+  const handleCustomSubmit = () => {
+    if (!customForm.companyName || !customForm.contactName || !customForm.email || !customForm.currentChallenges) {
       toast({
-        title: "Please select an agent",
-        description: "Choose an agent to continue to checkout.",
+        title: "Please fill in required fields",
+        description: "Company name, contact name, email, and current challenges are required.",
         variant: "destructive",
       });
       return;
     }
     toast({
-      title: "Redirecting to checkout... 🛒",
-      description: `Preparing ${selectedAgent} for purchase.`,
+      title: "Requirement Submitted! 🔧",
+      description: "Our team will analyze your requirements and reach out within 24 hours.",
     });
     onClose();
-    setSelectedAgent("");
+    setCustomForm({
+      companyName: "",
+      contactName: "",
+      email: "",
+      phone: "",
+      industry: "",
+      companySize: "",
+      currentChallenges: "",
+      desiredOutcome: "",
+      existingSystems: "",
+      budget: "",
+      timeline: "",
+      additionalNotes: "",
+    });
   };
 
-  const handleCustomBuild = () => {
-    toast({
-      title: "Request Submitted! 🔧",
-      description: "Our team will reach out within 24 hours to discuss your custom agent.",
-    });
-    onClose();
+  const handleCustomFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setCustomForm({ ...customForm, [e.target.name]: e.target.value });
   };
 
   const timeSlots = ["9:00 AM", "10:00 AM", "11:00 AM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"];
-  
-  const agents = [
-    { id: "support", name: "Support Agent", price: "$299/mo", popular: true },
-    { id: "marketing", name: "Marketing Agent", price: "$349/mo", popular: false },
-    { id: "analytics", name: "Analytics Agent", price: "$399/mo", popular: false },
-    { id: "sales", name: "Sales Agent", price: "$449/mo", popular: true },
-    { id: "operations", name: "Operations Agent", price: "$379/mo", popular: false },
-  ];
 
   return (
     <>
@@ -139,130 +155,210 @@ const QuickActionModals = ({ activeModal, onClose }: QuickActionModalsProps) => 
         </DialogContent>
       </Dialog>
 
-      {/* Buy Agent Modal */}
-      <Dialog open={activeModal === "buy"} onOpenChange={() => onClose()}>
-        <DialogContent className="sm:max-w-lg bg-card border-border">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-xl">
-              <ShoppingCart className="w-5 h-5 text-primary" />
-              Buy an Agent
-            </DialogTitle>
-            <DialogDescription>
-              Choose an AI agent to supercharge your workflow
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-4 py-4">
-            {agents.map((agent) => (
-              <button
-                key={agent.id}
-                onClick={() => setSelectedAgent(agent.name)}
-                className={`w-full p-4 rounded-xl border transition-all text-left relative ${
-                  selectedAgent === agent.name
-                    ? "bg-primary/10 border-primary"
-                    : "bg-secondary/50 border-border/50 hover:border-primary/30"
-                }`}
-              >
-                {agent.popular && (
-                  <span className="absolute -top-2 right-3 px-2 py-0.5 bg-primary text-primary-foreground text-xs rounded-full flex items-center gap-1">
-                    <Star className="w-3 h-3" /> Popular
-                  </span>
-                )}
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-foreground">{agent.name}</p>
-                    <p className="text-sm text-muted-foreground">Full automation capabilities</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold text-primary">{agent.price}</p>
-                    {selectedAgent === agent.name && (
-                      <Check className="w-5 h-5 text-primary ml-auto" />
-                    )}
-                  </div>
-                </div>
-              </button>
-            ))}
-
-            <div className="pt-2 space-y-3">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Check className="w-4 h-4 text-primary" />
-                <span>14-day free trial included</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Check className="w-4 h-4 text-primary" />
-                <span>Cancel anytime, no questions asked</span>
-              </div>
-            </div>
-
-            <Button onClick={handleBuyAgent} className="w-full" size="lg">
-              Continue to Checkout
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Custom Build Modal */}
+      {/* Custom Requirement Form Modal */}
       <Dialog open={activeModal === "custom"} onOpenChange={() => onClose()}>
-        <DialogContent className="sm:max-w-lg bg-card border-border">
+        <DialogContent className="sm:max-w-2xl bg-card border-border max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl">
               <Wrench className="w-5 h-5 text-primary" />
-              Custom Agent Build
+              Custom Agent Requirements
             </DialogTitle>
             <DialogDescription>
-              Get a tailored AI agent built specifically for your needs
+              Tell us about your business needs and we'll design a tailored AI solution
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-6 py-4">
-            {/* Process Steps */}
+            {/* Company Information */}
             <div className="space-y-4">
-              <div className="flex gap-4">
-                <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/50 flex items-center justify-center shrink-0">
-                  <span className="text-sm font-bold text-primary">1</span>
-                </div>
-                <div>
-                  <p className="font-medium">Discovery Call</p>
-                  <p className="text-sm text-muted-foreground">We learn about your workflow and requirements</p>
-                </div>
+              <div className="flex items-center gap-2 text-sm font-medium text-primary">
+                <Building2 className="w-4 h-4" />
+                Company Information
               </div>
-              <div className="flex gap-4">
-                <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/50 flex items-center justify-center shrink-0">
-                  <span className="text-sm font-bold text-primary">2</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Company Name *</label>
+                  <input
+                    type="text"
+                    name="companyName"
+                    value={customForm.companyName}
+                    onChange={handleCustomFormChange}
+                    placeholder="Your company name"
+                    className="w-full px-4 py-3 bg-secondary border border-border/50 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
+                  />
                 </div>
                 <div>
-                  <p className="font-medium">Custom Design</p>
-                  <p className="text-sm text-muted-foreground">Our team designs your personalized agent</p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/50 flex items-center justify-center shrink-0">
-                  <span className="text-sm font-bold text-primary">3</span>
-                </div>
-                <div>
-                  <p className="font-medium">Build & Deploy</p>
-                  <p className="text-sm text-muted-foreground">We build, test, and deploy your agent</p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/50 flex items-center justify-center shrink-0">
-                  <span className="text-sm font-bold text-primary">4</span>
+                  <label className="block text-sm font-medium mb-2">Contact Name *</label>
+                  <input
+                    type="text"
+                    name="contactName"
+                    value={customForm.contactName}
+                    onChange={handleCustomFormChange}
+                    placeholder="Your full name"
+                    className="w-full px-4 py-3 bg-secondary border border-border/50 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
+                  />
                 </div>
                 <div>
-                  <p className="font-medium">Ongoing Support</p>
-                  <p className="text-sm text-muted-foreground">Continuous optimization and maintenance</p>
+                  <label className="block text-sm font-medium mb-2">Email *</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={customForm.email}
+                    onChange={handleCustomFormChange}
+                    placeholder="your@email.com"
+                    className="w-full px-4 py-3 bg-secondary border border-border/50 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Phone</label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={customForm.phone}
+                    onChange={handleCustomFormChange}
+                    placeholder="+1 234 567 8900"
+                    className="w-full px-4 py-3 bg-secondary border border-border/50 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Industry</label>
+                  <select
+                    name="industry"
+                    value={customForm.industry}
+                    onChange={handleCustomFormChange}
+                    className="w-full px-4 py-3 bg-secondary border border-border/50 rounded-lg text-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
+                  >
+                    <option value="">Select industry</option>
+                    <option value="technology">Technology</option>
+                    <option value="healthcare">Healthcare</option>
+                    <option value="finance">Finance & Banking</option>
+                    <option value="retail">Retail & E-commerce</option>
+                    <option value="manufacturing">Manufacturing</option>
+                    <option value="education">Education</option>
+                    <option value="real-estate">Real Estate</option>
+                    <option value="hospitality">Hospitality</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Company Size</label>
+                  <select
+                    name="companySize"
+                    value={customForm.companySize}
+                    onChange={handleCustomFormChange}
+                    className="w-full px-4 py-3 bg-secondary border border-border/50 rounded-lg text-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
+                  >
+                    <option value="">Select size</option>
+                    <option value="1-10">1-10 employees</option>
+                    <option value="11-50">11-50 employees</option>
+                    <option value="51-200">51-200 employees</option>
+                    <option value="201-500">201-500 employees</option>
+                    <option value="500+">500+ employees</option>
+                  </select>
                 </div>
               </div>
             </div>
 
-            {/* Pricing Info */}
-            <div className="bg-secondary/50 rounded-xl p-4 border border-border/50">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-muted-foreground">Starting from</span>
-                <span className="text-2xl font-bold text-primary">$999</span>
+            {/* Requirements */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-sm font-medium text-primary">
+                <Target className="w-4 h-4" />
+                Project Requirements
               </div>
-              <p className="text-xs text-muted-foreground">One-time build fee + monthly maintenance</p>
+              <div>
+                <label className="block text-sm font-medium mb-2">Current Challenges *</label>
+                <textarea
+                  name="currentChallenges"
+                  value={customForm.currentChallenges}
+                  onChange={handleCustomFormChange}
+                  placeholder="What problems are you trying to solve? What tasks take up too much time?"
+                  rows={3}
+                  className="w-full px-4 py-3 bg-secondary border border-border/50 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 resize-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Desired Outcome</label>
+                <textarea
+                  name="desiredOutcome"
+                  value={customForm.desiredOutcome}
+                  onChange={handleCustomFormChange}
+                  placeholder="What would success look like? What results do you expect from the AI agent?"
+                  rows={3}
+                  className="w-full px-4 py-3 bg-secondary border border-border/50 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 resize-none"
+                />
+              </div>
+            </div>
+
+            {/* Technical Details */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-sm font-medium text-primary">
+                <Cog className="w-4 h-4" />
+                Technical Details
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Existing Systems & Tools</label>
+                <textarea
+                  name="existingSystems"
+                  value={customForm.existingSystems}
+                  onChange={handleCustomFormChange}
+                  placeholder="What software, CRM, or tools do you currently use that the agent should integrate with?"
+                  rows={2}
+                  className="w-full px-4 py-3 bg-secondary border border-border/50 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 resize-none"
+                />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Budget Range</label>
+                  <select
+                    name="budget"
+                    value={customForm.budget}
+                    onChange={handleCustomFormChange}
+                    className="w-full px-4 py-3 bg-secondary border border-border/50 rounded-lg text-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
+                  >
+                    <option value="">Select budget range</option>
+                    <option value="under-5k">Under $5,000</option>
+                    <option value="5k-15k">$5,000 - $15,000</option>
+                    <option value="15k-50k">$15,000 - $50,000</option>
+                    <option value="50k+">$50,000+</option>
+                    <option value="not-sure">Not sure yet</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Timeline</label>
+                  <select
+                    name="timeline"
+                    value={customForm.timeline}
+                    onChange={handleCustomFormChange}
+                    className="w-full px-4 py-3 bg-secondary border border-border/50 rounded-lg text-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
+                  >
+                    <option value="">Select timeline</option>
+                    <option value="asap">ASAP</option>
+                    <option value="1-month">Within 1 month</option>
+                    <option value="1-3-months">1-3 months</option>
+                    <option value="3-6-months">3-6 months</option>
+                    <option value="flexible">Flexible</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Additional Notes */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-sm font-medium text-primary">
+                <FileText className="w-4 h-4" />
+                Additional Information
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Additional Notes</label>
+                <textarea
+                  name="additionalNotes"
+                  value={customForm.additionalNotes}
+                  onChange={handleCustomFormChange}
+                  placeholder="Any other details, questions, or specific requirements you'd like to share"
+                  rows={3}
+                  className="w-full px-4 py-3 bg-secondary border border-border/50 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 resize-none"
+                />
+              </div>
             </div>
 
             <div className="flex items-center gap-2 p-3 bg-primary/5 border border-primary/20 rounded-lg">
@@ -272,9 +368,9 @@ const QuickActionModals = ({ activeModal, onClose }: QuickActionModalsProps) => 
               </p>
             </div>
 
-            <Button onClick={handleCustomBuild} className="w-full" size="lg">
+            <Button onClick={handleCustomSubmit} className="w-full" size="lg">
               <Wrench className="w-4 h-4 mr-2" />
-              Request Custom Build
+              Submit Requirements
             </Button>
           </div>
         </DialogContent>
