@@ -24,7 +24,6 @@ interface AgentDetail {
   stats: { label: string; value: string }[];
   youtubeId: string;
   image: string;
-  pricing: string;
   setupTime: string;
 }
 
@@ -149,15 +148,15 @@ const AgentDetailModal = ({ agent, isOpen, onClose, onContactClick }: AgentDetai
             </div>
           </div>
 
-          {/* Pricing & CTA */}
+          {/* CTA */}
           <div className="flex flex-col sm:flex-row gap-4 items-center justify-between p-6 rounded-xl bg-primary/5 border border-primary/20">
             <div className="text-center sm:text-left">
               <div className="flex items-center gap-2 justify-center sm:justify-start">
                 <Clock className="w-4 h-4 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">Setup time: {agent.setupTime}</span>
               </div>
-              <p className="text-2xl font-bold text-foreground mt-1">
-                Starting at <span className="text-primary">{agent.pricing}</span>
+              <p className="text-lg font-medium text-foreground mt-1">
+                Ready to get started?
               </p>
             </div>
             <div className="flex gap-3">
