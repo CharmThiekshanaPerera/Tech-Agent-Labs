@@ -20,49 +20,78 @@ const AdminResetPassword = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Listen for auth state changes to detect recovery session
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (event === "PASSWORD_RECOVERY") {
-          setIsRecoverySession(true);
-          setCheckingSession(false);
-        } else if (event === "SIGNED_IN" && session) {
-          // Check if this is a recovery session by looking at the URL hash
-          const hashParams = new URLSearchParams(window.location.hash.substring(1));
-          const type = hashParams.get("type");
-          if (type === "recovery") {
-            setIsRecoverySession(true);
+    let cancelled = false;
+
+    // Listener helps when the auth library emits PASSWORD_RECOVERY after exchanging the code.
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") {
+        setIsRecoverySession(true);
+      }
+    });
+
+    const init = async () => {
+      try {
+        // 1) PKCE recovery links (most common): /admin/reset-password?type=recovery&code=...
+        const searchParams = new URLSearchParams(window.location.search);
+        const type = searchParams.get("type");
+        const code = searchParams.get("code");
+
+        if (type === "recovery" && code) {
+          const { error } = await supabase.auth.exchangeCodeForSession(code);
+
+          if (!cancelled) {
+            if (error) {
+              console.error("Error exchanging recovery code:", error);
+              setIsRecoverySession(false);
+            } else {
+              setIsRecoverySession(true);
+              // Remove the code from the URL once it has been consumed.
+              window.history.replaceState({}, document.title, window.location.pathname);
+            }
+            setCheckingSession(false);
           }
+          return;
+        }
+
+        // 2) Legacy implicit recovery links: /admin/reset-password#type=recovery&access_token=...
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const hashType = hashParams.get("type");
+        const accessToken = hashParams.get("access_token");
+
+        if (hashType === "recovery" && accessToken) {
+          if (!cancelled) {
+            setIsRecoverySession(true);
+            setCheckingSession(false);
+          }
+          return;
+        }
+
+        // 3) Already signed in (allow changing password)
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        if (!cancelled) {
+          setIsRecoverySession(!!session);
+          setCheckingSession(false);
+        }
+      } catch (err) {
+        console.error("Error checking recovery session:", err);
+        if (!cancelled) {
+          setIsRecoverySession(false);
           setCheckingSession(false);
         }
       }
-    );
-
-    // Also check current session and URL for recovery token
-    const checkRecoverySession = async () => {
-      // Check URL hash for recovery type
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-      const type = hashParams.get("type");
-      const accessToken = hashParams.get("access_token");
-
-      if (type === "recovery" && accessToken) {
-        setIsRecoverySession(true);
-        setCheckingSession(false);
-        return;
-      }
-
-      // Check if there's an active session
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        // User is logged in, they can change their password
-        setIsRecoverySession(true);
-      }
-      setCheckingSession(false);
     };
 
-    checkRecoverySession();
+    init();
 
-    return () => subscription.unsubscribe();
+    return () => {
+      cancelled = true;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const handleResetPassword = async (e: React.FormEvent) => {
