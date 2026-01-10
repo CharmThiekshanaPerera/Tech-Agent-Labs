@@ -73,8 +73,9 @@ Disallow: /admin/
 Disallow: /*.json$
 Disallow: /api/
 
-# Sitemap location
+# Sitemap locations (static fallback + dynamic)
 Sitemap: https://techagentlabs.com/sitemap.xml
+Sitemap: https://ubyphxyyjuglbgfkaals.supabase.co/functions/v1/sitemap
 
 # Host directive
 Host: https://techagentlabs.com
