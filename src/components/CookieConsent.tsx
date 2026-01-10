@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Cookie, X, Settings } from "lucide-react";
 
 const GA_MEASUREMENT_ID = "G-J4VKZHZK2N";
-const CLARITY_PROJECT_ID = ""; // Add your Clarity ID here
+const CLARITY_PROJECT_ID = "uz4unpcbbs";
 
 type ConsentStatus = "pending" | "accepted" | "declined";
 
