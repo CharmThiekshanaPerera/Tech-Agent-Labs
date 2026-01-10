@@ -10,6 +10,7 @@ import {
   LogOut,
   Menu,
   X,
+  Settings,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
@@ -26,6 +27,7 @@ const navItems = [
   { name: "Demo Bookings", href: "/admin/demos", icon: Calendar },
   { name: "Messages", href: "/admin/messages", icon: MessageSquare },
   { name: "Documents", href: "/admin/documents", icon: FolderOpen },
+  { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
 const AdminSidebar = ({ onSignOut }: AdminSidebarProps) => {
