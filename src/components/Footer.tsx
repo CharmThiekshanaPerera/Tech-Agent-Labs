@@ -1,7 +1,16 @@
-import { Twitter, Linkedin, Youtube, Facebook, Instagram, Mail, Phone, MapPin, FileDown } from "lucide-react";
+import { useState } from "react";
+import { Twitter, Linkedin, Youtube, Facebook, Instagram, Mail, Phone, MapPin, FileDown, Loader2, CheckCircle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import logo from "@/assets/logo.png";
+import { z } from "zod";
+
+const emailSchema = z.string().trim().email({ message: "Please enter a valid email address" }).max(255);
 
 const Footer = () => {
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const { toast } = useToast();
   const navLinks = [
     { name: "Home", href: "#home" },
     { name: "Why Us", href: "#about" },
@@ -38,6 +47,34 @@ const Footer = () => {
         element.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     }
+  };
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const result = emailSchema.safeParse(email);
+    if (!result.success) {
+      toast({
+        title: "Invalid email",
+        description: result.error.errors[0].message,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    
+    // Simulate API call - replace with actual backend integration
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    
+    setIsSubmitting(false);
+    setIsSubscribed(true);
+    setEmail("");
+    
+    toast({
+      title: "Successfully subscribed!",
+      description: "Thank you for subscribing to our newsletter.",
+    });
   };
 
   return (
@@ -144,16 +181,37 @@ const Footer = () => {
               <h4 className="font-semibold text-foreground text-sm sm:text-base mb-1">Subscribe to our newsletter</h4>
               <p className="text-xs sm:text-sm text-muted-foreground">Get the latest AI insights and product updates delivered to your inbox.</p>
             </div>
-            <div className="flex w-full lg:w-auto gap-2 sm:gap-3">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 lg:w-60 xl:w-72 px-3 sm:px-4 py-2.5 sm:py-3 bg-secondary border border-border/50 rounded-lg text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 text-xs sm:text-sm"
-              />
-              <button className="px-4 sm:px-6 py-2.5 sm:py-3 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors whitespace-nowrap text-xs sm:text-sm">
-                Subscribe
-              </button>
-            </div>
+            {isSubscribed ? (
+              <div className="flex items-center gap-2 text-primary">
+                <CheckCircle className="w-5 h-5" />
+                <span className="text-sm font-medium">You're subscribed!</span>
+              </div>
+            ) : (
+              <form onSubmit={handleNewsletterSubmit} className="flex w-full lg:w-auto gap-2 sm:gap-3">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  disabled={isSubmitting}
+                  className="flex-1 lg:w-60 xl:w-72 px-3 sm:px-4 py-2.5 sm:py-3 bg-secondary border border-border/50 rounded-lg text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 text-xs sm:text-sm disabled:opacity-50"
+                />
+                <button 
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-4 sm:px-6 py-2.5 sm:py-3 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors whitespace-nowrap text-xs sm:text-sm disabled:opacity-50 flex items-center gap-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span className="hidden sm:inline">Subscribing...</span>
+                    </>
+                  ) : (
+                    "Subscribe"
+                  )}
+                </button>
+              </form>
+            )}
           </div>
         </div>
       </div>
