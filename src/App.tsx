@@ -13,6 +13,7 @@ import AdminTestimonials from "./pages/admin/AdminTestimonials";
 import AdminDemos from "./pages/admin/AdminDemos";
 import AdminMessages from "./pages/admin/AdminMessages";
 import AdminDocuments from "./pages/admin/AdminDocuments";
+import AdminSettings from "./pages/admin/AdminSettings";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/admin/demos" element={<AdminDemos />} />
           <Route path="/admin/messages" element={<AdminMessages />} />
           <Route path="/admin/documents" element={<AdminDocuments />} />
+          <Route path="/admin/settings" element={<AdminSettings />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
