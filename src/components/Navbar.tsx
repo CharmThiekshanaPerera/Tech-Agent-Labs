@@ -24,9 +24,27 @@ const Navbar = () => {
     { name: "Contact", href: "#contact" },
   ];
 
+  const scrollToHash = (hash: string) => {
+    const id = hash.replace("#", "");
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const setHashInUrl = (hash: string) => {
+    // Keep URL in sync without triggering a route change
+    window.history.replaceState(null, "", hash);
+  };
+
   useEffect(() => {
-    const sectionIds = navLinks.map(link => link.href.replace("#", ""));
-    
+    if (!isHomePage) {
+      setActiveSection(location.pathname === "/blog" ? "blog" : "home");
+      return;
+    }
+
+    const sectionIds = navLinks.map((link) => link.href.replace("#", ""));
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -47,17 +65,29 @@ const Navbar = () => {
     });
 
     return () => observer.disconnect();
-  }, []);
+  }, [isHomePage, location.pathname]);
+
+  useEffect(() => {
+    if (!isHomePage) return;
+
+    if (location.hash) {
+      const id = location.hash.replace("#", "");
+      setActiveSection(id);
+      // When arriving from another route (e.g. /blog -> /#contact)
+      setTimeout(() => scrollToHash(location.hash), 50);
+    }
+  }, [isHomePage, location.hash]);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setIsOpen(false);
-    
+
+    const nextActive = href.replace("#", "");
+    setActiveSection(nextActive);
+
     if (isHomePage) {
-      const element = document.querySelector(href);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+      scrollToHash(href);
+      setHashInUrl(href);
     } else {
       // Navigate to home page with hash
       navigate("/" + href);
@@ -66,12 +96,13 @@ const Navbar = () => {
 
   const handleButtonClick = (href: string) => {
     setIsOpen(false);
-    
+
+    const nextActive = href.replace("#", "");
+    setActiveSection(nextActive);
+
     if (isHomePage) {
-      const element = document.querySelector(href);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+      scrollToHash(href);
+      setHashInUrl(href);
     } else {
       navigate("/" + href);
     }
