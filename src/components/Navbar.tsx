@@ -43,19 +43,42 @@ const Navbar = () => {
       return;
     }
 
+    // Set initial active section based on scroll position or default to "home"
     const sectionIds = navLinks.map((link) => link.href.replace("#", ""));
+    
+    // Find which section is currently in view on initial load
+    const findActiveSection = () => {
+      for (const id of sectionIds) {
+        const element = document.getElementById(id);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          // Check if section is in the visible area (accounting for navbar)
+          if (rect.top <= 150 && rect.bottom > 150) {
+            return id;
+          }
+        }
+      }
+      return "home";
+    };
+
+    // Set initial section
+    setActiveSection(findActiveSection());
 
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        });
+        // Find the entry that is most visible
+        const visibleEntries = entries.filter(entry => entry.isIntersecting);
+        if (visibleEntries.length > 0) {
+          // Get the one closest to the top
+          const topEntry = visibleEntries.reduce((prev, curr) => {
+            return prev.boundingClientRect.top < curr.boundingClientRect.top ? prev : curr;
+          });
+          setActiveSection(topEntry.target.id);
+        }
       },
       {
-        rootMargin: "-20% 0px -70% 0px",
-        threshold: 0,
+        rootMargin: "-80px 0px -60% 0px",
+        threshold: [0, 0.1, 0.2],
       }
     );
 
@@ -82,9 +105,6 @@ const Navbar = () => {
     e.preventDefault();
     setIsOpen(false);
 
-    const nextActive = href.replace("#", "");
-    setActiveSection(nextActive);
-
     if (isHomePage) {
       scrollToHash(href);
       setHashInUrl(href);
@@ -96,9 +116,6 @@ const Navbar = () => {
 
   const handleButtonClick = (href: string) => {
     setIsOpen(false);
-
-    const nextActive = href.replace("#", "");
-    setActiveSection(nextActive);
 
     if (isHomePage) {
       scrollToHash(href);
