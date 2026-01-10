@@ -12,6 +12,7 @@ const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -46,7 +47,7 @@ const AdminLogin = () => {
 
         if (roleError || !roleData) {
           await supabase.auth.signOut();
-          toast.error("You don't have admin access");
+          toast.error("You don't have admin access. Contact the system administrator.");
           return;
         }
 
@@ -55,6 +56,46 @@ const AdminLogin = () => {
       }
     } catch (error) {
       toast.error("An error occurred during login");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email || !password) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: window.location.origin,
+        },
+      });
+
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+
+      if (data.user) {
+        toast.success("Account created! Please contact the system administrator to grant admin access.");
+        setIsSignUp(false);
+      }
+    } catch (error) {
+      toast.error("An error occurred during sign up");
     } finally {
       setLoading(false);
     }
@@ -70,13 +111,15 @@ const AdminLogin = () => {
           </div>
 
           <h1 className="text-2xl font-bold text-center text-foreground mb-2">
-            Admin Login
+            {isSignUp ? "Create Account" : "Admin Login"}
           </h1>
           <p className="text-muted-foreground text-center text-sm mb-8">
-            Enter your credentials to access the dashboard
+            {isSignUp 
+              ? "Sign up to request admin access" 
+              : "Enter your credentials to access the dashboard"}
           </p>
 
-          <form onSubmit={handleLogin} className="space-y-6">
+          <form onSubmit={isSignUp ? handleSignUp : handleLogin} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <div className="relative">
@@ -116,21 +159,29 @@ const AdminLogin = () => {
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Signing in...
+                  {isSignUp ? "Creating account..." : "Signing in..."}
                 </>
               ) : (
-                "Sign In"
+                isSignUp ? "Create Account" : "Sign In"
               )}
             </Button>
           </form>
 
-          <div className="mt-6 text-center">
-            <a
-              href="/"
-              className="text-sm text-muted-foreground hover:text-primary transition-colors"
+          <div className="mt-6 text-center space-y-2">
+            <button
+              onClick={() => setIsSignUp(!isSignUp)}
+              className="text-sm text-primary hover:underline transition-colors"
             >
-              ← Back to website
-            </a>
+              {isSignUp ? "Already have an account? Sign in" : "Need an account? Sign up"}
+            </button>
+            <div>
+              <a
+                href="/"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                ← Back to website
+              </a>
+            </div>
           </div>
         </div>
       </div>
