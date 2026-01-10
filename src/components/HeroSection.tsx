@@ -1,10 +1,14 @@
 import logo from "@/assets/logo.png";
 import { ArrowRight, Play, ShoppingCart, FileDown, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 const HeroSection = () => {
+  const { trackCTAClick, trackDownload } = useAnalytics();
+
   const handleScrollToContact = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
     e.preventDefault();
+    trackCTAClick("Start a Demo", "Hero");
     const element = document.querySelector("#contact");
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -13,10 +17,15 @@ const HeroSection = () => {
 
   const handleScrollToServices = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
     e.preventDefault();
+    trackCTAClick("Browse Agents", "Hero");
     const element = document.querySelector("#services");
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
+  };
+
+  const handleDownload = () => {
+    trackDownload("Tech_Agent_Labs_Project_Proposal.pdf");
   };
 
   return (
@@ -96,6 +105,7 @@ const HeroSection = () => {
                   href="/documents/Tech_Agent_Labs_Project_Proposal.pdf"
                   download="Tech_Agent_Labs_Project_Proposal.pdf"
                   className="group"
+                  onClick={handleDownload}
                 >
                   <FileDown className="text-primary group-hover:scale-110 transition-transform" />
                   Download Proposal

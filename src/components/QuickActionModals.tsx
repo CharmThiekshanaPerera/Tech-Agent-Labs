@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { Calendar, Wrench, Clock, Users, Zap, MessageSquare, Building2, Target, Cog, FileText } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 interface QuickActionModalsProps {
   activeModal: "demo" | "custom" | null;
@@ -10,6 +11,7 @@ interface QuickActionModalsProps {
 }
 
 const QuickActionModals = ({ activeModal, onClose }: QuickActionModalsProps) => {
+  const { trackDemoBooking, trackFormSubmission } = useAnalytics();
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   
@@ -38,6 +40,7 @@ const QuickActionModals = ({ activeModal, onClose }: QuickActionModalsProps) => 
       });
       return;
     }
+    trackDemoBooking(selectedDate, selectedTime);
     toast({
       title: "Demo Booked! 🎉",
       description: `Your demo is scheduled for ${selectedDate} at ${selectedTime}. Check your email for confirmation.`,
@@ -56,6 +59,7 @@ const QuickActionModals = ({ activeModal, onClose }: QuickActionModalsProps) => 
       });
       return;
     }
+    trackFormSubmission("Custom Requirements Form", true);
     toast({
       title: "Requirement Submitted! 🔧",
       description: "Our team will analyze your requirements and reach out within 24 hours.",
