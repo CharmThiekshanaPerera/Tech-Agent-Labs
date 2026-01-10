@@ -134,7 +134,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send admin notification
     const adminEmailResponse = await resend.emails.send({
-      from: "Tech Agent Labs <notifications@resend.dev>",
+      from: "Tech Agent Labs <notifications@techagentlabs.com>",
       to: [ADMIN_EMAIL],
       subject: type === "demo" 
         ? `🎉 New Demo Booking: ${data.name}${data.company ? ` from ${data.company}` : ""}`
@@ -204,7 +204,7 @@ const handler = async (req: Request): Promise<Response> => {
       `;
 
     const userEmailResponse = await resend.emails.send({
-      from: "Tech Agent Labs <notifications@resend.dev>",
+      from: "Tech Agent Labs <notifications@techagentlabs.com>",
       to: [data.email],
       subject: type === "demo"
         ? "Your Demo Booking is Confirmed! 🎉"
