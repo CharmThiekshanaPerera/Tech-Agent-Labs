@@ -22,9 +22,13 @@ import ChatBot from "@/components/ChatBot";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import SEOHead from "@/components/seo/SEOHead";
 import CookieConsent from "@/components/CookieConsent";
+import { useScrollDepthTracking } from "@/hooks/useAnalytics";
 
 const Index = () => {
   const location = useLocation();
+  
+  // Track scroll depth (25%, 50%, 75%, 100%)
+  useScrollDepthTracking();
 
   useEffect(() => {
     if (location.hash) {
