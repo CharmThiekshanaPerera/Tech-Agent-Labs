@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { Calendar, Clock, ArrowRight, Loader2, Filter, Home } from "lucide-react";
+import { Calendar, Clock, ArrowRight, Loader2, Filter, Home, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
@@ -46,6 +47,12 @@ const Blog = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Scroll to top when page loads
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, []);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -69,14 +76,28 @@ const Blog = () => {
     fetchPosts();
   }, []);
 
+  // Filter posts by category and search query
   useEffect(() => {
-    if (selectedCategory === "All") {
-      setFilteredPosts(posts);
-    } else {
-      setFilteredPosts(posts.filter(post => post.category === selectedCategory));
+    let result = posts;
+
+    // Filter by category
+    if (selectedCategory !== "All") {
+      result = result.filter(post => post.category === selectedCategory);
     }
+
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      result = result.filter(post => 
+        post.title.toLowerCase().includes(query) ||
+        post.excerpt.toLowerCase().includes(query) ||
+        (post.content && post.content.toLowerCase().includes(query))
+      );
+    }
+
+    setFilteredPosts(result);
     setCurrentPage(1);
-  }, [selectedCategory, posts]);
+  }, [selectedCategory, searchQuery, posts]);
 
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
   const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
@@ -85,6 +106,10 @@ const Blog = () => {
   const handleReadMore = (post: BlogPost) => {
     setSelectedPost(post);
     setModalOpen(true);
+  };
+
+  const clearSearch = () => {
+    setSearchQuery("");
   };
 
   return (
@@ -124,6 +149,28 @@ const Blog = () => {
             </p>
           </div>
 
+          {/* Search Bar */}
+          <div className="max-w-md mx-auto mb-8">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search posts by title or content..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-10 bg-secondary/50 border-border/50 focus:border-primary/50"
+              />
+              {searchQuery && (
+                <button
+                  onClick={clearSearch}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+          </div>
+
           {/* Category Filters */}
           <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
             <div className="flex items-center gap-2 text-muted-foreground mr-2">
@@ -150,6 +197,15 @@ const Blog = () => {
               </Button>
             ))}
           </div>
+
+          {/* Search Results Count */}
+          {searchQuery && (
+            <div className="text-center mb-6">
+              <p className="text-muted-foreground text-sm">
+                Found <span className="text-primary font-medium">{filteredPosts.length}</span> {filteredPosts.length === 1 ? 'post' : 'posts'} matching "{searchQuery}"
+              </p>
+            </div>
+          )}
 
           {/* Loading State */}
           {loading && (
@@ -220,10 +276,24 @@ const Blog = () => {
           {/* Empty State */}
           {!loading && filteredPosts.length === 0 && (
             <div className="text-center py-16">
-              <p className="text-muted-foreground mb-4">No blog posts found for this category.</p>
-              <Button variant="outline" onClick={() => setSelectedCategory("All")}>
-                View All Posts
-              </Button>
+              <p className="text-muted-foreground mb-4">
+                {searchQuery 
+                  ? `No blog posts found matching "${searchQuery}".`
+                  : "No blog posts found for this category."
+                }
+              </p>
+              <div className="flex gap-3 justify-center">
+                {searchQuery && (
+                  <Button variant="outline" onClick={clearSearch}>
+                    Clear Search
+                  </Button>
+                )}
+                {selectedCategory !== "All" && (
+                  <Button variant="outline" onClick={() => setSelectedCategory("All")}>
+                    View All Posts
+                  </Button>
+                )}
+              </div>
             </div>
           )}
 
