@@ -18,22 +18,22 @@ const AdminLogin = () => {
   const [showResetPassword, setShowResetPassword] = useState(false);
   const navigate = useNavigate();
 
-  // Check if any admin already exists
+  // Check if any admin already exists using secure database function
   useEffect(() => {
     const checkAdminExists = async () => {
       try {
-        const { count, error } = await supabase
-          .from("user_roles")
-          .select("*", { count: "exact", head: true })
-          .eq("role", "admin");
+        const { data, error } = await supabase.rpc("admin_exists");
 
         if (error) {
           console.error("Error checking admin:", error);
+          // Default to true (admin exists) for safety if check fails
+          setAdminExists(true);
         } else {
-          setAdminExists((count || 0) > 0);
+          setAdminExists(data === true);
         }
       } catch (error) {
         console.error("Error:", error);
+        setAdminExists(true);
       } finally {
         setCheckingAdmin(false);
       }
@@ -104,13 +104,10 @@ const AdminLogin = () => {
     setLoading(true);
 
     try {
-      // Double-check no admin exists before allowing signup
-      const { count } = await supabase
-        .from("user_roles")
-        .select("*", { count: "exact", head: true })
-        .eq("role", "admin");
+      // Double-check no admin exists before allowing signup using secure function
+      const { data: exists, error: checkError } = await supabase.rpc("admin_exists");
 
-      if ((count || 0) > 0) {
+      if (checkError || exists === true) {
         toast.error("An admin already exists. Please login instead.");
         setAdminExists(true);
         setIsSignUp(false);
