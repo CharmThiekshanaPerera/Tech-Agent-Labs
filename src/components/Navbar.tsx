@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X, Sparkles } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
 
   const navLinks = [
     { name: "Home", href: "#home" },
@@ -16,6 +18,31 @@ const Navbar = () => {
     { name: "FAQ", href: "#faq" },
     { name: "Contact", href: "#contact" },
   ];
+
+  useEffect(() => {
+    const sectionIds = navLinks.map(link => link.href.replace("#", ""));
+    
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      {
+        rootMargin: "-20% 0px -70% 0px",
+        threshold: 0,
+      }
+    );
+
+    sectionIds.forEach((id) => {
+      const element = document.getElementById(id);
+      if (element) observer.observe(element);
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
@@ -58,7 +85,12 @@ const Navbar = () => {
                 key={link.name}
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
-                className="text-muted-foreground hover:text-primary transition-colors font-medium text-sm"
+                className={cn(
+                  "transition-colors font-medium text-sm relative py-1",
+                  activeSection === link.href.replace("#", "")
+                    ? "text-primary after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary after:rounded-full"
+                    : "text-muted-foreground hover:text-primary"
+                )}
               >
                 {link.name}
               </a>
@@ -96,7 +128,12 @@ const Navbar = () => {
                 <a
                   key={link.name}
                   href={link.href}
-                  className="text-muted-foreground hover:text-primary transition-colors font-medium py-2 text-sm"
+                  className={cn(
+                    "transition-colors font-medium py-2 text-sm",
+                    activeSection === link.href.replace("#", "")
+                      ? "text-primary"
+                      : "text-muted-foreground hover:text-primary"
+                  )}
                   onClick={(e) => handleNavClick(e, link.href)}
                 >
                   {link.name}
