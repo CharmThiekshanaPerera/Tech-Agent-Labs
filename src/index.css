@@ -53,6 +53,23 @@
     scroll-behavior: smooth;
   }
 
+  /* Scroll offset for fixed navbar - matches navbar heights h-14 sm:h-16 md:h-20 */
+  section[id] {
+    scroll-margin-top: 3.5rem; /* 56px for mobile */
+  }
+
+  @media (min-width: 640px) {
+    section[id] {
+      scroll-margin-top: 4rem; /* 64px for sm */
+    }
+  }
+
+  @media (min-width: 768px) {
+    section[id] {
+      scroll-margin-top: 5rem; /* 80px for md+ */
+    }
+  }
+
   body {
     @apply bg-background text-foreground font-sans antialiased;
     background-image: 
