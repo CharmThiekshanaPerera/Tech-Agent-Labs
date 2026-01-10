@@ -44,8 +44,10 @@ const AdminLogin = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!email || !password) {
+
+    const cleanEmail = email.trim().toLowerCase();
+
+    if (!cleanEmail || !password) {
       toast.error("Please fill in all fields");
       return;
     }
@@ -54,7 +56,7 @@ const AdminLogin = () => {
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
-        email,
+        email: cleanEmail,
         password,
       });
 
@@ -90,8 +92,10 @@ const AdminLogin = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!email || !password) {
+
+    const cleanEmail = email.trim().toLowerCase();
+
+    if (!cleanEmail || !password) {
       toast.error("Please fill in all fields");
       return;
     }
@@ -116,7 +120,7 @@ const AdminLogin = () => {
       }
 
       const { data, error } = await supabase.auth.signUp({
-        email,
+        email: cleanEmail,
         password,
         options: {
           emailRedirectTo: window.location.origin,
@@ -130,16 +134,16 @@ const AdminLogin = () => {
 
       if (data.user) {
         // Auto-assign admin role for the first admin
-        const { error: roleError } = await supabase
-          .from("user_roles")
-          .insert({
-            user_id: data.user.id,
-            role: "admin",
-          });
+        const { error: roleError } = await supabase.from("user_roles").insert({
+          user_id: data.user.id,
+          role: "admin",
+        });
 
         if (roleError) {
           console.error("Error assigning admin role:", roleError);
-          toast.error("Account created but failed to assign admin role. Please contact support.");
+          toast.error(
+            "Account created but failed to assign admin role. Please contact support."
+          );
           return;
         }
 
@@ -158,13 +162,14 @@ const AdminLogin = () => {
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const adminEmail = "info@techagentlabs.com";
-    
+
+    const fallbackAdminEmail = "info@techagentlabs.com";
+    const targetEmail = (email.trim() || fallbackAdminEmail).toLowerCase();
+
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(adminEmail, {
+      const { error } = await supabase.auth.resetPasswordForEmail(targetEmail, {
         redirectTo: `${window.location.origin}/admin/reset-password`,
       });
 
@@ -173,7 +178,7 @@ const AdminLogin = () => {
         return;
       }
 
-      toast.success(`Password reset link sent to ${adminEmail}. Check your inbox!`);
+      toast.success(`Password reset link sent to ${targetEmail}. Check your inbox!`);
       setShowResetPassword(false);
     } catch (error) {
       toast.error("An error occurred while sending reset link");
