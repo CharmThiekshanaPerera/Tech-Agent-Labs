@@ -28,12 +28,17 @@ const AdminLogin = () => {
           console.error("Error checking admin:", error);
           // Default to true (admin exists) for safety if check fails
           setAdminExists(true);
+          setIsSignUp(false);
         } else {
-          setAdminExists(data === true);
+          const exists = data === true;
+          setAdminExists(exists);
+          // If no admin exists yet, default the screen to "Create Admin Account"
+          setIsSignUp(!exists);
         }
       } catch (error) {
         console.error("Error:", error);
         setAdminExists(true);
+        setIsSignUp(false);
       } finally {
         setCheckingAdmin(false);
       }
