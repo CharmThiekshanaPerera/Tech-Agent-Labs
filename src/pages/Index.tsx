@@ -21,6 +21,7 @@ import ScrollToTopButton from "@/components/ScrollToTopButton";
 import ChatBot from "@/components/ChatBot";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import SEOHead from "@/components/seo/SEOHead";
+import CookieConsent from "@/components/CookieConsent";
 
 const Index = () => {
   const location = useLocation();
@@ -62,8 +63,9 @@ const Index = () => {
         <WhatsAppButton />
         <ScrollToTopButton />
         <ChatBot />
-      <main className="relative z-10">
-        <HeroSection />
+        <CookieConsent />
+        <main className="relative z-10">
+          <HeroSection />
         <FeaturesSection />
         <ServicesSection />
         <StatsSection />
