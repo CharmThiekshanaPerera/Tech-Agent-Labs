@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { 
   MessageSquare, 
   BarChart3, 
@@ -10,6 +10,7 @@ import {
   Settings,
   ArrowRight
 } from "lucide-react";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 // Agent images
 import supportAgentImg from "@/assets/agents/support-agent.png";
@@ -281,12 +282,102 @@ const agents = [
   },
 ];
 
+// Agent Card component with view tracking
+const AgentCard = ({ 
+  agent, 
+  onOpenModal,
+  onView,
+  onCardClick 
+}: { 
+  agent: typeof agents[0]; 
+  onOpenModal: (agent: typeof agents[0]) => void;
+  onView: (name: string) => void;
+  onCardClick: (name: string) => void;
+}) => {
+  const cardRef = useRef<HTMLElement>(null);
+  const hasTrackedView = useRef(false);
+
+  useEffect(() => {
+    const element = cardRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasTrackedView.current) {
+            hasTrackedView.current = true;
+            onView(agent.title);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [agent.title, onView]);
+
+  const handleClick = () => {
+    onCardClick(agent.title);
+    onOpenModal(agent);
+  };
+
+  return (
+    <article
+      ref={cardRef}
+      className="gradient-border rounded-2xl p-5 md:p-6 card-glow hover:card-glow-hover transition-all duration-300 hover:-translate-y-1 group relative cursor-pointer"
+      onClick={handleClick}
+    >
+      {/* Tag */}
+      {agent.tag && (
+        <span className="absolute top-4 right-4 text-xs font-medium px-2 py-1 bg-primary/20 text-primary rounded-full border border-primary/30">
+          {agent.tag}
+        </span>
+      )}
+      
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/30 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+          <agent.icon className="w-5 h-5 text-primary" />
+        </div>
+        <span className="text-xl">{agent.emoji}</span>
+      </div>
+      
+      <h3 className="text-base md:text-lg font-bold text-foreground mb-2">
+        {agent.title}
+      </h3>
+      <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+        {agent.description}
+      </p>
+      
+      <button 
+        className="inline-flex items-center gap-1 text-primary text-sm font-medium hover:gap-2 transition-all"
+        onClick={(e) => {
+          e.stopPropagation();
+          handleClick();
+        }}
+      >
+        Learn More <ArrowRight className="w-4 h-4" />
+      </button>
+    </article>
+  );
+};
+
 const ServicesSection = () => {
+  const { trackAgentView, trackAgentClick, trackCTAClick } = useAnalytics();
   const [selectedAgent, setSelectedAgent] = useState<typeof agents[0] | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const handleAgentView = useCallback((agentName: string) => {
+    trackAgentView(agentName);
+  }, [trackAgentView]);
+
+  const handleAgentClick = useCallback((agentName: string) => {
+    trackAgentClick(agentName);
+  }, [trackAgentClick]);
+
   const handleScrollToContact = (e?: React.MouseEvent<HTMLAnchorElement>) => {
     if (e) e.preventDefault();
+    trackCTAClick("Get Started", "Services Section");
     const element = document.querySelector("#contact");
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -324,42 +415,13 @@ const ServicesSection = () => {
         {/* Agents Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {agents.map((agent) => (
-            <article
+            <AgentCard
               key={agent.title}
-              className="gradient-border rounded-2xl p-5 md:p-6 card-glow hover:card-glow-hover transition-all duration-300 hover:-translate-y-1 group relative cursor-pointer"
-              onClick={() => handleOpenModal(agent)}
-            >
-              {/* Tag */}
-              {agent.tag && (
-                <span className="absolute top-4 right-4 text-xs font-medium px-2 py-1 bg-primary/20 text-primary rounded-full border border-primary/30">
-                  {agent.tag}
-                </span>
-              )}
-              
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/30 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                  <agent.icon className="w-5 h-5 text-primary" />
-                </div>
-                <span className="text-xl">{agent.emoji}</span>
-              </div>
-              
-              <h3 className="text-base md:text-lg font-bold text-foreground mb-2">
-                {agent.title}
-              </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                {agent.description}
-              </p>
-              
-              <button 
-                className="inline-flex items-center gap-1 text-primary text-sm font-medium hover:gap-2 transition-all"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleOpenModal(agent);
-                }}
-              >
-                Learn more <ArrowRight className="w-4 h-4" />
-              </button>
-            </article>
+              agent={agent}
+              onOpenModal={handleOpenModal}
+              onView={handleAgentView}
+              onCardClick={handleAgentClick}
+            />
           ))}
         </div>
 
