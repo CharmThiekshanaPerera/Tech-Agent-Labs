@@ -3,6 +3,7 @@ import { Calendar, Clock, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
+import { Link } from "react-router-dom";
 import {
   Carousel,
   CarouselContent,
@@ -161,9 +162,11 @@ const BlogSection = () => {
         {/* View All Button */}
         {posts.length > 0 && (
           <div className="text-center mt-10 sm:mt-12">
-            <Button variant="outline" size="lg" className="group">
-              View All Articles
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            <Button variant="outline" size="lg" className="group" asChild>
+              <Link to="/blog">
+                View All Articles
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
             </Button>
           </div>
         )}
