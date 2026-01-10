@@ -45,7 +45,7 @@ const Navbar = () => {
 
     // Set initial active section based on scroll position or default to "home"
     const sectionIds = navLinks.map((link) => link.href.replace("#", ""));
-    
+
     // Find which section is currently in view on initial load
     const findActiveSection = () => {
       for (const id of sectionIds) {
@@ -64,17 +64,31 @@ const Navbar = () => {
     // Set initial section
     setActiveSection(findActiveSection());
 
+    // IMPORTANT: IntersectionObserver callback only receives CHANGED entries.
+    // Keep the latest state of all observed sections so we can pick the best one reliably.
+    const observedEntries: Record<string, IntersectionObserverEntry> = {};
+
     const observer = new IntersectionObserver(
       (entries) => {
-        // Find the entry that is most visible
-        const visibleEntries = entries.filter(entry => entry.isIntersecting);
-        if (visibleEntries.length > 0) {
-          // Get the one closest to the top
-          const topEntry = visibleEntries.reduce((prev, curr) => {
-            return prev.boundingClientRect.top < curr.boundingClientRect.top ? prev : curr;
-          });
-          setActiveSection(topEntry.target.id);
-        }
+        entries.forEach((entry) => {
+          observedEntries[entry.target.id] = entry;
+        });
+
+        const visible = Object.values(observedEntries).filter((e) => e.isIntersecting);
+        if (visible.length === 0) return;
+
+        // Prefer the section with the largest visible area.
+        // If tied, pick the one closest to the top of the viewport.
+        const best = visible.reduce((prev, curr) => {
+          if (curr.intersectionRatio !== prev.intersectionRatio) {
+            return curr.intersectionRatio > prev.intersectionRatio ? curr : prev;
+          }
+          return Math.abs(curr.boundingClientRect.top) < Math.abs(prev.boundingClientRect.top)
+            ? curr
+            : prev;
+        });
+
+        setActiveSection(best.target.id);
       },
       {
         rootMargin: "-80px 0px -60% 0px",
