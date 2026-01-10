@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Calendar, Clock, ArrowRight, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Calendar, Clock, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
@@ -29,6 +29,10 @@ const BlogSection = () => {
   const [loading, setLoading] = useState(true);
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  
+  const autoplayPlugin = useRef(
+    Autoplay({ delay: 4000, stopOnInteraction: true })
+  );
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -83,12 +87,7 @@ const BlogSection = () => {
               align: "start",
               loop: true,
             }}
-            plugins={[
-              Autoplay({
-                delay: 4000,
-                stopOnInteraction: true,
-              }),
-            ]}
+            plugins={[autoplayPlugin.current]}
             className="w-full"
           >
             <CarouselContent className="-ml-4">
