@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Twitter, Linkedin, Youtube, Facebook, Instagram, Mail, Phone, MapPin, FileDown, Loader2, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import logo from "@/assets/logo.png";
@@ -278,15 +279,21 @@ const Footer = () => {
 
               {/* Legal Links */}
               <div className="flex items-center gap-4 sm:gap-6 flex-wrap justify-center">
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors text-[10px] sm:text-xs md:text-sm">
+                <Link to="/privacy-policy" className="text-muted-foreground hover:text-primary transition-colors text-[10px] sm:text-xs md:text-sm">
                   Privacy Policy
-                </a>
+                </Link>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-colors text-[10px] sm:text-xs md:text-sm">
                   Terms of Service
                 </a>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors text-[10px] sm:text-xs md:text-sm">
-                  Cookie Policy
-                </a>
+                <button 
+                  onClick={() => {
+                    const event = new CustomEvent('open-cookie-settings');
+                    window.dispatchEvent(event);
+                  }}
+                  className="text-muted-foreground hover:text-primary transition-colors text-[10px] sm:text-xs md:text-sm"
+                >
+                  Cookie Settings
+                </button>
               </div>
             </div>
           </div>

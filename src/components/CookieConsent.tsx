@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Cookie, X, Settings } from "lucide-react";
 
 const GA_MEASUREMENT_ID = "G-J4VKZHZK2N";
+const CLARITY_PROJECT_ID = ""; // Add your Clarity ID here
 
 type ConsentStatus = "pending" | "accepted" | "declined";
 
@@ -16,7 +17,7 @@ const CookieConsent = () => {
     const storedConsent = localStorage.getItem("cookie-consent");
     if (storedConsent === "accepted") {
       setConsentStatus("accepted");
-      loadGoogleAnalytics();
+      loadAnalytics();
     } else if (storedConsent === "declined") {
       setConsentStatus("declined");
     } else {
@@ -25,6 +26,24 @@ const CookieConsent = () => {
       return () => clearTimeout(timer);
     }
   }, []);
+
+  // Listen for cookie settings event from footer
+  useEffect(() => {
+    const handleOpenSettings = () => {
+      setShowSettings(true);
+      setShowBanner(true);
+    };
+
+    window.addEventListener("open-cookie-settings", handleOpenSettings);
+    return () => window.removeEventListener("open-cookie-settings", handleOpenSettings);
+  }, []);
+
+  const loadAnalytics = () => {
+    loadGoogleAnalytics();
+    if (CLARITY_PROJECT_ID) {
+      loadMicrosoftClarity();
+    }
+  };
 
   const loadGoogleAnalytics = () => {
     // Check if already loaded
@@ -52,12 +71,31 @@ const CookieConsent = () => {
     (window as unknown as { gtag: typeof gtag }).gtag = gtag;
   };
 
+  const loadMicrosoftClarity = () => {
+    // Check if already loaded
+    if (document.getElementById("clarity-script")) return;
+    if (!CLARITY_PROJECT_ID) return;
+
+    // Load Clarity
+    const script = document.createElement("script");
+    script.id = "clarity-script";
+    script.type = "text/javascript";
+    script.innerHTML = `
+      (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+      })(window, document, "clarity", "script", "${CLARITY_PROJECT_ID}");
+    `;
+    document.head.appendChild(script);
+  };
+
   const handleAccept = () => {
     localStorage.setItem("cookie-consent", "accepted");
     setConsentStatus("accepted");
     setShowBanner(false);
     setShowSettings(false);
-    loadGoogleAnalytics();
+    loadAnalytics();
   };
 
   const handleDecline = () => {
@@ -68,8 +106,10 @@ const CookieConsent = () => {
     
     // Remove GA cookies if they exist
     document.cookie.split(";").forEach((c) => {
-      if (c.trim().startsWith("_ga")) {
-        document.cookie = c.trim().split("=")[0] + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+      const cookieName = c.trim().split("=")[0];
+      if (cookieName.startsWith("_ga") || cookieName.startsWith("_clck") || cookieName.startsWith("_clsk")) {
+        document.cookie = cookieName + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=." + window.location.hostname;
+        document.cookie = cookieName + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
       }
     });
   };
@@ -153,7 +193,9 @@ const CookieConsent = () => {
                 <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-xl border border-border/30">
                   <div>
                     <p className="font-medium text-foreground">Analytics Cookies</p>
-                    <p className="text-sm text-muted-foreground">Help us understand how visitors interact with our website.</p>
+                    <p className="text-sm text-muted-foreground">
+                      Google Analytics & Microsoft Clarity help us understand how visitors interact with our website.
+                    </p>
                   </div>
                   <span className={`text-xs font-medium px-3 py-1 rounded-full ${
                     consentStatus === "accepted" 
@@ -167,9 +209,9 @@ const CookieConsent = () => {
             ) : (
               <p className="text-muted-foreground text-sm">
                 We use cookies to analyze site traffic and optimize your experience. 
-                By clicking "Accept", you consent to our use of cookies. 
+                By clicking "Accept", you consent to our use of cookies for analytics (Google Analytics & Microsoft Clarity). 
                 Read our{" "}
-                <a href="#" className="text-primary hover:underline">
+                <a href="/privacy-policy" className="text-primary hover:underline">
                   Privacy Policy
                 </a>{" "}
                 for more information.
