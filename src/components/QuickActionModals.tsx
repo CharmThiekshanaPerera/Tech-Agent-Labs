@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar, Wrench, Clock, Users, Zap, MessageSquare, Building2, Target, Cog, FileText } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { supabase } from "@/integrations/supabase/client";
 
 interface QuickActionModalsProps {
   activeModal: "demo" | "custom" | null;
@@ -14,6 +15,10 @@ const QuickActionModals = ({ activeModal, onClose }: QuickActionModalsProps) => 
   const { trackDemoBooking, trackFormSubmission } = useAnalytics();
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
+  const [demoName, setDemoName] = useState("");
+  const [demoEmail, setDemoEmail] = useState("");
+  const [demoCompany, setDemoCompany] = useState("");
+  const [isBooking, setIsBooking] = useState(false);
   
   // Custom requirement form state
   const [customForm, setCustomForm] = useState({
@@ -31,23 +36,64 @@ const QuickActionModals = ({ activeModal, onClose }: QuickActionModalsProps) => 
     additionalNotes: "",
   });
 
-  const handleBookDemo = () => {
-    if (!selectedDate || !selectedTime) {
+  const handleBookDemo = async () => {
+    if (!selectedDate || !selectedTime || !demoName || !demoEmail) {
       toast({
-        title: "Please select a date and time",
-        description: "Choose your preferred demo slot to continue.",
+        title: "Please fill in all required fields",
+        description: "Name, email, date, and time are required.",
         variant: "destructive",
       });
       return;
     }
-    trackDemoBooking(selectedDate, selectedTime);
-    toast({
-      title: "Demo Booked! 🎉",
-      description: `Your demo is scheduled for ${selectedDate} at ${selectedTime}. Check your email for confirmation.`,
-    });
-    onClose();
-    setSelectedDate("");
-    setSelectedTime("");
+
+    setIsBooking(true);
+    try {
+      // Save to database
+      const { error } = await supabase.from("demo_bookings").insert({
+        name: demoName.trim(),
+        email: demoEmail.trim(),
+        company: demoCompany.trim() || null,
+        preferred_date: selectedDate,
+        preferred_time: selectedTime,
+      });
+
+      if (error) throw error;
+
+      // Send email notification (non-blocking)
+      supabase.functions.invoke("send-notification", {
+        body: {
+          type: "demo",
+          data: {
+            name: demoName.trim(),
+            email: demoEmail.trim(),
+            company: demoCompany.trim() || undefined,
+            preferredDate: selectedDate,
+            preferredTime: selectedTime,
+          },
+        },
+      }).catch((err) => console.error("Email notification failed:", err));
+
+      trackDemoBooking(selectedDate, selectedTime);
+      toast({
+        title: "Demo Booked! 🎉",
+        description: `Your demo is scheduled for ${selectedDate} at ${selectedTime}. Check your email for confirmation!`,
+      });
+      onClose();
+      setSelectedDate("");
+      setSelectedTime("");
+      setDemoName("");
+      setDemoEmail("");
+      setDemoCompany("");
+    } catch (error) {
+      console.error("Error booking demo:", error);
+      toast({
+        title: "Something went wrong",
+        description: "Please try again or contact us directly.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsBooking(false);
+    }
   };
 
   const handleCustomSubmit = () => {
@@ -119,9 +165,44 @@ const QuickActionModals = ({ activeModal, onClose }: QuickActionModalsProps) => 
               </div>
             </div>
 
+            {/* Contact Info */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Your Name *</label>
+                <input
+                  type="text"
+                  value={demoName}
+                  onChange={(e) => setDemoName(e.target.value)}
+                  placeholder="Jane Smith"
+                  className="w-full px-4 py-3 bg-secondary border border-border/50 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Email *</label>
+                <input
+                  type="email"
+                  value={demoEmail}
+                  onChange={(e) => setDemoEmail(e.target.value)}
+                  placeholder="jane@company.com"
+                  className="w-full px-4 py-3 bg-secondary border border-border/50 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Company (optional)</label>
+              <input
+                type="text"
+                value={demoCompany}
+                onChange={(e) => setDemoCompany(e.target.value)}
+                placeholder="Acme Inc."
+                className="w-full px-4 py-3 bg-secondary border border-border/50 rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
+              />
+            </div>
+
             {/* Date Selection */}
             <div>
-              <label className="block text-sm font-medium mb-2">Select Date</label>
+              <label className="block text-sm font-medium mb-2">Preferred Date *</label>
               <input
                 type="date"
                 value={selectedDate}
@@ -133,7 +214,7 @@ const QuickActionModals = ({ activeModal, onClose }: QuickActionModalsProps) => 
 
             {/* Time Selection */}
             <div>
-              <label className="block text-sm font-medium mb-2">Select Time (PST)</label>
+              <label className="block text-sm font-medium mb-2">Preferred Time (PST) *</label>
               <div className="grid grid-cols-4 gap-2">
                 {timeSlots.map((time) => (
                   <button
@@ -151,9 +232,18 @@ const QuickActionModals = ({ activeModal, onClose }: QuickActionModalsProps) => 
               </div>
             </div>
 
-            <Button onClick={handleBookDemo} className="w-full" size="lg">
-              <Calendar className="w-4 h-4 mr-2" />
-              Confirm Demo
+            <Button onClick={handleBookDemo} className="w-full" size="lg" disabled={isBooking}>
+              {isBooking ? (
+                <>
+                  <div className="w-4 h-4 mr-2 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                  Booking...
+                </>
+              ) : (
+                <>
+                  <Calendar className="w-4 h-4 mr-2" />
+                  Confirm Demo
+                </>
+              )}
             </Button>
           </div>
         </DialogContent>

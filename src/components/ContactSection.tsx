@@ -55,11 +55,25 @@ const ContactSection = () => {
         throw error;
       }
 
+      // Send email notification (non-blocking)
+      supabase.functions.invoke("send-notification", {
+        body: {
+          type: "contact",
+          data: {
+            name: formData.name.trim(),
+            email: formData.email.trim(),
+            subject,
+            company: formData.company.trim() || undefined,
+            message: formData.message.trim(),
+          },
+        },
+      }).catch((err) => console.error("Email notification failed:", err));
+
       setIsSubmitted(true);
       trackFormSubmission("Contact Form", true);
       toast({
         title: "Message received! 🎉",
-        description: "We'll get back to you within a few hours. Talk soon!",
+        description: "We'll get back to you within a few hours. Check your email for confirmation!",
       });
       
       setTimeout(() => {
