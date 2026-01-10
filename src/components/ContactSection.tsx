@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Mail, Phone, MapPin, Send, Check, Calendar, Wrench } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import QuickActionModals from "./QuickActionModals";
 import { AnimatedSection } from "@/hooks/useScrollAnimation";
 
@@ -27,20 +28,51 @@ const ContactSection = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    toast({
-      title: "Message received! 🎉",
-      description: "We'll get back to you within a few hours. Talk soon!",
-    });
-    
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({ name: "", email: "", company: "", interest: "", message: "" });
-    }, 3000);
+    try {
+      // Build subject from interest and company
+      const interestLabels: Record<string, string> = {
+        demo: "Starting a Demo",
+        buy: "Buying an Agent",
+        custom: "Custom Agent Build",
+        pricing: "Pricing Info",
+        other: "General Inquiry",
+      };
+      
+      const subject = formData.interest 
+        ? `${interestLabels[formData.interest] || formData.interest}${formData.company ? ` - ${formData.company}` : ""}`
+        : formData.company || "Contact Form Submission";
+
+      const { error } = await supabase.from("contact_messages").insert({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        subject,
+        message: formData.message.trim(),
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      setIsSubmitted(true);
+      toast({
+        title: "Message received! 🎉",
+        description: "We'll get back to you within a few hours. Talk soon!",
+      });
+      
+      setTimeout(() => {
+        setIsSubmitted(false);
+        setFormData({ name: "", email: "", company: "", interest: "", message: "" });
+      }, 3000);
+    } catch (error) {
+      console.error("Error submitting contact form:", error);
+      toast({
+        title: "Something went wrong",
+        description: "Please try again or email us directly.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
