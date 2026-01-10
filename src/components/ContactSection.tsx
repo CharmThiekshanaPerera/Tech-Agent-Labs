@@ -4,8 +4,10 @@ import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import QuickActionModals from "./QuickActionModals";
 import { AnimatedSection } from "@/hooks/useScrollAnimation";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 const ContactSection = () => {
+  const { trackFormSubmission, trackCTAClick } = useAnalytics();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -54,6 +56,7 @@ const ContactSection = () => {
       }
 
       setIsSubmitted(true);
+      trackFormSubmission("Contact Form", true);
       toast({
         title: "Message received! 🎉",
         description: "We'll get back to you within a few hours. Talk soon!",
@@ -65,6 +68,7 @@ const ContactSection = () => {
       }, 3000);
     } catch (error) {
       console.error("Error submitting contact form:", error);
+      trackFormSubmission("Contact Form", false);
       toast({
         title: "Something went wrong",
         description: "Please try again or email us directly.",
@@ -144,14 +148,20 @@ const ContactSection = () => {
               <h4 className="text-xs sm:text-sm font-semibold text-primary mb-3 sm:mb-4">Quick Actions</h4>
               <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 <button 
-                  onClick={() => setActiveModal("demo")}
+                  onClick={() => {
+                    trackCTAClick("Book Demo", "Contact Quick Actions");
+                    setActiveModal("demo");
+                  }}
                   className="flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-medium bg-secondary border border-border/50 rounded-lg hover:bg-primary/10 hover:border-primary/30 transition-colors"
                 >
                   <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
                   <span className="hidden sm:inline">Book</span> Demo
                 </button>
                 <button 
-                  onClick={() => setActiveModal("custom")}
+                  onClick={() => {
+                    trackCTAClick("Custom Requirements", "Contact Quick Actions");
+                    setActiveModal("custom");
+                  }}
                   className="flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-medium bg-secondary border border-border/50 rounded-lg hover:bg-primary/10 hover:border-primary/30 transition-colors"
                 >
                   <Wrench className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
