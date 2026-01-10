@@ -20,6 +20,7 @@ import SocialMediaWidget from "@/components/SocialMediaWidget";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import ChatBot from "@/components/ChatBot";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import SEOHead from "@/components/seo/SEOHead";
 
 const Index = () => {
   const location = useLocation();
@@ -34,14 +35,33 @@ const Index = () => {
       }
     }
   }, [location]);
+
   return (
-    <div className="min-h-screen bg-background scroll-smooth">
-      <ParticleBackground />
-      <Navbar />
-      <SocialMediaWidget />
-      <WhatsAppButton />
-      <ScrollToTopButton />
-      <ChatBot />
+    <>
+      <SEOHead
+        title="Tech Agent Labs | AI Agents Marketplace & Custom Development Studio"
+        description="Buy production-ready AI agents or get custom-built automation for your business. Plug-and-play workflow bots for sales, support, operations & more. Fast deployment, enterprise security."
+        canonicalUrl="https://techagentlabs.com"
+        keywords={[
+          "AI agents",
+          "AI automation",
+          "workflow bots",
+          "business automation",
+          "AI marketplace",
+          "custom AI agents",
+          "sales automation",
+          "customer support AI",
+          "AI chatbot",
+          "enterprise AI",
+        ]}
+      />
+      <div className="min-h-screen bg-background scroll-smooth">
+        <ParticleBackground />
+        <Navbar />
+        <SocialMediaWidget />
+        <WhatsAppButton />
+        <ScrollToTopButton />
+        <ChatBot />
       <main className="relative z-10">
         <HeroSection />
         <FeaturesSection />
@@ -56,9 +76,10 @@ const Index = () => {
         <BlogSection />
         <FAQSection />
         <ContactSection />
-      </main>
-      <Footer />
-    </div>
+        </main>
+        <Footer />
+      </div>
+    </>
   );
 };
 
