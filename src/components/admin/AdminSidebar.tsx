@@ -11,6 +11,7 @@ import {
   Menu,
   X,
   Settings,
+  BarChart3,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
@@ -22,6 +23,7 @@ interface AdminSidebarProps {
 
 const navItems = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
+  { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
   { name: "Blog Posts", href: "/admin/blog", icon: FileText },
   { name: "Testimonials", href: "/admin/testimonials", icon: Star },
   { name: "Demo Bookings", href: "/admin/demos", icon: Calendar },
