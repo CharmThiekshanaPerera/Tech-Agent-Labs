@@ -30,7 +30,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, Loader2, Search, Sparkles, Bot } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, Search, Sparkles, Bot, Eye } from "lucide-react";
 import { format } from "date-fns";
 
 const BLOG_TOPICS = [
@@ -89,6 +89,13 @@ const AdminBlogPosts = () => {
   const [aiTopic, setAiTopic] = useState("");
   const [aiCategory, setAiCategory] = useState("");
   const [aiAutoPublish, setAiAutoPublish] = useState(true);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
+  const [viewingPost, setViewingPost] = useState<BlogPost | null>(null);
+
+  const openViewDialog = (post: BlogPost) => {
+    setViewingPost(post);
+    setViewDialogOpen(true);
+  };
 
   useEffect(() => {
     fetchPosts();
@@ -287,7 +294,16 @@ const AdminBlogPosts = () => {
                     <Button
                       variant="ghost"
                       size="icon"
+                      onClick={() => openViewDialog(post)}
+                      title="View post"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       onClick={() => openEditDialog(post)}
+                      title="Edit post"
                     >
                       <Pencil className="w-4 h-4" />
                     </Button>
@@ -296,6 +312,7 @@ const AdminBlogPosts = () => {
                       size="icon"
                       onClick={() => handleDelete(post.id)}
                       className="text-destructive hover:text-destructive"
+                      title="Delete post"
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
@@ -476,6 +493,82 @@ const AdminBlogPosts = () => {
                   Generate Post
                 </>
               )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* View Post Dialog */}
+      <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">{viewingPost?.title}</DialogTitle>
+            <DialogDescription className="flex items-center gap-3 pt-2">
+              <span className="px-2 py-1 rounded-full text-xs font-medium bg-primary/20 text-primary">
+                {viewingPost?.category}
+              </span>
+              <span className="text-muted-foreground">{viewingPost?.read_time}</span>
+              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                viewingPost?.published
+                  ? "bg-green-500/20 text-green-500"
+                  : "bg-yellow-500/20 text-yellow-500"
+              }`}>
+                {viewingPost?.published ? "Published" : "Draft"}
+              </span>
+            </DialogDescription>
+          </DialogHeader>
+
+          {viewingPost && (
+            <div className="space-y-6 py-4">
+              {viewingPost.image_url && (
+                <div className="rounded-lg overflow-hidden border border-border/50">
+                  <img
+                    src={viewingPost.image_url}
+                    alt={viewingPost.title}
+                    className="w-full h-64 object-cover"
+                  />
+                </div>
+              )}
+
+              <div className="space-y-2">
+                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Excerpt</h3>
+                <p className="text-foreground/80 italic border-l-4 border-primary/50 pl-4">
+                  {viewingPost.excerpt}
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Content</h3>
+                <div className="prose prose-invert max-w-none">
+                  {viewingPost.content ? (
+                    <div className="whitespace-pre-wrap text-foreground/90 leading-relaxed">
+                      {viewingPost.content}
+                    </div>
+                  ) : (
+                    <p className="text-muted-foreground italic">No content available</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="text-xs text-muted-foreground border-t border-border/50 pt-4">
+                Created: {format(new Date(viewingPost.created_at), "MMMM d, yyyy 'at' h:mm a")}
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setViewDialogOpen(false)}>
+              Close
+            </Button>
+            <Button
+              variant="glow"
+              onClick={() => {
+                setViewDialogOpen(false);
+                if (viewingPost) openEditDialog(viewingPost);
+              }}
+            >
+              <Pencil className="w-4 h-4" />
+              Edit Post
             </Button>
           </DialogFooter>
         </DialogContent>
