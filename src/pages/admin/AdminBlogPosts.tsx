@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -542,7 +544,30 @@ const AdminBlogPosts = () => {
                 <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Content</h3>
                 <div className="prose prose-invert max-w-none prose-headings:text-foreground prose-p:text-foreground/90 prose-strong:text-foreground prose-a:text-primary hover:prose-a:text-primary/80 prose-ul:text-foreground/90 prose-ol:text-foreground/90 prose-li:marker:text-primary prose-code:text-primary prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-pre:bg-muted prose-blockquote:border-l-primary prose-blockquote:text-foreground/80">
                   {viewingPost.content ? (
-                    <ReactMarkdown>{viewingPost.content}</ReactMarkdown>
+                    <ReactMarkdown
+                      components={{
+                        code({ node, className, children, ...props }) {
+                          const match = /language-(\w+)/.exec(className || "");
+                          const isInline = !match && !className;
+                          return !isInline && match ? (
+                            <SyntaxHighlighter
+                              style={oneDark}
+                              language={match[1]}
+                              PreTag="div"
+                              className="rounded-lg !bg-muted"
+                            >
+                              {String(children).replace(/\n$/, "")}
+                            </SyntaxHighlighter>
+                          ) : (
+                            <code className={className} {...props}>
+                              {children}
+                            </code>
+                          );
+                        },
+                      }}
+                    >
+                      {viewingPost.content}
+                    </ReactMarkdown>
                   ) : (
                     <p className="text-muted-foreground italic">No content available</p>
                   )}
