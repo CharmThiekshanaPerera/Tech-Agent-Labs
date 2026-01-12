@@ -12,6 +12,7 @@ import {
   X,
   Settings,
   BarChart3,
+  Mail,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
@@ -25,6 +26,7 @@ const navItems = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
   { name: "Blog Posts", href: "/admin/blog", icon: FileText },
+  { name: "Newsletter", href: "/admin/newsletter", icon: Mail },
   { name: "Testimonials", href: "/admin/testimonials", icon: Star },
   { name: "Demo Bookings", href: "/admin/demos", icon: Calendar },
   { name: "Messages", href: "/admin/messages", icon: MessageSquare },
