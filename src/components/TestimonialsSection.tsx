@@ -2,63 +2,50 @@ import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AnimatedSection } from "@/hooks/useScrollAnimation";
+import { supabase } from "@/integrations/supabase/client";
 
-const testimonials = [
-  {
-    id: 1,
-    name: "Sarah Johnson",
-    role: "CEO, TechStart Inc.",
-    content: "Tech Agent Labs transformed our customer support operations. Their AI agents reduced response times by 80% while maintaining exceptional quality. Truly revolutionary!",
-    rating: 5,
-    avatar: "SJ"
-  },
-  {
-    id: 2,
-    name: "Michael Chen",
-    role: "Marketing Director, GrowthHub",
-    content: "The marketing automation agents are incredible. We've seen a 3x increase in lead generation and our campaigns are now running 24/7 without any manual intervention.",
-    rating: 5,
-    avatar: "MC"
-  },
-  {
-    id: 3,
-    name: "Emily Rodriguez",
-    role: "Operations Manager, ScaleUp Co.",
-    content: "Implementing their operations agent was the best decision we made this year. It streamlined our workflows and saved us countless hours every week.",
-    rating: 5,
-    avatar: "ER"
-  },
-  {
-    id: 4,
-    name: "David Kim",
-    role: "Founder, DataDriven Labs",
-    content: "The analytics insights we get from their AI agents are game-changing. We can now make data-driven decisions in real-time. Highly recommended!",
-    rating: 5,
-    avatar: "DK"
-  },
-  {
-    id: 5,
-    name: "Lisa Thompson",
-    role: "Sales Lead, Enterprise Solutions",
-    content: "Our sales team's productivity doubled after implementing the sales agent. It handles prospecting and follow-ups flawlessly while we focus on closing deals.",
-    rating: 5,
-    avatar: "LT"
-  }
-];
+interface Testimonial {
+  id: string;
+  name: string;
+  role: string;
+  company: string;
+  content: string;
+  rating: number;
+  avatar_url: string | null;
+  featured: boolean;
+}
 
 const TestimonialsSection = () => {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    const fetchTestimonials = async () => {
+      const { data, error } = await supabase
+        .from("testimonials")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (!error && data && data.length > 0) {
+        setTestimonials(data);
+      }
+      setIsLoading(false);
+    };
+
+    fetchTestimonials();
+  }, []);
+
+  useEffect(() => {
+    if (!isAutoPlaying || testimonials.length === 0) return;
     
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % testimonials.length);
     }, 5000);
     
     return () => clearInterval(interval);
-  }, [isAutoPlaying]);
+  }, [isAutoPlaying, testimonials.length]);
 
   const goToPrevious = () => {
     setIsAutoPlaying(false);
@@ -74,6 +61,32 @@ const TestimonialsSection = () => {
     setIsAutoPlaying(false);
     setCurrentIndex(index);
   };
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  // Don't render if no testimonials
+  if (isLoading) {
+    return (
+      <section id="testimonials" className="py-16 md:py-24 bg-muted/30">
+        <div className="container mx-auto px-4 text-center">
+          <div className="animate-pulse">Loading testimonials...</div>
+        </div>
+      </section>
+    );
+  }
+
+  if (testimonials.length === 0) {
+    return null;
+  }
+
+  const currentTestimonial = testimonials[currentIndex];
 
   return (
     <section id="testimonials" className="py-16 md:py-24 bg-muted/30 relative overflow-hidden">
@@ -107,27 +120,35 @@ const TestimonialsSection = () => {
               
               {/* Stars */}
               <div className="flex gap-1 mb-6">
-                {[...Array(testimonials[currentIndex].rating)].map((_, i) => (
+                {[...Array(currentTestimonial.rating || 5)].map((_, i) => (
                   <Star key={i} className="w-5 h-5 fill-primary text-primary" />
                 ))}
               </div>
 
               {/* Content */}
               <blockquote className="text-lg md:text-xl lg:text-2xl text-foreground/90 leading-relaxed mb-8 min-h-[120px] md:min-h-[100px]">
-                "{testimonials[currentIndex].content}"
+                "{currentTestimonial.content}"
               </blockquote>
 
               {/* Author */}
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-lg">
-                  {testimonials[currentIndex].avatar}
-                </div>
+                {currentTestimonial.avatar_url ? (
+                  <img
+                    src={currentTestimonial.avatar_url}
+                    alt={currentTestimonial.name}
+                    className="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-lg">
+                    {getInitials(currentTestimonial.name)}
+                  </div>
+                )}
                 <div>
                   <p className="font-semibold text-foreground text-lg">
-                    {testimonials[currentIndex].name}
+                    {currentTestimonial.name}
                   </p>
                   <p className="text-muted-foreground text-sm md:text-base">
-                    {testimonials[currentIndex].role}
+                    {currentTestimonial.role}{currentTestimonial.company ? `, ${currentTestimonial.company}` : ""}
                   </p>
                 </div>
               </div>
