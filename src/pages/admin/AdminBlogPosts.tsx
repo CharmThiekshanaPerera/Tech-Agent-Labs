@@ -106,8 +106,8 @@ const AdminBlogPosts = () => {
             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
           },
           body: JSON.stringify({
-            topic: aiTopic || null,
-            category: aiCategory || null,
+            topic: aiTopic === "random" ? null : aiTopic || null,
+            category: aiCategory === "random" ? null : aiCategory || null,
             autoPublish: aiAutoPublish,
           }),
         }
@@ -418,12 +418,12 @@ const AdminBlogPosts = () => {
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <Label htmlFor="ai-topic">Topic (optional)</Label>
-              <Select value={aiTopic} onValueChange={setAiTopic}>
+              <Select value={aiTopic || "random"} onValueChange={(val) => setAiTopic(val === "random" ? "" : val)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Random topic" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Random topic</SelectItem>
+                  <SelectItem value="random">Random topic</SelectItem>
                   {BLOG_TOPICS.map((topic) => (
                     <SelectItem key={topic} value={topic}>
                       {topic}
@@ -435,12 +435,12 @@ const AdminBlogPosts = () => {
 
             <div className="space-y-2">
               <Label htmlFor="ai-category">Category (optional)</Label>
-              <Select value={aiCategory} onValueChange={setAiCategory}>
+              <Select value={aiCategory || "random"} onValueChange={(val) => setAiCategory(val === "random" ? "" : val)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Random category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Random category</SelectItem>
+                  <SelectItem value="random">Random category</SelectItem>
                   {CATEGORIES.map((cat) => (
                     <SelectItem key={cat} value={cat}>
                       {cat}
