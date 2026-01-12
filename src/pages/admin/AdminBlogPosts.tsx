@@ -33,7 +33,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, Loader2, Search, Sparkles, Bot, Eye } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, Search, Sparkles, Bot, Eye, ImageIcon } from "lucide-react";
 import { format } from "date-fns";
 
 const BLOG_TOPICS = [
@@ -92,6 +92,7 @@ const AdminBlogPosts = () => {
   const [aiTopic, setAiTopic] = useState("");
   const [aiCategory, setAiCategory] = useState("");
   const [aiAutoPublish, setAiAutoPublish] = useState(true);
+  const [aiGenerateImage, setAiGenerateImage] = useState(false);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [viewingPost, setViewingPost] = useState<BlogPost | null>(null);
 
@@ -119,6 +120,7 @@ const AdminBlogPosts = () => {
             topic: aiTopic === "random" ? null : aiTopic || null,
             category: aiCategory === "random" ? null : aiCategory || null,
             autoPublish: aiAutoPublish,
+            generateImage: aiGenerateImage,
           }),
         }
       );
@@ -133,6 +135,7 @@ const AdminBlogPosts = () => {
       setAiDialogOpen(false);
       setAiTopic("");
       setAiCategory("");
+      setAiGenerateImage(false);
       fetchPosts();
     } catch (error: any) {
       console.error("AI generation error:", error);
@@ -478,6 +481,24 @@ const AdminBlogPosts = () => {
               />
               <Label htmlFor="ai-auto-publish">Auto-publish after generation</Label>
             </div>
+
+            <div className="flex items-center gap-2">
+              <Switch
+                id="ai-generate-image"
+                checked={aiGenerateImage}
+                onCheckedChange={setAiGenerateImage}
+              />
+              <Label htmlFor="ai-generate-image" className="flex items-center gap-2">
+                <ImageIcon className="w-4 h-4" />
+                Auto-generate featured image
+              </Label>
+            </div>
+            
+            {aiGenerateImage && (
+              <p className="text-xs text-muted-foreground">
+                ⚡ AI will generate a professional header image for your blog post
+              </p>
+            )}
           </div>
 
           <DialogFooter>
