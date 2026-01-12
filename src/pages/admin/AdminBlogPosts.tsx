@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -539,11 +540,9 @@ const AdminBlogPosts = () => {
 
               <div className="space-y-2">
                 <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Content</h3>
-                <div className="prose prose-invert max-w-none">
+                <div className="prose prose-invert max-w-none prose-headings:text-foreground prose-p:text-foreground/90 prose-strong:text-foreground prose-a:text-primary hover:prose-a:text-primary/80 prose-ul:text-foreground/90 prose-ol:text-foreground/90 prose-li:marker:text-primary prose-code:text-primary prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-pre:bg-muted prose-blockquote:border-l-primary prose-blockquote:text-foreground/80">
                   {viewingPost.content ? (
-                    <div className="whitespace-pre-wrap text-foreground/90 leading-relaxed">
-                      {viewingPost.content}
-                    </div>
+                    <ReactMarkdown>{viewingPost.content}</ReactMarkdown>
                   ) : (
                     <p className="text-muted-foreground italic">No content available</p>
                   )}
