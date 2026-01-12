@@ -7,9 +7,8 @@ import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import BlogPostModal from "@/components/BlogPostModal";
 import SEOHead from "@/components/seo/SEOHead";
-import StructuredData, { generateBreadcrumbSchema, generateArticleSchema } from "@/components/seo/StructuredData";
+import StructuredData, { generateBreadcrumbSchema } from "@/components/seo/StructuredData";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -48,8 +47,6 @@ const Blog = () => {
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   // Scroll to top when page loads
@@ -108,11 +105,6 @@ const Blog = () => {
 
   // Featured post (first post)
   const featuredPost = useMemo(() => posts[0], [posts]);
-
-  const handleReadMore = (post: BlogPost) => {
-    setSelectedPost(post);
-    setModalOpen(true);
-  };
 
   const clearSearch = () => {
     setSearchQuery("");
@@ -255,66 +247,67 @@ const Blog = () => {
             {/* Featured Post - Large Hero Card */}
             {!loading && featuredPost && selectedCategory === "All" && !searchQuery && (
               <section aria-label="Featured article" className="mb-10 sm:mb-12 lg:mb-16">
-                <article 
-                  className="group relative bg-gradient-to-br from-secondary/50 to-secondary/20 border border-border/50 rounded-2xl sm:rounded-3xl overflow-hidden hover:border-primary/30 transition-all duration-500 cursor-pointer"
-                  onClick={() => handleReadMore(featuredPost)}
-                  itemScope
-                  itemType="https://schema.org/BlogPosting"
-                >
-                  <div className="grid lg:grid-cols-2 gap-0">
-                    {/* Image */}
-                    <figure className="relative h-48 xs:h-56 sm:h-64 lg:h-80 xl:h-96 overflow-hidden">
-                      <img
-                        src={featuredPost.image_url || "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=800&h=600&fit=crop"}
-                        alt={featuredPost.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                        loading="eager"
-                        itemProp="image"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/50 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-background" />
-                      <span className="absolute top-3 left-3 sm:top-4 sm:left-4 px-2.5 sm:px-3 py-1 bg-primary text-primary-foreground text-xs font-bold rounded-full uppercase tracking-wide">
-                        Featured
-                      </span>
-                    </figure>
+                <Link to={`/blog/${featuredPost.id}`}>
+                  <article 
+                    className="group relative bg-gradient-to-br from-secondary/50 to-secondary/20 border border-border/50 rounded-2xl sm:rounded-3xl overflow-hidden hover:border-primary/30 transition-all duration-500"
+                    itemScope
+                    itemType="https://schema.org/BlogPosting"
+                  >
+                    <div className="grid lg:grid-cols-2 gap-0">
+                      {/* Image */}
+                      <figure className="relative h-48 xs:h-56 sm:h-64 lg:h-80 xl:h-96 overflow-hidden">
+                        <img
+                          src={featuredPost.image_url || "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=800&h=600&fit=crop"}
+                          alt={featuredPost.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                          loading="eager"
+                          itemProp="image"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/50 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-background" />
+                        <span className="absolute top-3 left-3 sm:top-4 sm:left-4 px-2.5 sm:px-3 py-1 bg-primary text-primary-foreground text-xs font-bold rounded-full uppercase tracking-wide">
+                          Featured
+                        </span>
+                      </figure>
 
-                    {/* Content */}
-                    <div className="relative p-5 sm:p-6 lg:p-8 xl:p-10 flex flex-col justify-center">
-                      <span className="inline-block px-2.5 py-1 bg-primary/20 text-primary text-xs font-medium rounded-full mb-3 sm:mb-4 w-fit">
-                        {featuredPost.category}
-                      </span>
-                      
-                      <h2 
-                        className="text-lg xs:text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-foreground mb-2 sm:mb-3 line-clamp-3 group-hover:text-primary transition-colors leading-tight"
-                        itemProp="headline"
-                      >
-                        {featuredPost.title}
-                      </h2>
-                      
-                      <p 
-                        className="text-muted-foreground text-sm sm:text-base lg:text-lg line-clamp-2 sm:line-clamp-3 mb-4 sm:mb-6"
-                        itemProp="description"
-                      >
-                        {featuredPost.excerpt}
-                      </p>
+                      {/* Content */}
+                      <div className="relative p-5 sm:p-6 lg:p-8 xl:p-10 flex flex-col justify-center">
+                        <span className="inline-block px-2.5 py-1 bg-primary/20 text-primary text-xs font-medium rounded-full mb-3 sm:mb-4 w-fit">
+                          {featuredPost.category}
+                        </span>
+                        
+                        <h2 
+                          className="text-lg xs:text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-foreground mb-2 sm:mb-3 line-clamp-3 group-hover:text-primary transition-colors leading-tight"
+                          itemProp="headline"
+                        >
+                          {featuredPost.title}
+                        </h2>
+                        
+                        <p 
+                          className="text-muted-foreground text-sm sm:text-base lg:text-lg line-clamp-2 sm:line-clamp-3 mb-4 sm:mb-6"
+                          itemProp="description"
+                        >
+                          {featuredPost.excerpt}
+                        </p>
 
-                      <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-muted-foreground mb-4 sm:mb-6">
-                        <time dateTime={featuredPost.created_at} className="flex items-center gap-1.5" itemProp="datePublished">
-                          <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                          {format(new Date(featuredPost.created_at), "MMMM d, yyyy")}
-                        </time>
-                        <span className="flex items-center gap-1.5">
-                          <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                          {featuredPost.read_time || "5 min read"}
+                        <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-muted-foreground mb-4 sm:mb-6">
+                          <time dateTime={featuredPost.created_at} className="flex items-center gap-1.5" itemProp="datePublished">
+                            <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                            {format(new Date(featuredPost.created_at), "MMMM d, yyyy")}
+                          </time>
+                          <span className="flex items-center gap-1.5">
+                            <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                            {featuredPost.read_time || "5 min read"}
+                          </span>
+                        </div>
+
+                        <span className="inline-flex items-center gap-2 w-fit px-4 sm:px-5 py-2 sm:py-2.5 bg-primary text-primary-foreground rounded-lg font-medium text-sm sm:text-base group-hover:bg-primary/90 transition-colors">
+                          Read Article
+                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </span>
                       </div>
-
-                      <Button variant="glow" className="w-fit text-sm sm:text-base" aria-label={`Read ${featuredPost.title}`}>
-                        Read Article
-                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                      </Button>
                     </div>
-                  </div>
-                </article>
+                  </article>
+                </Link>
               </section>
             )}
 
@@ -398,75 +391,72 @@ const Blog = () => {
                 aria-label="Blog posts"
               >
                 {paginatedPosts.map((post, index) => (
-                  <article
-                    key={post.id}
-                    className="group bg-secondary/30 border border-border/50 rounded-xl sm:rounded-2xl overflow-hidden hover:border-primary/30 transition-all duration-300 hover:shadow-[0_0_30px_rgba(34,255,102,0.1)] flex flex-col"
-                    itemScope
-                    itemType="https://schema.org/BlogPosting"
-                  >
-                    {/* Image */}
-                    <figure className="relative h-40 xs:h-44 sm:h-48 overflow-hidden">
-                      <img
-                        src={post.image_url || `https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=600&h=400&fit=crop&q=80`}
-                        alt={post.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        loading={index < 3 ? "eager" : "lazy"}
-                        itemProp="image"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
-                      <span className="absolute top-3 left-3 sm:top-4 sm:left-4 px-2 sm:px-3 py-0.5 sm:py-1 bg-primary/90 text-primary-foreground text-[10px] sm:text-xs font-medium rounded-full">
-                        {post.category}
-                      </span>
-                    </figure>
-
-                    {/* Content */}
-                    <div className="p-4 sm:p-5 lg:p-6 flex flex-col flex-1">
-                      {/* Meta */}
-                      <div className="flex items-center gap-3 sm:gap-4 text-[10px] sm:text-xs text-muted-foreground mb-2 sm:mb-3">
-                        <time 
-                          dateTime={post.created_at} 
-                          className="flex items-center gap-1 sm:gap-1.5"
-                          itemProp="datePublished"
-                        >
-                          <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                          {format(new Date(post.created_at), "MMM d, yyyy")}
-                        </time>
-                        <span className="flex items-center gap-1 sm:gap-1.5">
-                          <Clock className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                          {post.read_time || "5 min"}
+                  <Link key={post.id} to={`/blog/${post.id}`}>
+                    <article
+                      className="group bg-secondary/30 border border-border/50 rounded-xl sm:rounded-2xl overflow-hidden hover:border-primary/30 transition-all duration-300 hover:shadow-[0_0_30px_rgba(34,255,102,0.1)] flex flex-col h-full"
+                      itemScope
+                      itemType="https://schema.org/BlogPosting"
+                    >
+                      {/* Image */}
+                      <figure className="relative h-40 xs:h-44 sm:h-48 overflow-hidden">
+                        <img
+                          src={post.image_url || `https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=600&h=400&fit=crop&q=80`}
+                          alt={post.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          loading={index < 3 ? "eager" : "lazy"}
+                          itemProp="image"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+                        <span className="absolute top-3 left-3 sm:top-4 sm:left-4 px-2 sm:px-3 py-0.5 sm:py-1 bg-primary/90 text-primary-foreground text-[10px] sm:text-xs font-medium rounded-full">
+                          {post.category}
                         </span>
+                      </figure>
+
+                      {/* Content */}
+                      <div className="p-4 sm:p-5 lg:p-6 flex flex-col flex-1">
+                        {/* Meta */}
+                        <div className="flex items-center gap-3 sm:gap-4 text-[10px] sm:text-xs text-muted-foreground mb-2 sm:mb-3">
+                          <time 
+                            dateTime={post.created_at} 
+                            className="flex items-center gap-1 sm:gap-1.5"
+                            itemProp="datePublished"
+                          >
+                            <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                            {format(new Date(post.created_at), "MMM d, yyyy")}
+                          </time>
+                          <span className="flex items-center gap-1 sm:gap-1.5">
+                            <Clock className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                            {post.read_time || "5 min"}
+                          </span>
+                        </div>
+
+                        {/* Title */}
+                        <h2 
+                          className="text-base sm:text-lg font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors leading-snug"
+                          itemProp="headline"
+                        >
+                          {post.title}
+                        </h2>
+
+                        {/* Excerpt */}
+                        <p 
+                          className="text-xs sm:text-sm text-muted-foreground line-clamp-2 sm:line-clamp-3 mb-3 sm:mb-4 flex-1"
+                          itemProp="description"
+                        >
+                          {post.excerpt}
+                        </p>
+
+                        {/* Read More Link */}
+                        <span className="inline-flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm text-primary font-medium group-hover:gap-2 sm:group-hover:gap-2.5 transition-all mt-auto">
+                          Read Article
+                          <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                        </span>
+
+                        {/* Hidden structured data */}
+                        <meta itemProp="author" content="Tech Agent Labs" />
                       </div>
-
-                      {/* Title */}
-                      <h2 
-                        className="text-base sm:text-lg font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors leading-snug"
-                        itemProp="headline"
-                      >
-                        {post.title}
-                      </h2>
-
-                      {/* Excerpt */}
-                      <p 
-                        className="text-xs sm:text-sm text-muted-foreground line-clamp-2 sm:line-clamp-3 mb-3 sm:mb-4 flex-1"
-                        itemProp="description"
-                      >
-                        {post.excerpt}
-                      </p>
-
-                      {/* Read More Link */}
-                      <button
-                        onClick={() => handleReadMore(post)}
-                        className="inline-flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm text-primary font-medium group-hover:gap-2 sm:group-hover:gap-2.5 transition-all mt-auto"
-                        aria-label={`Read more about ${post.title}`}
-                      >
-                        Read Article
-                        <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                      </button>
-
-                      {/* Hidden structured data */}
-                      <meta itemProp="author" content="Tech Agent Labs" />
-                    </div>
-                  </article>
+                    </article>
+                  </Link>
                 ))}
               </section>
             )}
@@ -594,13 +584,6 @@ const Blog = () => {
         </main>
 
         <Footer />
-
-        {/* Blog Post Modal */}
-        <BlogPostModal
-          post={selectedPost}
-          open={modalOpen}
-          onOpenChange={setModalOpen}
-        />
       </div>
     </>
   );
