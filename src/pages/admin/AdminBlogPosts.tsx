@@ -7,11 +7,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import {
   Table,
@@ -22,9 +30,30 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, Loader2, Search } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, Search, Sparkles, Bot } from "lucide-react";
 import { format } from "date-fns";
 
+const BLOG_TOPICS = [
+  "AI Automation in Business",
+  "Custom AI Agents for Customer Support",
+  "Machine Learning Trends",
+  "AI-Powered Marketing Strategies",
+  "Intelligent Process Automation",
+  "AI in Sales and Lead Generation",
+  "Data Analytics with AI",
+  "AI Security and Privacy",
+  "Future of Work with AI",
+  "AI Integration Best Practices",
+];
+
+const CATEGORIES = [
+  "AI Technology",
+  "Business Automation",
+  "Industry Insights",
+  "Case Studies",
+  "Tutorials",
+  "News & Updates",
+];
 interface BlogPost {
   id: string;
   title: string;
@@ -55,10 +84,53 @@ const AdminBlogPosts = () => {
   const [formData, setFormData] = useState(defaultPost);
   const [saving, setSaving] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [aiDialogOpen, setAiDialogOpen] = useState(false);
+  const [aiGenerating, setAiGenerating] = useState(false);
+  const [aiTopic, setAiTopic] = useState("");
+  const [aiCategory, setAiCategory] = useState("");
+  const [aiAutoPublish, setAiAutoPublish] = useState(true);
 
   useEffect(() => {
     fetchPosts();
   }, []);
+
+  const handleAiGenerate = async () => {
+    setAiGenerating(true);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-blog-post`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          },
+          body: JSON.stringify({
+            topic: aiTopic || null,
+            category: aiCategory || null,
+            autoPublish: aiAutoPublish,
+          }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to generate blog post");
+      }
+
+      toast.success(`Blog post "${result.post.title}" generated successfully!`);
+      setAiDialogOpen(false);
+      setAiTopic("");
+      setAiCategory("");
+      fetchPosts();
+    } catch (error: any) {
+      console.error("AI generation error:", error);
+      toast.error(error.message || "Failed to generate blog post");
+    } finally {
+      setAiGenerating(false);
+    }
+  };
 
   const fetchPosts = async () => {
     const { data, error } = await supabase
@@ -157,6 +229,10 @@ const AdminBlogPosts = () => {
             className="pl-10"
           />
         </div>
+        <Button onClick={() => setAiDialogOpen(true)} variant="outline" className="border-primary/50 text-primary hover:bg-primary/10">
+          <Sparkles className="w-4 h-4" />
+          AI Generate
+        </Button>
         <Button onClick={openNewPostDialog} variant="glow">
           <Plus className="w-4 h-4" />
           New Post
@@ -321,6 +397,85 @@ const AdminBlogPosts = () => {
             <Button onClick={handleSave} disabled={saving} variant="glow">
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}
               {editingPost ? "Update" : "Create"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* AI Generation Dialog */}
+      <Dialog open={aiDialogOpen} onOpenChange={setAiDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Bot className="w-5 h-5 text-primary" />
+              AI Blog Generator
+            </DialogTitle>
+            <DialogDescription>
+              Let AI create a blog post for you. Leave fields empty for random selection.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="ai-topic">Topic (optional)</Label>
+              <Select value={aiTopic} onValueChange={setAiTopic}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Random topic" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Random topic</SelectItem>
+                  {BLOG_TOPICS.map((topic) => (
+                    <SelectItem key={topic} value={topic}>
+                      {topic}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="ai-category">Category (optional)</Label>
+              <Select value={aiCategory} onValueChange={setAiCategory}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Random category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Random category</SelectItem>
+                  {CATEGORIES.map((cat) => (
+                    <SelectItem key={cat} value={cat}>
+                      {cat}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Switch
+                id="ai-auto-publish"
+                checked={aiAutoPublish}
+                onCheckedChange={setAiAutoPublish}
+              />
+              <Label htmlFor="ai-auto-publish">Auto-publish after generation</Label>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAiDialogOpen(false)} disabled={aiGenerating}>
+              Cancel
+            </Button>
+            <Button onClick={handleAiGenerate} disabled={aiGenerating} variant="glow">
+              {aiGenerating ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4" />
+                  Generate Post
+                </>
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>
