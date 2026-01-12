@@ -8,6 +8,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/seo/SEOHead";
 import StructuredData, { generateArticleSchema, generateBreadcrumbSchema } from "@/components/seo/StructuredData";
+import NewsletterSubscription from "@/components/NewsletterSubscription";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -379,6 +380,11 @@ const BlogPostPage = () => {
                     </p>
                   </div>
                 </div>
+              </section>
+
+              {/* Newsletter Subscription */}
+              <section className="mb-12 sm:mb-16">
+                <NewsletterSubscription variant="blog" />
               </section>
 
               {/* Share Section */}

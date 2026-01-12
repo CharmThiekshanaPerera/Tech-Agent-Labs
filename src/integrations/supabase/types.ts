@@ -131,6 +131,33 @@ export type Database = {
         }
         Relationships: []
       }
+      newsletter_subscribers: {
+        Row: {
+          confirmed: boolean | null
+          created_at: string
+          email: string
+          id: string
+          subscribed_at: string
+          unsubscribed_at: string | null
+        }
+        Insert: {
+          confirmed?: boolean | null
+          created_at?: string
+          email: string
+          id?: string
+          subscribed_at?: string
+          unsubscribed_at?: string | null
+        }
+        Update: {
+          confirmed?: boolean | null
+          created_at?: string
+          email?: string
+          id?: string
+          subscribed_at?: string
+          unsubscribed_at?: string | null
+        }
+        Relationships: []
+      }
       project_documents: {
         Row: {
           created_at: string
