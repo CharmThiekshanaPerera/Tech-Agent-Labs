@@ -9,6 +9,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/seo/SEOHead";
 import StructuredData, { generateBreadcrumbSchema } from "@/components/seo/StructuredData";
+import NewsletterSubscription from "@/components/NewsletterSubscription";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -535,6 +536,11 @@ const Blog = () => {
                 </p>
               </nav>
             )}
+
+            {/* Newsletter Subscription */}
+            <section className="mt-16 sm:mt-20 lg:mt-24">
+              <NewsletterSubscription variant="blog" />
+            </section>
 
             {/* AEO/GEO - FAQ Section for Answer Engines */}
             <section className="mt-16 sm:mt-20 lg:mt-24 border-t border-border/50 pt-12 sm:pt-16" aria-labelledby="blog-faq-heading">

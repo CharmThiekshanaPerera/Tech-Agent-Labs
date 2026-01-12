@@ -177,6 +177,35 @@ const AdminBlogPosts = () => {
     setDialogOpen(true);
   };
 
+  const sendBlogNotification = async (post: { id: string; title: string; excerpt: string; category: string; image_url?: string | null }) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-blog-notification`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          },
+          body: JSON.stringify({
+            postId: post.id,
+            title: post.title,
+            excerpt: post.excerpt,
+            category: post.category,
+            imageUrl: post.image_url || undefined,
+          }),
+        }
+      );
+
+      const result = await response.json();
+      if (response.ok && result.success) {
+        toast.success(`Newsletter sent to ${result.stats?.sent || 0} subscribers`);
+      }
+    } catch (error) {
+      console.error("Failed to send newsletter:", error);
+    }
+  };
+
   const handleSave = async () => {
     if (!formData.title || !formData.excerpt || !formData.category) {
       toast.error("Please fill in required fields");
@@ -184,6 +213,8 @@ const AdminBlogPosts = () => {
     }
 
     setSaving(true);
+    const wasPublished = editingPost?.published ?? false;
+    const isNowPublished = formData.published;
 
     try {
       if (editingPost) {
@@ -194,11 +225,37 @@ const AdminBlogPosts = () => {
 
         if (error) throw error;
         toast.success("Post updated successfully");
+
+        // Send notification if post is being published for the first time
+        if (!wasPublished && isNowPublished) {
+          await sendBlogNotification({
+            id: editingPost.id,
+            title: formData.title,
+            excerpt: formData.excerpt,
+            category: formData.category,
+            image_url: formData.image_url,
+          });
+        }
       } else {
-        const { error } = await supabase.from("blog_posts").insert(formData);
+        const { data, error } = await supabase
+          .from("blog_posts")
+          .insert(formData)
+          .select()
+          .single();
 
         if (error) throw error;
         toast.success("Post created successfully");
+
+        // Send notification if new post is published
+        if (isNowPublished && data) {
+          await sendBlogNotification({
+            id: data.id,
+            title: data.title,
+            excerpt: data.excerpt,
+            category: data.category,
+            image_url: data.image_url,
+          });
+        }
       }
 
       setDialogOpen(false);
