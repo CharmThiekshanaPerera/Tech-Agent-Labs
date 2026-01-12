@@ -33,6 +33,91 @@ const CATEGORIES = [
   "News & Updates",
 ];
 
+async function generateImage(title: string, topic: string, LOVABLE_API_KEY: string): Promise<string | null> {
+  try {
+    console.log("Generating image for:", title);
+    
+    const imagePrompt = `A professional, modern tech blog header image for an article about "${topic}". 
+    Style: Clean, minimalist, corporate tech aesthetic with subtle AI/automation visual elements.
+    Colors: Deep blues, teals, and subtle gradients. Professional lighting.
+    No text, no words, no letters in the image.
+    16:9 aspect ratio, high quality, ultra detailed.`;
+
+    const imageResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash-image-preview",
+        messages: [
+          {
+            role: "user",
+            content: imagePrompt,
+          },
+        ],
+        modalities: ["image", "text"],
+      }),
+    });
+
+    if (!imageResponse.ok) {
+      console.error("Image generation failed:", imageResponse.status);
+      return null;
+    }
+
+    const imageData = await imageResponse.json();
+    const imageUrl = imageData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+
+    if (!imageUrl) {
+      console.error("No image URL in response");
+      return null;
+    }
+
+    console.log("Image generated successfully");
+    return imageUrl;
+  } catch (error) {
+    console.error("Error generating image:", error);
+    return null;
+  }
+}
+
+async function uploadImageToStorage(
+  supabase: any,
+  base64Data: string,
+  filename: string
+): Promise<string | null> {
+  try {
+    // Extract base64 content (remove data:image/png;base64, prefix)
+    const base64Content = base64Data.replace(/^data:image\/\w+;base64,/, "");
+    const binaryData = Uint8Array.from(atob(base64Content), (c) => c.charCodeAt(0));
+
+    // Upload to storage
+    const { data, error } = await supabase.storage
+      .from("documents")
+      .upload(`blog-images/${filename}`, binaryData, {
+        contentType: "image/png",
+        upsert: true,
+      });
+
+    if (error) {
+      console.error("Storage upload error:", error);
+      return null;
+    }
+
+    // Get public URL
+    const { data: publicUrlData } = supabase.storage
+      .from("documents")
+      .getPublicUrl(`blog-images/${filename}`);
+
+    console.log("Image uploaded to storage:", publicUrlData.publicUrl);
+    return publicUrlData.publicUrl;
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    return null;
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -57,12 +142,14 @@ serve(async (req) => {
     let customTopic = null;
     let customCategory = null;
     let autoPublish = true;
+    let generateImage_flag = false;
 
     try {
       const body = await req.json();
       customTopic = body.topic || null;
       customCategory = body.category || null;
       autoPublish = body.autoPublish !== false;
+      generateImage_flag = body.generateImage === true;
     } catch {
       // No body provided, use defaults
     }
@@ -105,7 +192,7 @@ Your writing style is:
 Generate a complete blog post in JSON format with these exact fields:
 - title: A compelling, SEO-friendly title (max 80 chars)
 - excerpt: A hook summary (150-200 chars)
-- content: Full article in HTML format with proper headings (h2, h3), paragraphs, bullet points, and emphasis. Include 800-1200 words.
+- content: Full article in Markdown format with proper headings (## and ###), paragraphs, bullet points, and emphasis. Include 800-1200 words.
 - read_time: Estimated read time (e.g., "5 min read")
 
 Important: Return ONLY valid JSON, no markdown code blocks or extra text.`,
@@ -175,6 +262,18 @@ Focus on providing actionable insights for businesses looking to implement AI so
       throw new Error("Missing required fields in generated content");
     }
 
+    // Generate image if requested
+    let imageUrl: string | null = null;
+    if (generateImage_flag) {
+      console.log("Auto-generating image...");
+      const base64Image = await generateImage(blogData.title, topic, LOVABLE_API_KEY);
+      
+      if (base64Image) {
+        const filename = `blog-${Date.now()}-${Math.random().toString(36).substring(7)}.png`;
+        imageUrl = await uploadImageToStorage(supabase, base64Image, filename);
+      }
+    }
+
     // Insert the blog post
     const { data: insertedPost, error: insertError } = await supabase
       .from("blog_posts")
@@ -185,7 +284,7 @@ Focus on providing actionable insights for businesses looking to implement AI so
         category: category,
         read_time: blogData.read_time || "5 min read",
         published: autoPublish,
-        image_url: null, // Can be enhanced to generate images
+        image_url: imageUrl,
       })
       .select()
       .single();
@@ -207,6 +306,7 @@ Focus on providing actionable insights for businesses looking to implement AI so
           category: insertedPost.category,
           published: insertedPost.published,
           created_at: insertedPost.created_at,
+          image_url: insertedPost.image_url,
         },
       }),
       {
