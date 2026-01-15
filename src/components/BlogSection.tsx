@@ -111,36 +111,36 @@ const BlogSection = () => {
 
                       {/* Content */}
                       <div className="p-5 sm:p-6 flex flex-col h-[calc(100%-12rem)]">
-                        {/* Meta */}
-                        <div className="flex items-center gap-4 text-xs text-muted-foreground mb-3">
-                          <span className="flex items-center gap-1.5">
-                            <Calendar className="w-3.5 h-3.5" />
-                            {format(new Date(post.created_at), "MMM d, yyyy")}
-                          </span>
-                          <span className="flex items-center gap-1.5">
-                            <Clock className="w-3.5 h-3.5" />
-                            {post.read_time || "5 min read"}
-                          </span>
-                        </div>
-
                         {/* Title */}
-                        <h3 className="text-lg font-semibold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                        <h3 className="text-lg font-semibold text-foreground mb-3 line-clamp-2 group-hover:text-primary transition-colors">
                           {post.title}
                         </h3>
 
-                        {/* Excerpt */}
-                        <p className="text-sm text-muted-foreground line-clamp-3 mb-4 flex-grow">
+                        {/* Description - Clean, human-friendly text */}
+                        <p className="text-sm text-muted-foreground leading-relaxed mb-4 flex-grow line-clamp-4">
                           {post.excerpt}
                         </p>
 
-                        {/* Read More Link */}
-                        <button
-                          onClick={() => handleReadMore(post)}
-                          className="inline-flex items-center gap-1.5 text-sm text-primary font-medium group-hover:gap-2.5 transition-all mt-auto"
-                        >
-                          Read More
-                          <ArrowRight className="w-4 h-4" />
-                        </button>
+                        {/* Meta & Action */}
+                        <div className="flex items-center justify-between mt-auto pt-3 border-t border-border/50">
+                          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                            <span className="flex items-center gap-1">
+                              <Calendar className="w-3 h-3" />
+                              {format(new Date(post.created_at), "MMM d")}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Clock className="w-3 h-3" />
+                              {post.read_time || "5 min"}
+                            </span>
+                          </div>
+                          <button
+                            onClick={() => handleReadMore(post)}
+                            className="inline-flex items-center gap-1 text-xs text-primary font-medium hover:gap-2 transition-all"
+                          >
+                            Read
+                            <ArrowRight className="w-3 h-3" />
+                          </button>
+                        </div>
                       </div>
                     </article>
                   </CarouselItem>
