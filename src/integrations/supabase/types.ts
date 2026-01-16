@@ -191,6 +191,36 @@ export type Database = {
         }
         Relationships: []
       }
+      scheduled_tasks: {
+        Row: {
+          created_at: string
+          id: string
+          last_run_at: string | null
+          next_run_at: string | null
+          status: string | null
+          task_name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_run_at?: string | null
+          next_run_at?: string | null
+          status?: string | null
+          task_name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_run_at?: string | null
+          next_run_at?: string | null
+          status?: string | null
+          task_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       testimonials: {
         Row: {
           avatar_url: string | null
