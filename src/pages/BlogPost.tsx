@@ -229,142 +229,243 @@ const BlogPostPage = () => {
                 Back to all articles
               </Link>
 
-              {/* Article Header Card */}
-              <header className="bg-secondary/50 backdrop-blur-sm border border-border/50 rounded-2xl sm:rounded-3xl p-5 sm:p-8 lg:p-10 mb-8 sm:mb-10">
-                {/* Category */}
-                <span className="inline-block px-3 py-1 bg-primary/20 text-primary text-xs sm:text-sm font-medium rounded-full mb-4">
-                  {post.category}
-                </span>
+              {/* Article Card - Contains Header + Content */}
+              <div className="bg-secondary/50 backdrop-blur-sm border border-border/50 rounded-2xl sm:rounded-3xl overflow-hidden mb-8 sm:mb-10">
+                {/* Header Section */}
+                <header className="p-5 sm:p-8 lg:p-10 pb-0 sm:pb-0 lg:pb-0">
+                  {/* Category */}
+                  <span className="inline-block px-3 py-1 bg-primary/20 text-primary text-xs sm:text-sm font-medium rounded-full mb-4">
+                    {post.category}
+                  </span>
 
-                {/* Title */}
-                <h1 className="text-xl xs:text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground leading-tight mb-4 sm:mb-6">
-                  {post.title}
-                </h1>
+                  {/* Title */}
+                  <h1 className="text-xl xs:text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground leading-tight mb-4 sm:mb-6">
+                    {post.title}
+                  </h1>
 
-                {/* Excerpt */}
-                <p className="text-muted-foreground text-sm sm:text-base lg:text-lg leading-relaxed mb-6 sm:mb-8">
-                  {post.excerpt}
-                </p>
+                  {/* Excerpt */}
+                  <p className="text-muted-foreground text-sm sm:text-base lg:text-lg leading-relaxed mb-6 sm:mb-8">
+                    {post.excerpt}
+                  </p>
 
-                {/* Meta & Share */}
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6 pt-4 sm:pt-6 border-t border-border/50">
-                  <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1.5">
-                      <User className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                      <span>Tech Agent Labs</span>
+                  {/* Meta & Share */}
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6 pb-6 sm:pb-8 border-b border-border/50">
+                    <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
+                      <div className="flex items-center gap-1.5">
+                        <User className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                        <span>Tech Agent Labs</span>
+                      </div>
+                      <time dateTime={post.created_at} className="flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                        {format(new Date(post.created_at), "MMMM d, yyyy")}
+                      </time>
+                      <span className="flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                        {post.read_time || "5 min read"}
+                      </span>
                     </div>
-                    <time dateTime={post.created_at} className="flex items-center gap-1.5">
-                      <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                      {format(new Date(post.created_at), "MMMM d, yyyy")}
-                    </time>
-                    <span className="flex items-center gap-1.5">
-                      <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                      {post.read_time || "5 min read"}
-                    </span>
-                  </div>
 
-                  {/* Share Buttons */}
-                  <div className="flex items-center gap-1 sm:gap-2">
-                    <span className="text-xs text-muted-foreground mr-1 sm:mr-2 hidden sm:inline">Share:</span>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 sm:h-9 sm:w-9"
-                      onClick={() => handleShare("twitter")}
-                      aria-label="Share on Twitter"
-                    >
-                      <Twitter className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 sm:h-9 sm:w-9"
-                      onClick={() => handleShare("linkedin")}
-                      aria-label="Share on LinkedIn"
-                    >
-                      <Linkedin className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 sm:h-9 sm:w-9"
-                      onClick={() => handleShare("facebook")}
-                      aria-label="Share on Facebook"
-                    >
-                      <Facebook className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 sm:h-9 sm:w-9"
-                      onClick={() => handleShare("copy")}
-                      aria-label="Copy link"
-                    >
-                      {copied ? <Check className="w-4 h-4 text-green-500" /> : <Link2 className="w-4 h-4" />}
-                    </Button>
-                    {typeof navigator !== "undefined" && navigator.share && (
+                    {/* Share Buttons */}
+                    <div className="flex items-center gap-1 sm:gap-2">
+                      <span className="text-xs text-muted-foreground mr-1 sm:mr-2 hidden sm:inline">Share:</span>
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 sm:h-9 sm:w-9 sm:hidden"
-                        onClick={() => handleShare("native")}
-                        aria-label="Share"
+                        className="h-8 w-8 sm:h-9 sm:w-9"
+                        onClick={() => handleShare("twitter")}
+                        aria-label="Share on Twitter"
                       >
-                        <Share2 className="w-4 h-4" />
+                        <Twitter className="w-4 h-4" />
                       </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 sm:h-9 sm:w-9"
+                        onClick={() => handleShare("linkedin")}
+                        aria-label="Share on LinkedIn"
+                      >
+                        <Linkedin className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 sm:h-9 sm:w-9"
+                        onClick={() => handleShare("facebook")}
+                        aria-label="Share on Facebook"
+                      >
+                        <Facebook className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 sm:h-9 sm:w-9"
+                        onClick={() => handleShare("copy")}
+                        aria-label="Copy link"
+                      >
+                        {copied ? <Check className="w-4 h-4 text-green-500" /> : <Link2 className="w-4 h-4" />}
+                      </Button>
+                      {typeof navigator !== "undefined" && navigator.share && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 sm:h-9 sm:w-9 sm:hidden"
+                          onClick={() => handleShare("native")}
+                          aria-label="Share"
+                        >
+                          <Share2 className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </header>
+
+                {/* Article Content - Inside Card */}
+                <div className="p-5 sm:p-8 lg:p-10 pt-6 sm:pt-8 lg:pt-10">
+                  <div className="prose prose-invert prose-sm sm:prose-base lg:prose-lg max-w-none
+                    /* Headings */
+                    prose-headings:text-foreground 
+                    prose-headings:font-bold 
+                    prose-h2:text-xl prose-h2:sm:text-2xl prose-h2:lg:text-3xl
+                    prose-h2:mt-10 prose-h2:mb-6
+                    prose-h2:pt-6 prose-h2:border-t prose-h2:border-border/30
+                    prose-h3:text-lg prose-h3:sm:text-xl prose-h3:lg:text-2xl
+                    prose-h3:mt-8 prose-h3:mb-4
+                    /* Paragraphs */
+                    prose-p:text-foreground/90 
+                    prose-p:leading-[1.8] 
+                    prose-p:mb-6
+                    prose-p:text-base prose-p:sm:text-lg
+                    /* First paragraph styling */
+                    [&>p:first-of-type]:text-lg [&>p:first-of-type]:sm:text-xl
+                    [&>p:first-of-type]:text-foreground
+                    [&>p:first-of-type]:leading-relaxed
+                    [&>p:first-of-type]:font-medium
+                    /* Strong text */
+                    prose-strong:text-foreground 
+                    prose-strong:font-semibold
+                    /* Links */
+                    prose-a:text-primary 
+                    prose-a:underline-offset-4
+                    prose-a:decoration-primary/50
+                    hover:prose-a:decoration-primary
+                    /* Lists */
+                    prose-ul:text-foreground/90 
+                    prose-ul:my-6
+                    prose-ul:pl-0
+                    prose-ol:text-foreground/90 
+                    prose-ol:my-6
+                    prose-li:my-2
+                    prose-li:marker:text-primary
+                    prose-li:leading-relaxed
+                    /* Code */
+                    prose-code:text-primary 
+                    prose-code:bg-muted 
+                    prose-code:px-1.5 
+                    prose-code:py-0.5 
+                    prose-code:rounded 
+                    prose-code:text-sm 
+                    prose-pre:bg-muted 
+                    prose-pre:my-6
+                    /* Blockquotes */
+                    prose-blockquote:border-l-4
+                    prose-blockquote:border-l-primary 
+                    prose-blockquote:bg-primary/5
+                    prose-blockquote:py-4
+                    prose-blockquote:px-6
+                    prose-blockquote:rounded-r-xl
+                    prose-blockquote:text-foreground/80 
+                    prose-blockquote:italic
+                    prose-blockquote:my-8
+                    prose-blockquote:not-italic
+                    /* Images */
+                    prose-img:rounded-xl
+                    prose-img:my-8
+                  ">
+                    {post.content ? (
+                      <ReactMarkdown
+                        components={{
+                          h2({ node, children, ...props }) {
+                            const text = String(children);
+                            const id = text
+                              .toLowerCase()
+                              .replace(/[^a-z0-9\s-]/g, "")
+                              .replace(/\s+/g, "-")
+                              .replace(/-+/g, "-");
+                            return (
+                              <h2 id={id} className="scroll-mt-24" {...props}>
+                                {children}
+                              </h2>
+                            );
+                          },
+                          h3({ node, children, ...props }) {
+                            const text = String(children);
+                            const id = text
+                              .toLowerCase()
+                              .replace(/[^a-z0-9\s-]/g, "")
+                              .replace(/\s+/g, "-")
+                              .replace(/-+/g, "-");
+                            return (
+                              <h3 id={id} className="scroll-mt-24" {...props}>
+                                {children}
+                              </h3>
+                            );
+                          },
+                          p({ node, children, ...props }) {
+                            return (
+                              <p className="text-foreground/90" {...props}>
+                                {children}
+                              </p>
+                            );
+                          },
+                          ul({ node, children, ...props }) {
+                            return (
+                              <ul className="space-y-3 list-none" {...props}>
+                                {children}
+                              </ul>
+                            );
+                          },
+                          li({ node, children, ...props }) {
+                            return (
+                              <li className="flex items-start gap-3" {...props}>
+                                <span className="inline-block w-2 h-2 rounded-full bg-primary mt-2.5 flex-shrink-0" />
+                                <span>{children}</span>
+                              </li>
+                            );
+                          },
+                          blockquote({ node, children, ...props }) {
+                            return (
+                              <blockquote className="border-l-4 border-primary bg-primary/5 py-4 px-6 rounded-r-xl my-8" {...props}>
+                                {children}
+                              </blockquote>
+                            );
+                          },
+                          code({ node, className, children, ...props }) {
+                            const match = /language-(\w+)/.exec(className || "");
+                            const isInline = !match && !className;
+                            return !isInline && match ? (
+                              <SyntaxHighlighter
+                                style={oneDark}
+                                language={match[1]}
+                                PreTag="div"
+                                className="rounded-xl !bg-muted text-sm my-6"
+                              >
+                                {String(children).replace(/\n$/, "")}
+                              </SyntaxHighlighter>
+                            ) : (
+                              <code className={className} {...props}>
+                                {children}
+                              </code>
+                            );
+                          },
+                        }}
+                      >
+                        {post.content}
+                      </ReactMarkdown>
+                    ) : (
+                      <p className="text-muted-foreground italic">Full content coming soon...</p>
                     )}
                   </div>
                 </div>
-              </header>
-
-              {/* Article Content */}
-              <div className="prose prose-invert prose-sm sm:prose-base lg:prose-lg max-w-none mb-12 sm:mb-16 prose-headings:text-foreground prose-headings:font-bold prose-p:text-foreground/90 prose-p:leading-relaxed prose-strong:text-foreground prose-a:text-primary hover:prose-a:text-primary/80 prose-ul:text-foreground/90 prose-ol:text-foreground/90 prose-li:marker:text-primary prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-pre:bg-muted prose-blockquote:border-l-primary prose-blockquote:text-foreground/80 prose-blockquote:italic prose-img:rounded-xl">
-                {post.content ? (
-                  <ReactMarkdown
-                    components={{
-                      h2({ node, children, ...props }) {
-                        const text = String(children);
-                        const id = text
-                          .toLowerCase()
-                          .replace(/[^a-z0-9\s-]/g, "")
-                          .replace(/\s+/g, "-")
-                          .replace(/-+/g, "-");
-                        return <h2 id={id} {...props}>{children}</h2>;
-                      },
-                      h3({ node, children, ...props }) {
-                        const text = String(children);
-                        const id = text
-                          .toLowerCase()
-                          .replace(/[^a-z0-9\s-]/g, "")
-                          .replace(/\s+/g, "-")
-                          .replace(/-+/g, "-");
-                        return <h3 id={id} {...props}>{children}</h3>;
-                      },
-                      code({ node, className, children, ...props }) {
-                        const match = /language-(\w+)/.exec(className || "");
-                        const isInline = !match && !className;
-                        return !isInline && match ? (
-                          <SyntaxHighlighter
-                            style={oneDark}
-                            language={match[1]}
-                            PreTag="div"
-                            className="rounded-xl !bg-muted text-sm"
-                          >
-                            {String(children).replace(/\n$/, "")}
-                          </SyntaxHighlighter>
-                        ) : (
-                          <code className={className} {...props}>
-                            {children}
-                          </code>
-                        );
-                      },
-                    }}
-                  >
-                    {post.content}
-                  </ReactMarkdown>
-                ) : (
-                  <p className="text-muted-foreground italic">Full content coming soon...</p>
-                )}
               </div>
 
               {/* CTA Section with Backlinks */}
