@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Calendar, Clock, User, Home, ArrowLeft, Share2, Twitter, Linkedin, Facebook, Link2, Check, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,8 @@ import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { toast } from "sonner";
+import ReadingProgress from "@/components/blog/ReadingProgress";
+import TableOfContents from "@/components/blog/TableOfContents";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -40,6 +42,7 @@ const BlogPostPage = () => {
   const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const articleRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
@@ -171,6 +174,7 @@ const BlogPostPage = () => {
       <StructuredData type="BlogPosting" data={articleSchema} id={`article-${post.id}`} />
 
       <div className="min-h-screen bg-background">
+        <ReadingProgress targetRef={articleRef} />
         <Navbar />
 
         <main className="pt-20 sm:pt-24">
@@ -184,8 +188,10 @@ const BlogPostPage = () => {
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
           </div>
 
-          <article className="container mx-auto px-4 sm:px-6 lg:px-8 -mt-20 sm:-mt-24 relative z-10">
-            <div className="max-w-4xl mx-auto">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 -mt-20 sm:-mt-24 relative z-10">
+            <div className="flex gap-8">
+              {/* Main Content */}
+              <article ref={articleRef} className="flex-1 max-w-4xl">
               {/* Breadcrumb */}
               <nav aria-label="Breadcrumb" className="mb-4 sm:mb-6">
                 <Breadcrumb>
@@ -316,6 +322,24 @@ const BlogPostPage = () => {
                 {post.content ? (
                   <ReactMarkdown
                     components={{
+                      h2({ node, children, ...props }) {
+                        const text = String(children);
+                        const id = text
+                          .toLowerCase()
+                          .replace(/[^a-z0-9\s-]/g, "")
+                          .replace(/\s+/g, "-")
+                          .replace(/-+/g, "-");
+                        return <h2 id={id} {...props}>{children}</h2>;
+                      },
+                      h3({ node, children, ...props }) {
+                        const text = String(children);
+                        const id = text
+                          .toLowerCase()
+                          .replace(/[^a-z0-9\s-]/g, "")
+                          .replace(/\s+/g, "-")
+                          .replace(/-+/g, "-");
+                        return <h3 id={id} {...props}>{children}</h3>;
+                      },
                       code({ node, className, children, ...props }) {
                         const match = /language-(\w+)/.exec(className || "");
                         const isInline = !match && !className;
@@ -466,6 +490,7 @@ const BlogPostPage = () => {
               )}
 
               {/* Back to Blog Link */}
+              {/* Back to Blog Link */}
               <div className="text-center pb-12 sm:pb-16">
                 <Link 
                   to="/blog"
@@ -475,8 +500,19 @@ const BlogPostPage = () => {
                   View all articles
                 </Link>
               </div>
+              </article>
+
+              {/* Table of Contents - Desktop Sidebar */}
+              <div className="hidden lg:block">
+                <TableOfContents content={post.content} />
+              </div>
             </div>
-          </article>
+          </div>
+
+          {/* Mobile Table of Contents */}
+          <div className="lg:hidden">
+            <TableOfContents content={post.content} />
+          </div>
         </main>
 
         <Footer />
