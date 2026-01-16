@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Calendar, Clock, ArrowRight, Loader2 } from "lucide-react";
+import { Calendar, Clock, ArrowRight, Loader2, Share2, Link2, Twitter, Linkedin, Facebook, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
@@ -11,8 +11,15 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import BlogPostModal from "./BlogPostModal";
 import Autoplay from "embla-carousel-autoplay";
+import { useToast } from "@/hooks/use-toast";
 
 interface BlogPost {
   id: string;
@@ -30,10 +37,40 @@ const BlogSection = () => {
   const [loading, setLoading] = useState(true);
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const { toast } = useToast();
   
   const autoplayPlugin = useRef(
     Autoplay({ delay: 4000, stopOnInteraction: true })
   );
+
+  const getPostUrl = (postId: string) => {
+    return `${window.location.origin}/blog/${postId}`;
+  };
+
+  const handleCopyLink = async (postId: string) => {
+    const url = getPostUrl(postId);
+    await navigator.clipboard.writeText(url);
+    setCopiedId(postId);
+    toast({
+      title: "Link copied!",
+      description: "Article link copied to clipboard",
+    });
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const handleShare = (platform: string, post: BlogPost) => {
+    const url = getPostUrl(post.id);
+    const text = post.title;
+    
+    const shareUrls: Record<string, string> = {
+      twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
+      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+    };
+    
+    window.open(shareUrls[platform], '_blank', 'width=600,height=400');
+  };
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -110,34 +147,75 @@ const BlogSection = () => {
                       </div>
 
                       {/* Content */}
-                      <div className="p-5 sm:p-6 flex flex-col h-[calc(100%-12rem)]">
+                      <div className="p-5 sm:p-6 flex flex-col">
                         {/* Title */}
                         <h3 className="text-lg font-semibold text-foreground mb-3 line-clamp-2 group-hover:text-primary transition-colors">
                           {post.title}
                         </h3>
 
-                        {/* Description - Clean, human-friendly text */}
-                        <p className="text-sm text-muted-foreground leading-relaxed mb-4 flex-grow line-clamp-4">
+                        {/* Description - Extended paragraph preview */}
+                        <p className="text-sm text-muted-foreground leading-relaxed mb-4 line-clamp-6">
                           {post.excerpt}
                         </p>
 
-                        {/* Meta & Action */}
-                        <div className="flex items-center justify-between mt-auto pt-3 border-t border-border/50">
-                          <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                            <span className="flex items-center gap-1">
-                              <Calendar className="w-3 h-3" />
-                              {format(new Date(post.created_at), "MMM d")}
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
-                              {post.read_time || "5 min"}
-                            </span>
+                        {/* Meta info */}
+                        <div className="flex items-center gap-3 text-xs text-muted-foreground mb-4">
+                          <span className="flex items-center gap-1">
+                            <Calendar className="w-3 h-3" />
+                            {format(new Date(post.created_at), "MMM d, yyyy")}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            {post.read_time || "5 min read"}
+                          </span>
+                        </div>
+
+                        {/* Action Tools */}
+                        <div className="flex items-center justify-between pt-3 border-t border-border/50">
+                          <div className="flex items-center gap-1">
+                            {/* Share Dropdown */}
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <button className="p-2 rounded-lg hover:bg-secondary/80 text-muted-foreground hover:text-foreground transition-colors">
+                                  <Share2 className="w-4 h-4" />
+                                </button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="start" className="w-40">
+                                <DropdownMenuItem onClick={() => handleShare('twitter', post)} className="cursor-pointer">
+                                  <Twitter className="w-4 h-4 mr-2" />
+                                  Twitter
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleShare('linkedin', post)} className="cursor-pointer">
+                                  <Linkedin className="w-4 h-4 mr-2" />
+                                  LinkedIn
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleShare('facebook', post)} className="cursor-pointer">
+                                  <Facebook className="w-4 h-4 mr-2" />
+                                  Facebook
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+
+                            {/* Copy Link Button */}
+                            <button 
+                              onClick={() => handleCopyLink(post.id)}
+                              className="p-2 rounded-lg hover:bg-secondary/80 text-muted-foreground hover:text-foreground transition-colors"
+                              title="Copy link"
+                            >
+                              {copiedId === post.id ? (
+                                <Check className="w-4 h-4 text-primary" />
+                              ) : (
+                                <Link2 className="w-4 h-4" />
+                              )}
+                            </button>
                           </div>
+
+                          {/* Read Button */}
                           <button
                             onClick={() => handleReadMore(post)}
-                            className="inline-flex items-center gap-1 text-xs text-primary font-medium hover:gap-2 transition-all"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-primary font-medium bg-primary/10 rounded-lg hover:bg-primary/20 transition-colors"
                           >
-                            Read
+                            Read Article
                             <ArrowRight className="w-3 h-3" />
                           </button>
                         </div>
