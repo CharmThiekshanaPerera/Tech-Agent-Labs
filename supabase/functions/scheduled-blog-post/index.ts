@@ -352,16 +352,110 @@ Requirements:
 
     console.log("[Scheduled] Blog post created successfully:", insertedPost.id, insertedPost.title);
 
+    const postUrl = `https://techagentlabs.lovable.app/blog/${insertedPost.id}`;
+
+    // Trigger social media sharing
+    let socialResults: any[] = [];
+    try {
+      console.log("[Scheduled] Triggering social media sharing...");
+      const shareResponse = await fetch(`${SUPABASE_URL}/functions/v1/share-blog-social`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+        },
+        body: JSON.stringify({
+          postId: insertedPost.id,
+          title: insertedPost.title,
+          excerpt: blogData.excerpt,
+          category: insertedPost.category,
+          imageUrl: insertedPost.image_url,
+          postUrl,
+        }),
+      });
+
+      if (shareResponse.ok) {
+        const shareData = await shareResponse.json();
+        socialResults = shareData.results || [];
+        console.log("[Scheduled] Social sharing completed:", shareData);
+      } else {
+        console.error("[Scheduled] Social sharing failed:", shareResponse.status);
+      }
+    } catch (shareError) {
+      console.error("[Scheduled] Error triggering social share:", shareError);
+    }
+
+    // Send admin notification
+    try {
+      console.log("[Scheduled] Sending admin notification...");
+      const notifyResponse = await fetch(`${SUPABASE_URL}/functions/v1/notify-admin-blog`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+        },
+        body: JSON.stringify({
+          postId: insertedPost.id,
+          title: insertedPost.title,
+          excerpt: blogData.excerpt,
+          category: insertedPost.category,
+          imageUrl: insertedPost.image_url,
+          socialResults,
+        }),
+      });
+
+      if (notifyResponse.ok) {
+        console.log("[Scheduled] Admin notification sent successfully");
+      } else {
+        console.error("[Scheduled] Admin notification failed:", notifyResponse.status);
+      }
+    } catch (notifyError) {
+      console.error("[Scheduled] Error sending admin notification:", notifyError);
+    }
+
+    // Send newsletter notification to subscribers
+    try {
+      console.log("[Scheduled] Sending newsletter notification...");
+      const newsletterResponse = await fetch(`${SUPABASE_URL}/functions/v1/send-blog-notification`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+        },
+        body: JSON.stringify({
+          postId: insertedPost.id,
+          title: insertedPost.title,
+          excerpt: blogData.excerpt,
+          category: insertedPost.category,
+          imageUrl: insertedPost.image_url,
+        }),
+      });
+
+      if (newsletterResponse.ok) {
+        const newsletterData = await newsletterResponse.json();
+        console.log("[Scheduled] Newsletter notification sent:", newsletterData);
+      } else {
+        console.error("[Scheduled] Newsletter notification failed:", newsletterResponse.status);
+      }
+    } catch (newsletterError) {
+      console.error("[Scheduled] Error sending newsletter notification:", newsletterError);
+    }
+
     return new Response(
       JSON.stringify({
         success: true,
-        message: "Scheduled blog post generated with image and published successfully",
+        message: "Scheduled blog post generated, published, and shared successfully",
         post: {
           id: insertedPost.id,
           title: insertedPost.title,
           category: insertedPost.category,
           image_url: insertedPost.image_url,
           created_at: insertedPost.created_at,
+        },
+        automation: {
+          socialSharing: socialResults.length > 0 ? "triggered" : "no webhooks configured",
+          adminNotification: "sent",
+          newsletterNotification: "sent",
         },
       }),
       {
