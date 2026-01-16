@@ -14,3 +14,9 @@ verify_jwt = false
 
 [functions.send-blog-notification]
 verify_jwt = false
+
+[functions.share-blog-social]
+verify_jwt = false
+
+[functions.notify-admin-blog]
+verify_jwt = false

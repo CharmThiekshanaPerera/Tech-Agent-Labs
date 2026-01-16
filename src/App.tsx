@@ -19,6 +19,7 @@ import AdminSettings from "./pages/admin/AdminSettings";
 import AdminResetPassword from "./pages/admin/AdminResetPassword";
 import AdminAnalytics from "./pages/admin/AdminAnalytics";
 import AdminNewsletter from "./pages/admin/AdminNewsletter";
+import AdminSocialAutomation from "./pages/admin/AdminSocialAutomation";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ const App = () => (
           <Route path="/admin/analytics" element={<AdminAnalytics />} />
           <Route path="/admin/blog" element={<AdminBlogPosts />} />
           <Route path="/admin/newsletter" element={<AdminNewsletter />} />
+          <Route path="/admin/social" element={<AdminSocialAutomation />} />
           <Route path="/admin/testimonials" element={<AdminTestimonials />} />
           <Route path="/admin/demos" element={<AdminDemos />} />
           <Route path="/admin/messages" element={<AdminMessages />} />

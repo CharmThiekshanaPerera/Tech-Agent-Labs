@@ -221,6 +221,71 @@ export type Database = {
         }
         Relationships: []
       }
+      social_share_logs: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string | null
+          results: Json | null
+          shared_at: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id?: string | null
+          results?: Json | null
+          shared_at?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string | null
+          results?: Json | null
+          shared_at?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_share_logs_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "blog_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      social_webhooks: {
+        Row: {
+          created_at: string
+          description: string | null
+          enabled: boolean | null
+          id: string
+          platform: string
+          updated_at: string
+          webhook_url: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          enabled?: boolean | null
+          id?: string
+          platform: string
+          updated_at?: string
+          webhook_url: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          enabled?: boolean | null
+          id?: string
+          platform?: string
+          updated_at?: string
+          webhook_url?: string
+        }
+        Relationships: []
+      }
       testimonials: {
         Row: {
           avatar_url: string | null
