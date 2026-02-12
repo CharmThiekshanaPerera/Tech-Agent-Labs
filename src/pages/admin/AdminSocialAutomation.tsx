@@ -154,20 +154,26 @@ const AdminSocialAutomation = () => {
   const testWebhook = async (webhook: SocialWebhook) => {
     setTestingId(webhook.id);
     try {
-      await fetch(webhook.webhook_url, {
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const response = await fetch(`${supabaseUrl}/functions/v1/share-blog-social`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        },
         body: JSON.stringify({
-          test: true,
-          timestamp: new Date().toISOString(),
-          source: "Tech Agent Labs - Test",
+          postId: "test-" + Date.now(),
           title: "Test Blog Post",
           excerpt: "This is a test notification from your social automation setup.",
+          category: "Test",
           postUrl: "https://techagentlabs.lovable.app/blog",
         }),
       });
-      toast.success("Test request sent! Check your webhook destination.");
+      if (response.ok) {
+        toast.success("Test request sent! Check your webhook destination.");
+      } else {
+        toast.error("Test failed: " + response.statusText);
+      }
     } catch (error) {
       toast.error("Failed to send test request");
     }
