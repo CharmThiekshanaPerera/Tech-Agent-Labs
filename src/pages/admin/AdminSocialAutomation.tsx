@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Webhook, Plus, Trash2, ToggleLeft, ToggleRight, ExternalLink, Copy, Check, RefreshCw } from "lucide-react";
+import { Webhook, Plus, Trash2, ToggleLeft, ToggleRight, ExternalLink, Copy, Check, RefreshCw, Sparkles, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -68,6 +68,7 @@ const AdminSocialAutomation = () => {
   });
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [testingId, setTestingId] = useState<string | null>(null);
+  const [generating, setGenerating] = useState(false);
 
   useEffect(() => {
     if (!adminLoading && !isAdmin) {
@@ -180,6 +181,50 @@ const AdminSocialAutomation = () => {
     setTestingId(null);
   };
 
+  const handleGenerateBlogNow = async () => {
+    setGenerating(true);
+    const toastId = toast.loading("Generating blog post with AI... This may take up to 60 seconds.");
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.dismiss(toastId);
+        toast.error("You must be logged in as admin");
+        setGenerating(false);
+        return;
+      }
+
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const response = await fetch(`${supabaseUrl}/functions/v1/admin-generate-blog-now`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        },
+      });
+
+      const result = await response.json();
+      toast.dismiss(toastId);
+
+      if (result.ok) {
+        const failedMsg = result.failedTargets?.length
+          ? ` (${result.failedTargets.join(", ")} failed)`
+          : "";
+        toast.success(
+          `Blog post "${result.title}" published! Delivered to ${result.deliveredCount} webhook(s)${failedMsg}.`,
+          { duration: 8000 }
+        );
+      } else {
+        toast.error(`Generation failed: ${result.error}`);
+      }
+    } catch (error) {
+      toast.dismiss(toastId);
+      toast.error("Failed to generate blog post");
+      console.error(error);
+    }
+    setGenerating(false);
+  };
+
   const getPlatformInfo = (platform: string) => {
     return PLATFORMS.find((p) => p.value === platform) || { value: platform, label: platform, icon: "🔗" };
   };
@@ -208,73 +253,93 @@ const AdminSocialAutomation = () => {
               Configure webhooks to automatically share blog posts to social media platforms
             </p>
           </div>
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="gap-2">
-                <Plus className="w-4 h-4" />
-                Add Webhook
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Add Social Media Webhook</DialogTitle>
-                <DialogDescription>
-                  Configure a webhook to automatically share new blog posts
-                </DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4 mt-4">
-                <div>
-                  <Label>Platform</Label>
-                  <Select
-                    value={newWebhook.platform}
-                    onValueChange={(value) => setNewWebhook({ ...newWebhook, platform: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select platform" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {PLATFORMS.map((platform) => (
-                        <SelectItem key={platform.value} value={platform.value}>
-                          <span className="flex items-center gap-2">
-                            <span>{platform.icon}</span>
-                            <span>{platform.label}</span>
-                          </span>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>Webhook URL</Label>
-                  <Input
-                    placeholder="https://hooks.zapier.com/hooks/catch/..."
-                    value={newWebhook.webhook_url}
-                    onChange={(e) => setNewWebhook({ ...newWebhook, webhook_url: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <Label>Description (optional)</Label>
-                  <Input
-                    placeholder="e.g., Posts to Twitter and LinkedIn"
-                    value={newWebhook.description}
-                    onChange={(e) => setNewWebhook({ ...newWebhook, description: e.target.value })}
-                  />
-                </div>
-                <Button onClick={handleAddWebhook} className="w-full">
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              className="gap-2"
+              onClick={handleGenerateBlogNow}
+              disabled={generating}
+            >
+              {generating ? (
+                <RefreshCw className="w-4 h-4 animate-spin" />
+              ) : (
+                <Sparkles className="w-4 h-4" />
+              )}
+              {generating ? "Generating..." : "Generate Blog Now"}
+            </Button>
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className="gap-2">
+                  <Plus className="w-4 h-4" />
                   Add Webhook
                 </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Add Social Media Webhook</DialogTitle>
+                  <DialogDescription>
+                    Configure a webhook to automatically share new blog posts
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 mt-4">
+                  <div>
+                    <Label>Platform</Label>
+                    <Select
+                      value={newWebhook.platform}
+                      onValueChange={(value) => setNewWebhook({ ...newWebhook, platform: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select platform" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {PLATFORMS.map((platform) => (
+                          <SelectItem key={platform.value} value={platform.value}>
+                            <span className="flex items-center gap-2">
+                              <span>{platform.icon}</span>
+                              <span>{platform.label}</span>
+                            </span>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label>Webhook URL</Label>
+                    <Input
+                      placeholder="https://hooks.zapier.com/hooks/catch/..."
+                      value={newWebhook.webhook_url}
+                      onChange={(e) => setNewWebhook({ ...newWebhook, webhook_url: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <Label>Description (optional)</Label>
+                    <Input
+                      placeholder="e.g., Posts to Twitter and LinkedIn"
+                      value={newWebhook.description}
+                      onChange={(e) => setNewWebhook({ ...newWebhook, description: e.target.value })}
+                    />
+                  </div>
+                  <Button onClick={handleAddWebhook} className="w-full">
+                    Add Webhook
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
 
-        {/* Info Card */}
+        {/* Generate Blog Info */}
         <div className="bg-primary/10 border border-primary/20 rounded-xl p-4">
           <h3 className="font-semibold text-foreground mb-2">📱 How it works</h3>
           <p className="text-sm text-muted-foreground">
-            When a new blog post is automatically generated and published, the system will send a webhook request 
-            to all enabled platforms with the post details (title, excerpt, URL, image). You can use services like 
-            Zapier, Make, or n8n to then post to Twitter, LinkedIn, Facebook, and more.
+            Blog posts are auto-generated daily at 9 AM UTC. Use <strong>"Generate Blog Now"</strong> to manually
+            trigger a new AI-written post that gets published and shared to all enabled webhooks immediately.
+            The webhook payload includes top-level fields: <code className="text-xs bg-muted px-1 py-0.5 rounded">postId</code>,{" "}
+            <code className="text-xs bg-muted px-1 py-0.5 rounded">title</code>,{" "}
+            <code className="text-xs bg-muted px-1 py-0.5 rounded">excerpt</code>,{" "}
+            <code className="text-xs bg-muted px-1 py-0.5 rounded">postUrl</code>,{" "}
+            <code className="text-xs bg-muted px-1 py-0.5 rounded">twitterText</code>,{" "}
+            <code className="text-xs bg-muted px-1 py-0.5 rounded">linkedinText</code>.
           </p>
         </div>
 
@@ -366,7 +431,7 @@ const AdminSocialAutomation = () => {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 text-red-500 hover:text-red-600"
+                            className="h-8 w-8 text-destructive hover:text-destructive/80"
                             onClick={() => deleteWebhook(webhook.id)}
                           >
                             <Trash2 className="w-4 h-4" />
@@ -392,6 +457,22 @@ const AdminSocialAutomation = () => {
             </Button>
           </div>
         )}
+
+        {/* Troubleshooting */}
+        <div className="bg-accent/30 border border-accent/50 rounded-xl p-4 flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-accent-foreground flex-shrink-0 mt-0.5" />
+          <div>
+            <h4 className="font-semibold text-foreground text-sm mb-1">Troubleshooting: Make.com only shows "value" field?</h4>
+            <p className="text-sm text-muted-foreground">
+              If Make.com shows your webhook data as a single <code className="text-xs bg-muted px-1 py-0.5 rounded">value</code> field instead of
+              individual fields like <code className="text-xs bg-muted px-1 py-0.5 rounded">title</code>,{" "}
+              <code className="text-xs bg-muted px-1 py-0.5 rounded">excerpt</code>, and{" "}
+              <code className="text-xs bg-muted px-1 py-0.5 rounded">postUrl</code>, click{" "}
+              <strong>"Re-determine data structure"</strong> on your Make.com webhook module, then click the 🔄 test button here to send a fresh payload.
+              Make will re-parse the JSON and show each field separately.
+            </p>
+          </div>
+        </div>
 
         {/* Setup Guide */}
         <div className="bg-secondary/30 border border-border/50 rounded-xl p-6 space-y-4">

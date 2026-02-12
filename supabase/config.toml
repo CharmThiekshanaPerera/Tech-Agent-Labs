@@ -20,3 +20,6 @@ verify_jwt = false
 
 [functions.notify-admin-blog]
 verify_jwt = false
+
+[functions.admin-generate-blog-now]
+verify_jwt = false
