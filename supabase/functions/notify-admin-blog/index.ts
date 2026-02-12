@@ -71,8 +71,8 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`[Admin Notify] Sending notification to ${adminEmails.length} admin(s)`);
 
-    const postUrl = `https://techagentlabs.lovable.app/blog/${postId}`;
-    const adminUrl = `https://techagentlabs.lovable.app/admin/blog`;
+    const postUrl = `https://techagentlabs.com/blog/${postId}`;
+    const adminUrl = `https://techagentlabs.com/admin/blog`;
     
     // Format social sharing results
     let socialSummary = "";

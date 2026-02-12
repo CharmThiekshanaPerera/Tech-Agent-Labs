@@ -352,7 +352,7 @@ Requirements:
 
     console.log("[Scheduled] Blog post created successfully:", insertedPost.id, insertedPost.title);
 
-    const postUrl = `https://techagentlabs.lovable.app/blog/${insertedPost.id}`;
+    const postUrl = `https://techagentlabs.com/blog/${insertedPost.id}`;
 
     // Trigger social media sharing
     let socialResults: any[] = [];
