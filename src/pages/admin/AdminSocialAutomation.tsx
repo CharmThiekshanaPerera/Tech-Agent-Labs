@@ -167,6 +167,7 @@ const AdminSocialAutomation = () => {
           title: "Test Blog Post",
           excerpt: "This is a test notification from your social automation setup.",
           category: "Test",
+          imageUrl: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&h=630&fit=crop",
           postUrl: "https://techagentlabs.lovable.app/blog",
         }),
       });
