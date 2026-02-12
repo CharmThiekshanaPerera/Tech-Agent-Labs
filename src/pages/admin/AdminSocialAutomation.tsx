@@ -339,6 +339,7 @@ const AdminSocialAutomation = () => {
             <code className="text-xs bg-muted px-1 py-0.5 rounded">title</code>,{" "}
             <code className="text-xs bg-muted px-1 py-0.5 rounded">excerpt</code>,{" "}
             <code className="text-xs bg-muted px-1 py-0.5 rounded">postUrl</code>,{" "}
+            <code className="text-xs bg-muted px-1 py-0.5 rounded">imageUrl</code>,{" "}
             <code className="text-xs bg-muted px-1 py-0.5 rounded">twitterText</code>,{" "}
             <code className="text-xs bg-muted px-1 py-0.5 rounded">linkedinText</code>.
           </p>
