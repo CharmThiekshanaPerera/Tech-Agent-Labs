@@ -250,7 +250,7 @@ Important: Return ONLY valid JSON, no markdown code blocks or extra text.`,
 
     console.log("[AdminGenerate] Post created:", post.id);
 
-    const postUrl = `https://techagentlabs.lovable.app/blog/${post.id}`;
+    const postUrl = `https://techagentlabs.com/blog/${post.id}`;
 
     // Trigger social sharing
     let deliveredCount = 0;
