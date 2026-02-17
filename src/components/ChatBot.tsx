@@ -1,56 +1,14 @@
-import { useState, useRef, useEffect } from "react";
-import { MessageCircle, X, Send, Bot, User, Sparkles } from "lucide-react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { X, Send, Bot, User, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { streamChat } from "@/lib/streamChat";
+import ReactMarkdown from "react-markdown";
 
 interface Message {
   id: string;
   role: "user" | "assistant";
   content: string;
-  timestamp: Date;
 }
-
-const mockResponses: Record<string, string> = {
-  pricing: "We offer three flexible plans:\n\n• **Starter** - $99/month for small businesses\n• **Professional** - $299/month (most popular)\n• **Enterprise** - Custom pricing for large organizations\n\nAll plans include a 14-day free trial. Would you like me to help you choose the right plan?",
-  agents: "We have 8 specialized AI agents:\n\n🤖 **Support Agent** - 24/7 customer service\n📈 **Marketing Agent** - Campaign automation\n📊 **Analytics Agent** - Data insights\n⚙️ **Operations Agent** - Workflow automation\n🤝 **Sales Agent** - Lead qualification\n✍️ **Content Agent** - Content creation\n🌐 **Web Agent** - Website management\n🛠️ **Custom Agent** - Tailored solutions\n\nWhich agent interests you most?",
-  demo: "I'd love to help you schedule a demo! You can:\n\n1. Click the 'Start a Demo' button on our homepage\n2. Fill out the contact form below\n3. Or email us directly at hello@techagentlabs.com\n\nOur team typically responds within 2 hours during business hours. What works best for you?",
-  integration: "Our AI agents integrate seamlessly with 100+ popular tools including:\n\n• **CRMs**: Salesforce, HubSpot, Pipedrive\n• **Communication**: Slack, Teams, Discord\n• **Support**: Zendesk, Intercom, Freshdesk\n• **Marketing**: Mailchimp, ActiveCampaign\n• **Productivity**: Notion, Asana, Monday\n\nNeed help with a specific integration?",
-  security: "Security is our top priority! We offer:\n\n🔒 **Enterprise-grade encryption** (AES-256)\n✅ **SOC 2 Type II certified**\n🌍 **GDPR compliant**\n🔐 **99.9% uptime guarantee**\n📝 **Full audit logging**\n\nYour data is never shared with third parties. Want to learn more about our security practices?",
-  setup: "Getting started is simple:\n\n1️⃣ **Choose your agent** from our marketplace\n2️⃣ **We handle integration** with your existing tools\n3️⃣ **Go live in 24-48 hours**\n\nMost agents are production-ready within a day. Our team provides full onboarding support. Ready to get started?",
-  support: "We provide comprehensive support:\n\n• **Starter**: Email support, 24h response\n• **Professional**: Priority email & chat, 4h response\n• **Enterprise**: 24/7 dedicated support, 1h response\n\nPlus, every customer gets dedicated onboarding and training. How can I help you today?",
-  hello: "Hello! 👋 Welcome to Tech Agent Labs! I'm your AI assistant, here to help you learn about our automation solutions.\n\nI can help you with:\n• Information about our AI agents\n• Pricing and plans\n• Integration questions\n• Scheduling a demo\n\nWhat would you like to know?",
-  default: "Thanks for your message! I'm here to help you learn about Tech Agent Labs.\n\nHere are some topics I can assist with:\n• 🤖 Our AI agents and their capabilities\n• 💰 Pricing and plans\n• 🔌 Integration options\n• 🔒 Security & compliance\n• 📅 Scheduling a demo\n\nWhat would you like to explore?"
-};
-
-const getAIResponse = (message: string): string => {
-  const lowerMessage = message.toLowerCase();
-  
-  if (lowerMessage.includes("price") || lowerMessage.includes("cost") || lowerMessage.includes("plan")) {
-    return mockResponses.pricing;
-  }
-  if (lowerMessage.includes("agent") || lowerMessage.includes("bot") || lowerMessage.includes("service")) {
-    return mockResponses.agents;
-  }
-  if (lowerMessage.includes("demo") || lowerMessage.includes("trial") || lowerMessage.includes("try")) {
-    return mockResponses.demo;
-  }
-  if (lowerMessage.includes("integrat") || lowerMessage.includes("connect") || lowerMessage.includes("tool")) {
-    return mockResponses.integration;
-  }
-  if (lowerMessage.includes("secur") || lowerMessage.includes("safe") || lowerMessage.includes("privacy") || lowerMessage.includes("gdpr")) {
-    return mockResponses.security;
-  }
-  if (lowerMessage.includes("setup") || lowerMessage.includes("start") || lowerMessage.includes("begin") || lowerMessage.includes("how")) {
-    return mockResponses.setup;
-  }
-  if (lowerMessage.includes("support") || lowerMessage.includes("help") || lowerMessage.includes("assist")) {
-    return mockResponses.support;
-  }
-  if (lowerMessage.includes("hello") || lowerMessage.includes("hi") || lowerMessage.includes("hey")) {
-    return mockResponses.hello;
-  }
-  
-  return mockResponses.default;
-};
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -58,12 +16,11 @@ const ChatBot = () => {
     {
       id: "1",
       role: "assistant",
-      content: "Hi there! 👋 I'm the Tech Agent Labs AI assistant. How can I help you today?",
-      timestamp: new Date(),
+      content: "Hi there! 👋 I'm the Tech Agent Labs AI assistant. I can help you book a demo, learn about our AI agents, or answer any questions. How can I help?",
     },
   ]);
   const [inputValue, setInputValue] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -81,35 +38,48 @@ const ChatBot = () => {
     }
   }, [isOpen]);
 
-  const handleSend = async () => {
-    if (!inputValue.trim()) return;
+  const handleSend = useCallback(async (overrideInput?: string) => {
+    const text = (overrideInput ?? inputValue).trim();
+    if (!text || isLoading) return;
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      role: "user",
-      content: inputValue,
-      timestamp: new Date(),
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
+    const userMsg: Message = { id: Date.now().toString(), role: "user", content: text };
+    const currentMessages = [...messages, userMsg];
+    setMessages(currentMessages);
     setInputValue("");
-    setIsTyping(true);
+    setIsLoading(true);
 
-    // Simulate AI thinking time
-    await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 1000));
+    let assistantSoFar = "";
 
-    const aiResponse = getAIResponse(inputValue);
-    
-    const assistantMessage: Message = {
-      id: (Date.now() + 1).toString(),
-      role: "assistant",
-      content: aiResponse,
-      timestamp: new Date(),
+    const upsertAssistant = (chunk: string) => {
+      assistantSoFar += chunk;
+      const content = assistantSoFar;
+      setMessages((prev) => {
+        const last = prev[prev.length - 1];
+        if (last?.role === "assistant" && last.id === "streaming") {
+          return prev.map((m, i) => (i === prev.length - 1 ? { ...m, content } : m));
+        }
+        return [...prev, { id: "streaming", role: "assistant", content }];
+      });
     };
 
-    setIsTyping(false);
-    setMessages((prev) => [...prev, assistantMessage]);
-  };
+    await streamChat({
+      messages: currentMessages.map((m) => ({ role: m.role, content: m.content })),
+      onDelta: upsertAssistant,
+      onDone: () => {
+        setMessages((prev) =>
+          prev.map((m) => (m.id === "streaming" ? { ...m, id: Date.now().toString() } : m))
+        );
+        setIsLoading(false);
+      },
+      onError: (error) => {
+        setMessages((prev) => [
+          ...prev.filter((m) => m.id !== "streaming"),
+          { id: Date.now().toString(), role: "assistant", content: `Sorry, I'm having trouble connecting right now. Please try again or email us at hello@techagentlabs.com.` },
+        ]);
+        setIsLoading(false);
+      },
+    });
+  }, [inputValue, isLoading, messages]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -119,9 +89,9 @@ const ChatBot = () => {
   };
 
   const suggestedQuestions = [
+    "I'd like to book a demo",
     "What agents do you offer?",
     "How much does it cost?",
-    "How do I get started?",
   ];
 
   return (
@@ -129,13 +99,12 @@ const ChatBot = () => {
       {/* Chat Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 hover:shadow-xl hover:scale-110 transition-all duration-300 flex items-center justify-center group animate-bounce ${
+        className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 hover:shadow-xl hover:scale-110 transition-all duration-300 flex items-center justify-center group ${
           isOpen ? "scale-0 opacity-0" : "scale-100 opacity-100"
         }`}
-        style={{ animationDuration: "2s", animationIterationCount: "3" }}
         aria-label="Open chat"
       >
-        <Bot className="w-6 h-6" />
+        <Sparkles className="w-6 h-6" />
         <span className="absolute -top-1 -right-1 w-4 h-4 bg-accent rounded-full flex items-center justify-center animate-ping">
           <span className="absolute w-4 h-4 bg-accent rounded-full" />
         </span>
@@ -153,13 +122,13 @@ const ChatBot = () => {
         <div className="bg-primary p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-primary-foreground/20 flex items-center justify-center">
-              <Bot className="w-5 h-5 text-primary-foreground" />
+              <Sparkles className="w-5 h-5 text-primary-foreground" />
             </div>
             <div>
-              <h3 className="font-semibold text-primary-foreground">AI Assistant</h3>
+              <h3 className="font-semibold text-primary-foreground">AI Support</h3>
               <p className="text-xs text-primary-foreground/70 flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                Online • Powered by AI
+                Powered by AI • Booking Assistant
               </p>
             </div>
           </div>
@@ -178,9 +147,7 @@ const ChatBot = () => {
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`flex gap-2 ${
-                message.role === "user" ? "flex-row-reverse" : ""
-              }`}
+              className={`flex gap-2 ${message.role === "user" ? "flex-row-reverse" : ""}`}
             >
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
@@ -202,19 +169,14 @@ const ChatBot = () => {
                     : "bg-card border border-border rounded-bl-md"
                 }`}
               >
-                <p className="text-sm whitespace-pre-wrap leading-relaxed">
-                  {message.content.split(/(\*\*.*?\*\*)/).map((part, i) => {
-                    if (part.startsWith("**") && part.endsWith("**")) {
-                      return <strong key={i}>{part.slice(2, -2)}</strong>;
-                    }
-                    return part;
-                  })}
-                </p>
+                <div className="text-sm leading-relaxed prose prose-sm dark:prose-invert max-w-none [&>p]:my-1 [&>ul]:my-1 [&>ol]:my-1">
+                  <ReactMarkdown>{message.content}</ReactMarkdown>
+                </div>
               </div>
             </div>
           ))}
 
-          {isTyping && (
+          {isLoading && messages[messages.length - 1]?.role !== "assistant" && (
             <div className="flex gap-2">
               <div className="w-8 h-8 rounded-full bg-muted border border-border flex items-center justify-center">
                 <Bot className="w-4 h-4 text-primary" />
@@ -240,10 +202,7 @@ const ChatBot = () => {
               {suggestedQuestions.map((question) => (
                 <button
                   key={question}
-                  onClick={() => {
-                    setInputValue(question);
-                    setTimeout(() => handleSend(), 100);
-                  }}
+                  onClick={() => handleSend(question)}
                   className="text-xs px-3 py-1.5 rounded-full bg-muted hover:bg-primary/10 hover:text-primary border border-border transition-colors"
                 >
                   {question}
@@ -262,19 +221,19 @@ const ChatBot = () => {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Type your message..."
+              placeholder="Ask about bookings, agents, pricing..."
               className="flex-1 px-4 py-2.5 bg-muted border border-border rounded-xl text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
             />
             <Button
-              onClick={handleSend}
-              disabled={!inputValue.trim() || isTyping}
+              onClick={() => handleSend()}
+              disabled={!inputValue.trim() || isLoading}
               className="rounded-xl px-4"
             >
               <Send className="w-4 h-4" />
             </Button>
           </div>
           <p className="text-[10px] text-muted-foreground text-center mt-2">
-            AI-powered assistant • Responses may vary
+            AI-powered booking assistant • Tech Agent Labs
           </p>
         </div>
       </div>
