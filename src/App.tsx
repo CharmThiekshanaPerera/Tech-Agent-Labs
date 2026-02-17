@@ -23,6 +23,7 @@ import AdminNewsletter from "./pages/admin/AdminNewsletter";
 import AdminSocialAutomation from "./pages/admin/AdminSocialAutomation";
 import AdminChatLogs from "./pages/admin/AdminChatLogs";
 import AdminSEO from "./pages/admin/AdminSEO";
+import AdminRevenue from "./pages/admin/AdminRevenue";
 
 const queryClient = new QueryClient();
 
@@ -52,6 +53,7 @@ const App = () => (
             <Route path="/admin/social" element={<AdminSocialAutomation />} />
             <Route path="/admin/chat-logs" element={<AdminChatLogs />} />
             <Route path="/admin/seo" element={<AdminSEO />} />
+            <Route path="/admin/revenue" element={<AdminRevenue />} />
             <Route path="/admin/testimonials" element={<AdminTestimonials />} />
             <Route path="/admin/demos" element={<AdminDemos />} />
             <Route path="/admin/messages" element={<AdminMessages />} />
