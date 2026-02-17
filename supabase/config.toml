@@ -23,3 +23,6 @@ verify_jwt = false
 
 [functions.admin-generate-blog-now]
 verify_jwt = false
+
+[functions.customer-chat]
+verify_jwt = false
