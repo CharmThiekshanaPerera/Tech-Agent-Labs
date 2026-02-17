@@ -4,11 +4,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import {
   DollarSign,
@@ -20,37 +16,33 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Download,
+  Pencil,
 } from "lucide-react";
 import { format, subMonths, startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts";
 import { toast } from "sonner";
+import RevenueEntryForm, { type RevenueFormData } from "@/components/admin/RevenueEntryForm";
 
-const AGENT_OPTIONS = [
-  "Support Agent",
-  "Marketing Agent",
-  "Analytics Agent",
-  "Operations Agent",
-  "Sales Agent",
-  "Content Agent",
-  "Web Agent",
-  "Custom Agent",
-];
+const emptyForm: RevenueFormData = {
+  type: "sale",
+  agent_name: "",
+  customer_name: "",
+  customer_email: "",
+  amount: "",
+  is_recurring: false,
+  recurring_interval: "",
+  status: "completed",
+  notes: "",
+  sale_date: format(new Date(), "yyyy-MM-dd"),
+};
 
 const AdminRevenue = () => {
   const queryClient = useQueryClient();
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [form, setForm] = useState({
-    type: "sale" as string,
-    agent_name: "",
-    customer_name: "",
-    customer_email: "",
-    amount: "",
-    is_recurring: false,
-    recurring_interval: "" as string,
-    status: "completed",
-    notes: "",
-    sale_date: format(new Date(), "yyyy-MM-dd"),
-  });
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [form, setForm] = useState<RevenueFormData>({ ...emptyForm });
+  const [editForm, setEditForm] = useState<RevenueFormData>({ ...emptyForm });
 
   const { data: entries, isLoading } = useQuery({
     queryKey: ["admin-revenue"],
@@ -82,15 +74,37 @@ const AdminRevenue = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-revenue"] });
-      setDialogOpen(false);
-      setForm({
-        type: "sale", agent_name: "", customer_name: "", customer_email: "",
-        amount: "", is_recurring: false, recurring_interval: "", status: "completed",
-        notes: "", sale_date: format(new Date(), "yyyy-MM-dd"),
-      });
+      setAddDialogOpen(false);
+      setForm({ ...emptyForm });
       toast.success("Revenue entry added");
     },
     onError: () => toast.error("Failed to add entry"),
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async () => {
+      if (!editingId) return;
+      const { error } = await supabase.from("revenue_entries").update({
+        type: editForm.type,
+        agent_name: editForm.agent_name,
+        customer_name: editForm.customer_name || null,
+        customer_email: editForm.customer_email || null,
+        amount: parseFloat(editForm.amount),
+        is_recurring: editForm.is_recurring,
+        recurring_interval: editForm.is_recurring ? editForm.recurring_interval : null,
+        status: editForm.status,
+        notes: editForm.notes || null,
+        sale_date: editForm.sale_date,
+      }).eq("id", editingId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-revenue"] });
+      setEditDialogOpen(false);
+      setEditingId(null);
+      toast.success("Entry updated");
+    },
+    onError: () => toast.error("Failed to update entry"),
   });
 
   const deleteMutation = useMutation({
@@ -103,6 +117,23 @@ const AdminRevenue = () => {
       toast.success("Entry deleted");
     },
   });
+
+  const openEdit = (entry: NonNullable<typeof entries>[number]) => {
+    setEditingId(entry.id);
+    setEditForm({
+      type: entry.type,
+      agent_name: entry.agent_name,
+      customer_name: entry.customer_name || "",
+      customer_email: entry.customer_email || "",
+      amount: String(entry.amount),
+      is_recurring: entry.is_recurring,
+      recurring_interval: entry.recurring_interval || "",
+      status: entry.status,
+      notes: entry.notes || "",
+      sale_date: entry.sale_date,
+    });
+    setEditDialogOpen(true);
+  };
 
   const stats = useMemo(() => {
     if (!entries) return { totalRevenue: 0, mrr: 0, totalSales: 0, avgDeal: 0, growth: 0 };
@@ -295,89 +326,24 @@ const AdminRevenue = () => {
             <Button size="sm" variant="outline" onClick={exportCSV} disabled={!entries?.length}>
               <Download className="w-4 h-4 mr-1" /> Export CSV
             </Button>
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
               <DialogTrigger asChild>
                 <Button size="sm"><Plus className="w-4 h-4 mr-1" /> Add Entry</Button>
               </DialogTrigger>
-            <DialogContent className="max-w-md">
-              <DialogHeader>
-                <DialogTitle>Add Revenue Entry</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label>Type</Label>
-                    <Select value={form.type} onValueChange={(v) => setForm({ ...form, type: v })}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="sale">Sale</SelectItem>
-                        <SelectItem value="subscription">Subscription</SelectItem>
-                        <SelectItem value="custom_build">Custom Build</SelectItem>
-                        <SelectItem value="refund">Refund</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label>Agent</Label>
-                    <Select value={form.agent_name} onValueChange={(v) => setForm({ ...form, agent_name: v })}>
-                      <SelectTrigger><SelectValue placeholder="Select agent" /></SelectTrigger>
-                      <SelectContent>
-                        {AGENT_OPTIONS.map((a) => (
-                          <SelectItem key={a} value={a}>{a}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label>Amount ($)</Label>
-                    <Input type="number" step="0.01" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} />
-                  </div>
-                  <div>
-                    <Label>Date</Label>
-                    <Input type="date" value={form.sale_date} onChange={(e) => setForm({ ...form, sale_date: e.target.value })} />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label>Customer Name</Label>
-                    <Input value={form.customer_name} onChange={(e) => setForm({ ...form, customer_name: e.target.value })} />
-                  </div>
-                  <div>
-                    <Label>Customer Email</Label>
-                    <Input type="email" value={form.customer_email} onChange={(e) => setForm({ ...form, customer_email: e.target.value })} />
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <label className="flex items-center gap-2 text-sm">
-                    <input type="checkbox" checked={form.is_recurring} onChange={(e) => setForm({ ...form, is_recurring: e.target.checked })} className="rounded" />
-                    Recurring
-                  </label>
-                  {form.is_recurring && (
-                    <Select value={form.recurring_interval} onValueChange={(v) => setForm({ ...form, recurring_interval: v })}>
-                      <SelectTrigger className="w-32"><SelectValue placeholder="Interval" /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="monthly">Monthly</SelectItem>
-                        <SelectItem value="yearly">Yearly</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  )}
-                </div>
-                <div>
-                  <Label>Notes</Label>
-                  <Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} rows={2} />
-                </div>
-                <Button
-                  className="w-full"
-                  onClick={() => addMutation.mutate()}
-                  disabled={!form.agent_name || !form.amount || addMutation.isPending}
-                >
-                  {addMutation.isPending ? "Adding..." : "Add Entry"}
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
+              <DialogContent className="max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Add Revenue Entry</DialogTitle>
+                </DialogHeader>
+                <RevenueEntryForm
+                  form={form}
+                  setForm={setForm}
+                  onSubmit={() => addMutation.mutate()}
+                  isPending={addMutation.isPending}
+                  submitLabel="Add Entry"
+                  pendingLabel="Adding..."
+                />
+              </DialogContent>
+            </Dialog>
           </div>
         </CardHeader>
         <CardContent>
@@ -429,14 +395,24 @@ const AdminRevenue = () => {
                         </Badge>
                       </td>
                       <td className="py-2 px-2 text-right">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7"
-                          onClick={() => deleteMutation.mutate(entry.id)}
-                        >
-                          <Trash2 className="w-3.5 h-3.5 text-muted-foreground hover:text-destructive" />
-                        </Button>
+                        <div className="flex items-center justify-end gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
+                            onClick={() => openEdit(entry)}
+                          >
+                            <Pencil className="w-3.5 h-3.5 text-muted-foreground hover:text-primary" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
+                            onClick={() => deleteMutation.mutate(entry.id)}
+                          >
+                            <Trash2 className="w-3.5 h-3.5 text-muted-foreground hover:text-destructive" />
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -446,6 +422,23 @@ const AdminRevenue = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Edit Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Revenue Entry</DialogTitle>
+          </DialogHeader>
+          <RevenueEntryForm
+            form={editForm}
+            setForm={setEditForm}
+            onSubmit={() => updateMutation.mutate()}
+            isPending={updateMutation.isPending}
+            submitLabel="Save Changes"
+            pendingLabel="Saving..."
+          />
+        </DialogContent>
+      </Dialog>
     </AdminLayout>
   );
 };
