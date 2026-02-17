@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { logAdminActivity } from "@/hooks/useAdminActivity";
 import { User } from "@supabase/supabase-js";
 
 export const useAdmin = () => {
@@ -58,6 +59,7 @@ export const useAdmin = () => {
   }, [navigate]);
 
   const signOut = async () => {
+    await logAdminActivity("logout", "Admin logged out");
     await supabase.auth.signOut();
     navigate("/admin/login");
   };
