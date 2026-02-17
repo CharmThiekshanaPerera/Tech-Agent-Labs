@@ -53,6 +53,45 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_logs: {
+        Row: {
+          created_at: string
+          first_message: string | null
+          id: string
+          ip_address: string | null
+          message_count: number
+          messages: Json
+          page_path: string | null
+          session_id: string
+          updated_at: string
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          first_message?: string | null
+          id?: string
+          ip_address?: string | null
+          message_count?: number
+          messages?: Json
+          page_path?: string | null
+          session_id: string
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          first_message?: string | null
+          id?: string
+          ip_address?: string | null
+          message_count?: number
+          messages?: Json
+          page_path?: string | null
+          session_id?: string
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       contact_messages: {
         Row: {
           created_at: string

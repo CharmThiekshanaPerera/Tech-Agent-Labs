@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { X, Send, Bot, User, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { streamChat } from "@/lib/streamChat";
+import { supabase } from "@/integrations/supabase/client";
 import ReactMarkdown from "react-markdown";
 
 interface Message {
@@ -9,6 +10,8 @@ interface Message {
   role: "user" | "assistant";
   content: string;
 }
+
+const generateSessionId = () => `chat_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,6 +26,8 @@ const ChatBot = () => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const sessionIdRef = useRef(generateSessionId());
+  const logIdRef = useRef<string | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -37,6 +42,43 @@ const ChatBot = () => {
       inputRef.current.focus();
     }
   }, [isOpen]);
+
+  const saveChat = useCallback(async (msgs: Message[]) => {
+    const chatMessages = msgs
+      .filter((m) => m.id !== "1") // exclude initial greeting
+      .map((m) => ({ role: m.role, content: m.content }));
+    if (chatMessages.length === 0) return;
+
+    const firstUserMsg = chatMessages.find((m) => m.role === "user")?.content || null;
+
+    try {
+      if (!logIdRef.current) {
+        const { data } = await supabase
+          .from("chat_logs")
+          .insert({
+            session_id: sessionIdRef.current,
+            messages: chatMessages as any,
+            message_count: chatMessages.length,
+            first_message: firstUserMsg?.slice(0, 200),
+            page_path: window.location.pathname,
+          })
+          .select("id")
+          .single();
+        if (data) logIdRef.current = data.id;
+      } else {
+        await supabase
+          .from("chat_logs")
+          .update({
+            messages: chatMessages as any,
+            message_count: chatMessages.length,
+            first_message: firstUserMsg?.slice(0, 200),
+          })
+          .eq("id", logIdRef.current);
+      }
+    } catch (e) {
+      console.error("Failed to save chat log:", e);
+    }
+  }, []);
 
   const handleSend = useCallback(async (overrideInput?: string) => {
     const text = (overrideInput ?? inputValue).trim();
@@ -66,20 +108,24 @@ const ChatBot = () => {
       messages: currentMessages.map((m) => ({ role: m.role, content: m.content })),
       onDelta: upsertAssistant,
       onDone: () => {
-        setMessages((prev) =>
-          prev.map((m) => (m.id === "streaming" ? { ...m, id: Date.now().toString() } : m))
-        );
+        setMessages((prev) => {
+          const updated = prev.map((m) => (m.id === "streaming" ? { ...m, id: Date.now().toString() } : m));
+          saveChat(updated);
+          return updated;
+        });
         setIsLoading(false);
       },
       onError: (error) => {
-        setMessages((prev) => [
-          ...prev.filter((m) => m.id !== "streaming"),
-          { id: Date.now().toString(), role: "assistant", content: `Sorry, I'm having trouble connecting right now. Please try again or email us at hello@techagentlabs.com.` },
-        ]);
+        const errorMsg: Message = { id: Date.now().toString(), role: "assistant", content: `Sorry, I'm having trouble connecting right now. Please try again or email us at hello@techagentlabs.com.` };
+        setMessages((prev) => {
+          const updated = [...prev.filter((m) => m.id !== "streaming"), errorMsg];
+          saveChat(updated);
+          return updated;
+        });
         setIsLoading(false);
       },
     });
-  }, [inputValue, isLoading, messages]);
+  }, [inputValue, isLoading, messages, saveChat]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {

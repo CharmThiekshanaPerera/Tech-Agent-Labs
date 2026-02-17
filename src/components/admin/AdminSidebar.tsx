@@ -14,6 +14,8 @@ import {
   BarChart3,
   Mail,
   Share2,
+  Bot,
+  Globe,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
@@ -26,6 +28,7 @@ interface AdminSidebarProps {
 const navItems = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
+  { name: "AI Chat Logs", href: "/admin/chat-logs", icon: Bot },
   { name: "Blog Posts", href: "/admin/blog", icon: FileText },
   { name: "Newsletter", href: "/admin/newsletter", icon: Mail },
   { name: "Social Automation", href: "/admin/social", icon: Share2 },
@@ -33,6 +36,7 @@ const navItems = [
   { name: "Demo Bookings", href: "/admin/demos", icon: Calendar },
   { name: "Messages", href: "/admin/messages", icon: MessageSquare },
   { name: "Documents", href: "/admin/documents", icon: FolderOpen },
+  { name: "SEO & Performance", href: "/admin/seo", icon: Globe },
   { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
