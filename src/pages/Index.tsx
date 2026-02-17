@@ -17,7 +17,7 @@ import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import ParticleBackground from "@/components/ParticleBackground";
 import SocialMediaWidget from "@/components/SocialMediaWidget";
-// import ScrollToTopButton from "@/components/ScrollToTopButton";
+import ScrollToTopButton from "@/components/ScrollToTopButton";
 import ChatBot from "@/components/ChatBot";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import SEOHead from "@/components/seo/SEOHead";
@@ -65,7 +65,7 @@ const Index = () => {
         <Navbar />
         <SocialMediaWidget />
         <WhatsAppButton />
-        {/* <ScrollToTopButton /> */}
+        <ScrollToTopButton />
         <ChatBot />
         <CookieConsent />
         <main className="relative z-10">
