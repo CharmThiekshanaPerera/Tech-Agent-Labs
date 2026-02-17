@@ -327,6 +327,7 @@ const AgentCard = ({
       ref={cardRef}
       className="gradient-border rounded-2xl p-5 md:p-6 card-glow hover:card-glow-hover transition-all duration-300 hover:-translate-y-1 group relative cursor-pointer"
       onClick={handleClick}
+      aria-label={`${agent.title} - ${agent.description}. Click to learn more.`}
     >
       {/* Tag */}
       {agent.tag && (
@@ -355,6 +356,7 @@ const AgentCard = ({
           e.stopPropagation();
           handleClick();
         }}
+        aria-label={`Learn more about ${agent.title}`}
       >
         Learn More <ArrowRight className="w-4 h-4" />
       </button>

@@ -220,6 +220,8 @@ const QuickActionModals = ({ activeModal, onClose }: QuickActionModalsProps) => 
                   <button
                     key={time}
                     onClick={() => setSelectedTime(time)}
+                    aria-label={`Select time slot ${time}`}
+                    aria-pressed={selectedTime === time}
                     className={`px-3 py-2 text-xs rounded-lg border transition-colors ${
                       selectedTime === time
                         ? "bg-primary text-primary-foreground border-primary"

@@ -164,7 +164,7 @@ const CookieConsent = () => {
                 setShowSettings(false);
               }}
               className="p-2 hover:bg-secondary rounded-lg transition-colors"
-              aria-label="Close"
+              aria-label="Close cookie consent banner"
             >
               <X className="w-5 h-5 text-muted-foreground" />
             </button>
