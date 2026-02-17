@@ -47,12 +47,12 @@ const AdminDashboard = () => {
     todayStart.setHours(0, 0, 0, 0);
 
     const [posts, messages, demos, testimonials, allVisits, todayVisitsRes] = await Promise.all([
-      supabase.from("blog_posts").select("id", { count: "exact" }),
+      supabase.from("blog_posts").select("id", { count: "exact", head: true }),
       supabase.from("contact_messages").select("id, read", { count: "exact" }),
       supabase.from("demo_bookings").select("id, status", { count: "exact" }),
-      supabase.from("testimonials").select("id", { count: "exact" }),
-      supabase.from("site_visits").select("id", { count: "exact" }),
-      supabase.from("site_visits").select("id", { count: "exact" }).gte("created_at", todayStart.toISOString()),
+      supabase.from("testimonials").select("id", { count: "exact", head: true }),
+      supabase.from("site_visits").select("id", { count: "exact", head: true }),
+      supabase.from("site_visits").select("id", { count: "exact", head: true }).gte("created_at", todayStart.toISOString()),
     ]);
 
     const unreadMessages = messages.data?.filter((m) => !m.read).length || 0;
