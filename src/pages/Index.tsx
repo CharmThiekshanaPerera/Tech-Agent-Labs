@@ -23,12 +23,16 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 import SEOHead from "@/components/seo/SEOHead";
 import CookieConsent from "@/components/CookieConsent";
 import { useScrollDepthTracking } from "@/hooks/useAnalytics";
+import { useSiteVisitTracker } from "@/hooks/useSiteVisitTracker";
 
 const Index = () => {
   const location = useLocation();
   
   // Track scroll depth (25%, 50%, 75%, 100%)
   useScrollDepthTracking();
+  
+  // Track site visits
+  useSiteVisitTracker();
 
   useEffect(() => {
     if (location.hash) {
