@@ -95,25 +95,34 @@ Deno.serve(async (req) => {
   try {
     const { baseUrl = "https://techagentlabs.com" } = await req.json().catch(() => ({}));
 
-    // Fetch published blog post IDs from database
-    let blogIds: string[] = [];
+    // Fetch published blog post details from database
+    let blogPosts: { id: string; title: string; excerpt: string; image_url: string | null }[] = [];
     try {
       const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
       const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
       if (supabaseUrl && supabaseKey) {
         const dbRes = await fetch(
-          `${supabaseUrl}/rest/v1/blog_posts?select=id&published=eq.true&order=created_at.desc&limit=3`,
+          `${supabaseUrl}/rest/v1/blog_posts?select=id,title,excerpt,image_url&published=eq.true&order=created_at.desc&limit=3`,
           { headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` } }
         );
         if (dbRes.ok) {
-          const posts = await dbRes.json();
-          blogIds = posts.map((p: { id: string }) => p.id);
+          blogPosts = await dbRes.json();
         }
       }
     } catch { /* ignore db errors */ }
 
+    // Build a lookup for blog post metadata by path
+    const blogMeta: Record<string, { title: string; description: string; ogImage: string | null }> = {};
+    for (const post of blogPosts) {
+      blogMeta[`/blog/${post.id}`] = {
+        title: `${post.title} | Tech Agent Labs Blog`,
+        description: post.excerpt.substring(0, 160),
+        ogImage: post.image_url,
+      };
+    }
+
     const staticPaths = ["/", "/blog", "/privacy-policy", "/nonexistent-page-404-test"];
-    const blogPaths = blogIds.map((id) => `/blog/${id}`);
+    const blogPaths = blogPosts.map((p) => `/blog/${p.id}`);
     const allPaths = [...staticPaths, ...blogPaths];
 
     // Fetch all pages + sitemap + robots in parallel
@@ -229,17 +238,18 @@ Deno.serve(async (req) => {
     const pageResults: PageResult[] = [];
     for (const path of allPaths) {
       const h = pageHtmls[path];
+      const dbMeta = blogMeta[path];
       if (!h) {
-        pageResults.push({ path, title: null, description: null, hasOG: false, hasSchema: false, ogImage: null });
+        pageResults.push({ path, title: dbMeta?.title || null, description: dbMeta?.description || null, hasOG: !!dbMeta, hasSchema: false, ogImage: dbMeta?.ogImage || null });
         continue;
       }
       pageResults.push({
         path,
-        title: extractTitle(h),
-        description: extractMeta(h, "description"),
-        hasOG: !!extractMeta(h, "og:title", true),
+        title: dbMeta?.title || extractTitle(h),
+        description: dbMeta?.description || extractMeta(h, "description"),
+        hasOG: !!dbMeta || !!extractMeta(h, "og:title", true),
         hasSchema: hasJsonLd(h),
-        ogImage: extractMeta(h, "og:image", true),
+        ogImage: dbMeta?.ogImage || extractMeta(h, "og:image", true),
       });
     }
 
