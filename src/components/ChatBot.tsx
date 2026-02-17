@@ -99,12 +99,13 @@ const ChatBot = () => {
       {/* Chat Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 hover:shadow-xl hover:scale-110 transition-all duration-300 flex items-center justify-center group ${
+        className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 hover:shadow-xl hover:scale-110 transition-all duration-300 flex items-center justify-center group animate-bounce ${
           isOpen ? "scale-0 opacity-0" : "scale-100 opacity-100"
         }`}
+        style={{ animationDuration: "2s", animationIterationCount: "3" }}
         aria-label="Open chat"
       >
-        <Sparkles className="w-6 h-6" />
+        <Bot className="w-6 h-6" />
         <span className="absolute -top-1 -right-1 w-4 h-4 bg-accent rounded-full flex items-center justify-center animate-ping">
           <span className="absolute w-4 h-4 bg-accent rounded-full" />
         </span>
