@@ -184,6 +184,7 @@ const ChatBot = () => {
             size="icon"
             onClick={() => setIsOpen(false)}
             className="text-primary-foreground hover:bg-primary-foreground/10"
+            aria-label="Close chat"
           >
             <X className="w-5 h-5" />
           </Button>
@@ -269,12 +270,14 @@ const ChatBot = () => {
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Ask about bookings, agents, pricing..."
+              aria-label="Type your message"
               className="flex-1 px-4 py-2.5 bg-muted border border-border rounded-xl text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
             />
             <Button
               onClick={() => handleSend()}
               disabled={!inputValue.trim() || isLoading}
               className="rounded-xl px-4"
+              aria-label="Send message"
             >
               <Send className="w-4 h-4" />
             </Button>

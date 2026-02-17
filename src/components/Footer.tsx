@@ -291,6 +291,7 @@ const Footer = () => {
                     window.dispatchEvent(event);
                   }}
                   className="text-muted-foreground hover:text-primary transition-colors text-[10px] sm:text-xs md:text-sm"
+                  aria-label="Open cookie settings"
                 >
                   Cookie Settings
                 </button>
