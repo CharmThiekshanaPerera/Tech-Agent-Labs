@@ -259,7 +259,7 @@ const Blog = () => {
                       <figure className="relative h-48 xs:h-56 sm:h-64 lg:h-80 xl:h-96 overflow-hidden">
                         <img
                           src={featuredPost.image_url || "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=800&h=600&fit=crop"}
-                          alt={featuredPost.title}
+                          alt={`Featured image for blog post: ${featuredPost.title}`}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                           loading="eager"
                           itemProp="image"
@@ -402,7 +402,7 @@ const Blog = () => {
                       <figure className="relative h-40 xs:h-44 sm:h-48 overflow-hidden">
                         <img
                           src={post.image_url || `https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=600&h=400&fit=crop&q=80`}
-                          alt={post.title}
+                          alt={`Featured image for blog post: ${post.title}`}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           loading={index < 3 ? "eager" : "lazy"}
                           itemProp="image"

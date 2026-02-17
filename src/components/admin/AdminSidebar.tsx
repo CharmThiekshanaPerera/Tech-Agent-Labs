@@ -51,7 +51,7 @@ const AdminSidebar = ({ onSignOut }: AdminSidebarProps) => {
       {/* Logo */}
       <div className="p-4 border-b border-border/50">
         <Link to="/" className="flex items-center gap-2">
-          <img src={logo} alt="Tech Agent Labs" className="h-10 w-auto" />
+          <img src={logo} alt="Tech Agent Labs admin logo" className="h-10 w-auto" />
         </Link>
       </div>
 

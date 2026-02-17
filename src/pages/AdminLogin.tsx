@@ -206,7 +206,7 @@ const AdminLogin = () => {
         <div className="gradient-border rounded-2xl p-8 card-glow">
           {/* Logo */}
           <div className="flex justify-center mb-6">
-            <img src={logo} alt="Tech Agent Labs" className="h-16 w-auto" />
+            <img src={logo} alt="Tech Agent Labs logo - Admin login" className="h-16 w-auto" />
           </div>
 
           {showResetPassword ? (

@@ -93,7 +93,7 @@ const BlogPostModal = ({ post, open, onOpenChange }: BlogPostModalProps) => {
           <figure className="relative h-40 xs:h-48 sm:h-56 lg:h-64 overflow-hidden flex-shrink-0">
             <img
               src={post.image_url || "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=800&h=400&fit=crop"}
-              alt={post.title}
+              alt={`Featured image for blog post: ${post.title}`}
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />

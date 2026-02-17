@@ -84,7 +84,7 @@ const PartnersSection = () => {
             <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-lg sm:rounded-xl px-4 sm:px-6 py-3 sm:py-4 transition-all duration-300 hover:border-primary/50 hover:bg-card/80 hover:scale-105 hover:shadow-lg hover:shadow-primary/20">
               <img
                 src={partner.logo}
-                alt={partner.name}
+                alt={`${partner.name} company logo`}
                 className="h-10 sm:h-12 lg:h-16 w-auto object-contain opacity-80 group-hover:opacity-100 transition-opacity duration-300"
               />
             </div>
