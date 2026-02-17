@@ -89,7 +89,7 @@ const Footer = () => {
             <div className="flex items-center gap-3 mb-4 sm:mb-6">
               <img 
                 src={logo} 
-                alt="Tech Agent Labs" 
+                alt="Tech Agent Labs logo" 
                 className="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-[0_0_10px_rgba(0,255,128,0.3)]"
               />
               <span className="font-bold text-lg sm:text-xl text-foreground">

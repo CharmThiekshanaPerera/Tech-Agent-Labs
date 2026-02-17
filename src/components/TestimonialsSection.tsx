@@ -135,7 +135,7 @@ const TestimonialsSection = () => {
                 {currentTestimonial.avatar_url ? (
                   <img
                     src={currentTestimonial.avatar_url}
-                    alt={currentTestimonial.name}
+                    alt={`${currentTestimonial.name} - ${currentTestimonial.role} at ${currentTestimonial.company}`}
                     className="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover"
                   />
                 ) : (

@@ -137,7 +137,7 @@ const BlogSection = () => {
                       <div className="relative h-48 overflow-hidden">
                         <img
                           src={post.image_url || "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=600&h=400&fit=crop"}
-                          alt={post.title}
+                          alt={`Featured image for blog post: ${post.title}`}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />

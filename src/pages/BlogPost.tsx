@@ -182,7 +182,7 @@ const BlogPostPage = () => {
           <div className="relative h-48 xs:h-56 sm:h-72 md:h-80 lg:h-96 overflow-hidden">
             <img
               src={post.image_url || "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=1200&h=600&fit=crop"}
-              alt={post.title}
+              alt={`Hero image for article: ${post.title}`}
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent" />
@@ -573,7 +573,7 @@ const BlogPostPage = () => {
                         <div className="h-32 sm:h-36 overflow-hidden">
                           <img
                             src={relatedPost.image_url || "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=400&h=200&fit=crop"}
-                            alt={relatedPost.title}
+                            alt={`Featured image for related post: ${relatedPost.title}`}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             loading="lazy"
                           />

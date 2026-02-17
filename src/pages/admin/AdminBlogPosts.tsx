@@ -605,7 +605,7 @@ const AdminBlogPosts = () => {
                 <div className="rounded-lg overflow-hidden border border-border/50">
                   <img
                     src={viewingPost.image_url}
-                    alt={viewingPost.title}
+                    alt={`Featured image for blog post: ${viewingPost.title}`}
                     className="w-full h-64 object-cover"
                   />
                 </div>

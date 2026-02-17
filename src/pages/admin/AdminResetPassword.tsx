@@ -147,7 +147,7 @@ const AdminResetPassword = () => {
         <div className="w-full max-w-md">
           <div className="gradient-border rounded-2xl p-8 card-glow text-center">
             <div className="flex justify-center mb-6">
-              <img src={logo} alt="Tech Agent Labs" className="h-16 w-auto" />
+              <img src={logo} alt="Tech Agent Labs logo - Password reset" className="h-16 w-auto" />
             </div>
             <h1 className="text-2xl font-bold text-foreground mb-4">
               Invalid Reset Link
@@ -195,7 +195,7 @@ const AdminResetPassword = () => {
         <div className="gradient-border rounded-2xl p-8 card-glow">
           {/* Logo */}
           <div className="flex justify-center mb-6">
-            <img src={logo} alt="Tech Agent Labs" className="h-16 w-auto" />
+            <img src={logo} alt="Tech Agent Labs logo - Reset password" className="h-16 w-auto" />
           </div>
 
           <h1 className="text-2xl font-bold text-center text-foreground mb-2">
