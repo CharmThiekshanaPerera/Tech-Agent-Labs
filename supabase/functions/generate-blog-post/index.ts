@@ -296,6 +296,37 @@ Focus on providing actionable insights for businesses looking to implement AI so
 
     console.log("Blog post created successfully:", insertedPost.id);
 
+    // Auto-send newsletter to subscribers if the post is published
+    let newsletterResult = null;
+    if (autoPublish) {
+      try {
+        console.log("Sending newsletter notification to subscribers...");
+        const newsletterResponse = await fetch(`${SUPABASE_URL}/functions/v1/send-blog-notification`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+          },
+          body: JSON.stringify({
+            postId: insertedPost.id,
+            title: insertedPost.title,
+            excerpt: insertedPost.excerpt,
+            category: insertedPost.category,
+            imageUrl: insertedPost.image_url,
+          }),
+        });
+
+        if (newsletterResponse.ok) {
+          newsletterResult = await newsletterResponse.json();
+          console.log("Newsletter sent:", newsletterResult);
+        } else {
+          console.error("Newsletter send failed:", newsletterResponse.status);
+        }
+      } catch (newsletterError) {
+        console.error("Error sending newsletter:", newsletterError);
+      }
+    }
+
     return new Response(
       JSON.stringify({
         success: true,
@@ -308,6 +339,7 @@ Focus on providing actionable insights for businesses looking to implement AI so
           created_at: insertedPost.created_at,
           image_url: insertedPost.image_url,
         },
+        newsletter: newsletterResult,
       }),
       {
         status: 200,
