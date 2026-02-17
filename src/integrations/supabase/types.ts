@@ -230,6 +230,57 @@ export type Database = {
         }
         Relationships: []
       }
+      revenue_entries: {
+        Row: {
+          agent_name: string
+          amount: number
+          created_at: string
+          currency: string
+          customer_email: string | null
+          customer_name: string | null
+          id: string
+          is_recurring: boolean
+          notes: string | null
+          recurring_interval: string | null
+          sale_date: string
+          status: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          agent_name: string
+          amount: number
+          created_at?: string
+          currency?: string
+          customer_email?: string | null
+          customer_name?: string | null
+          id?: string
+          is_recurring?: boolean
+          notes?: string | null
+          recurring_interval?: string | null
+          sale_date?: string
+          status?: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          agent_name?: string
+          amount?: number
+          created_at?: string
+          currency?: string
+          customer_email?: string | null
+          customer_name?: string | null
+          id?: string
+          is_recurring?: boolean
+          notes?: string | null
+          recurring_interval?: string | null
+          sale_date?: string
+          status?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       scheduled_tasks: {
         Row: {
           created_at: string

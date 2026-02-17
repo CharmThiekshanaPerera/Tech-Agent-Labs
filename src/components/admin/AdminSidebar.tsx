@@ -16,6 +16,7 @@ import {
   Share2,
   Bot,
   Globe,
+  DollarSign,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
@@ -28,6 +29,7 @@ interface AdminSidebarProps {
 const navItems = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
+  { name: "Revenue", href: "/admin/revenue", icon: DollarSign },
   { name: "AI Chat Logs", href: "/admin/chat-logs", icon: Bot },
   { name: "Blog Posts", href: "/admin/blog", icon: FileText },
   { name: "Newsletter", href: "/admin/newsletter", icon: Mail },
