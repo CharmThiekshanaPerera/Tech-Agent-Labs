@@ -26,3 +26,6 @@ verify_jwt = false
 
 [functions.customer-chat]
 verify_jwt = false
+
+[functions.pagespeed-audit]
+verify_jwt = false

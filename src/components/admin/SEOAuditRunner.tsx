@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -106,14 +107,17 @@ const SEOAuditRunner = () => {
     setResult(null);
 
     try {
-      const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&strategy=${strategy}&category=performance&category=accessibility&category=best-practices&category=seo`;
-      const res = await fetch(apiUrl);
+      const { data, error: fnError } = await supabase.functions.invoke("pagespeed-audit", {
+        body: { url, strategy },
+      });
 
-      if (!res.ok) {
-        throw new Error(`API returned ${res.status}: ${res.statusText}`);
+      if (fnError) {
+        throw new Error(fnError.message || "Edge function error");
       }
 
-      const data = await res.json();
+      if (data?.error) {
+        throw new Error(data.error);
+      }
 
       const categories: AuditCategory[] = Object.values(
         data.lighthouseResult.categories as Record<string, any>
