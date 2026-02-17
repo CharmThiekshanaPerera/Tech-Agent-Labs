@@ -95,25 +95,42 @@ Deno.serve(async (req) => {
   try {
     const { baseUrl = "https://techagentlabs.com" } = await req.json().catch(() => ({}));
 
-    const pagePaths = ["/", "/blog", "/privacy-policy"];
+    // Fetch published blog post IDs from database
+    let blogIds: string[] = [];
+    try {
+      const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
+      const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+      if (supabaseUrl && supabaseKey) {
+        const dbRes = await fetch(
+          `${supabaseUrl}/rest/v1/blog_posts?select=id&published=eq.true&order=created_at.desc&limit=3`,
+          { headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` } }
+        );
+        if (dbRes.ok) {
+          const posts = await dbRes.json();
+          blogIds = posts.map((p: { id: string }) => p.id);
+        }
+      }
+    } catch { /* ignore db errors */ }
+
+    const staticPaths = ["/", "/blog", "/privacy-policy", "/nonexistent-page-404-test"];
+    const blogPaths = blogIds.map((id) => `/blog/${id}`);
+    const allPaths = [...staticPaths, ...blogPaths];
 
     // Fetch all pages + sitemap + robots in parallel
-    const [homeHtml, blogHtml, privacyHtml, sitemapCheck, robotsCheck] = await Promise.all([
-      fetchPage(`${baseUrl}/`),
-      fetchPage(`${baseUrl}/blog`),
-      fetchPage(`${baseUrl}/privacy-policy`),
+    const fetchPromises = allPaths.map((p) => fetchPage(`${baseUrl}${p}`));
+    const [sitemapCheck, robotsCheck] = await Promise.all([
       checkUrl(`${baseUrl}/sitemap.xml`),
       checkUrl(`${baseUrl}/robots.txt`),
     ]);
+    const htmlResults = await Promise.all(fetchPromises);
 
-    const pageHtmls: Record<string, string | null> = {
-      "/": homeHtml,
-      "/blog": blogHtml,
-      "/privacy-policy": privacyHtml,
-    };
+    const pageHtmls: Record<string, string | null> = {};
+    allPaths.forEach((p, i) => {
+      pageHtmls[p] = htmlResults[i];
+    });
 
     // Build checklist from home page
-    const html = homeHtml || "";
+    const html = pageHtmls["/"] || "";
     const checks: CheckResult[] = [];
 
     // 1. Meta title
@@ -210,7 +227,7 @@ Deno.serve(async (req) => {
 
     // Build per-page status
     const pageResults: PageResult[] = [];
-    for (const path of pagePaths) {
+    for (const path of allPaths) {
       const h = pageHtmls[path];
       if (!h) {
         pageResults.push({ path, title: null, description: null, hasOG: false, hasSchema: false, ogImage: null });
