@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,30 +18,31 @@ import {
   LayoutList,
   ChevronDown,
   ChevronUp,
+  Loader2,
+  RefreshCw,
 } from "lucide-react";
 import SEOAuditRunner from "@/components/admin/SEOAuditRunner";
 
-const seoChecklist = [
-  { label: "Meta title on all pages", status: "pass" },
-  { label: "Meta descriptions set", status: "pass" },
-  { label: "Open Graph images configured", status: "pass" },
-  { label: "JSON-LD structured data", status: "pass" },
-  { label: "XML Sitemap available", status: "pass" },
-  { label: "Robots.txt configured", status: "pass" },
-  { label: "Canonical URLs set", status: "pass" },
-  { label: "Alt text on images", status: "warn" },
-  { label: "Mobile responsive design", status: "pass" },
-  { label: "HTTPS enabled", status: "pass" },
-  { label: "Google Search Console verified", status: "pass" },
-  { label: "Lazy loading for images", status: "pass" },
-];
+interface CheckItem {
+  label: string;
+  status: "pass" | "warn" | "fail";
+  detail?: string;
+}
 
-const pages = [
-  { path: "/", title: "Home", hasTitle: true, hasDesc: true, hasOG: true, hasSchema: true },
-  { path: "/blog", title: "Blog", hasTitle: true, hasDesc: true, hasOG: true, hasSchema: true },
-  { path: "/blog/:slug", title: "Blog Post", hasTitle: true, hasDesc: true, hasOG: true, hasSchema: true },
-  { path: "/privacy-policy", title: "Privacy Policy", hasTitle: true, hasDesc: true, hasOG: false, hasSchema: false },
-];
+interface PageItem {
+  path: string;
+  title: string | null;
+  description: string | null;
+  hasOG: boolean;
+  hasSchema: boolean;
+  ogImage: string | null;
+}
+
+interface SeoCheckResult {
+  checks: CheckItem[];
+  pages: PageItem[];
+  checkedAt: string;
+}
 
 const externalTools = [
   {
@@ -78,8 +80,47 @@ const StatusIcon = ({ status }: { status: string }) => {
 const AdminSEO = () => {
   const [showChecklist, setShowChecklist] = useState(false);
   const [showPageStatus, setShowPageStatus] = useState(false);
-  const passCount = seoChecklist.filter((i) => i.status === "pass").length;
-  const score = Math.round((passCount / seoChecklist.length) * 100);
+  const [checkResult, setCheckResult] = useState<SeoCheckResult | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const runCheck = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { data, error: fnError } = await supabase.functions.invoke("seo-checklist", {
+        body: { baseUrl: "https://techagentlabs.com" },
+      });
+      if (fnError) throw new Error(fnError.message);
+      if (data?.error) throw new Error(data.error);
+      setCheckResult(data as SeoCheckResult);
+    } catch (e: any) {
+      setError(e.message || "Failed to run SEO check");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleToggleChecklist = () => {
+    const newState = !showChecklist;
+    setShowChecklist(newState);
+    if (newState && !checkResult && !loading) {
+      runCheck();
+    }
+  };
+
+  const handleTogglePageStatus = () => {
+    const newState = !showPageStatus;
+    setShowPageStatus(newState);
+    if (newState && !checkResult && !loading) {
+      runCheck();
+    }
+  };
+
+  const checks = checkResult?.checks || [];
+  const pages = checkResult?.pages || [];
+  const passCount = checks.filter((i) => i.status === "pass").length;
+  const score = checks.length > 0 ? Math.round((passCount / checks.length) * 100) : 0;
 
   return (
     <AdminLayout title="SEO & Performance" description="Monitor search optimization and site performance">
@@ -87,19 +128,29 @@ const AdminSEO = () => {
       <div className="flex flex-wrap gap-3 mb-6">
         <Button
           variant={showChecklist ? "default" : "outline"}
-          onClick={() => setShowChecklist(!showChecklist)}
+          onClick={handleToggleChecklist}
           className="gap-2"
+          disabled={loading}
         >
-          <ClipboardCheck className="w-4 h-4" />
+          {loading && showChecklist && !showPageStatus ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <ClipboardCheck className="w-4 h-4" />
+          )}
           SEO Checklist
           {showChecklist ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </Button>
         <Button
           variant={showPageStatus ? "default" : "outline"}
-          onClick={() => setShowPageStatus(!showPageStatus)}
+          onClick={handleTogglePageStatus}
           className="gap-2"
+          disabled={loading}
         >
-          <LayoutList className="w-4 h-4" />
+          {loading && showPageStatus && !showChecklist ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <LayoutList className="w-4 h-4" />
+          )}
           Page SEO Status
           {showPageStatus ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </Button>
@@ -110,63 +161,100 @@ const AdminSEO = () => {
         <SEOAuditRunner />
       </div>
 
-      {/* Score Overview */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-3">
-              <div className={`text-3xl font-bold ${score >= 90 ? "text-green-500" : score >= 70 ? "text-yellow-500" : "text-destructive"}`}>
-                {score}%
+      {/* Score Overview - dynamic when data available */}
+      {checkResult && (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 animate-fade-in">
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                <div className={`text-3xl font-bold ${score >= 90 ? "text-green-500" : score >= 70 ? "text-yellow-500" : "text-destructive"}`}>
+                  {score}%
+                </div>
+                <div>
+                  <p className="text-sm font-medium">SEO Score</p>
+                  <p className="text-xs text-muted-foreground">{passCount}/{checks.length} checks passed</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-medium">SEO Score</p>
-                <p className="text-xs text-muted-foreground">{passCount}/{seoChecklist.length} checks passed</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                <Globe className="w-8 h-8 text-primary" />
+                <div>
+                  <p className="text-2xl font-bold">{pages.length}</p>
+                  <p className="text-sm text-muted-foreground">Pages Checked</p>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-3">
-              <Globe className="w-8 h-8 text-primary" />
-              <div>
-                <p className="text-2xl font-bold">{pages.length}</p>
-                <p className="text-sm text-muted-foreground">Indexed Pages</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                <FileText className="w-8 h-8 text-primary" />
+                <div>
+                  <p className="text-2xl font-bold">{pages.filter((p) => p.hasSchema).length}</p>
+                  <p className="text-sm text-muted-foreground">Pages with Schema</p>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-3">
-              <FileText className="w-8 h-8 text-primary" />
-              <div>
-                <p className="text-2xl font-bold">4</p>
-                <p className="text-sm text-muted-foreground">Schema Types Active</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Loading state */}
+      {loading && (
+        <div className="flex items-center gap-3 p-4 mb-6 rounded-lg border border-border/50 bg-card/50">
+          <Loader2 className="w-5 h-5 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground">Scanning techagentlabs.com for SEO elements…</p>
+        </div>
+      )}
+
+      {/* Error state */}
+      {error && (
+        <div className="flex items-center gap-3 p-4 mb-6 rounded-lg border border-destructive/50 bg-destructive/10">
+          <XCircle className="w-5 h-5 text-destructive" />
+          <p className="text-sm text-destructive">{error}</p>
+          <Button variant="outline" size="sm" onClick={runCheck} className="ml-auto gap-1">
+            <RefreshCw className="w-3 h-3" /> Retry
+          </Button>
+        </div>
+      )}
 
       {/* Collapsible Panels */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* SEO Checklist */}
-        {showChecklist && (
+        {showChecklist && checkResult && (
           <Card className="animate-fade-in">
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-lg">SEO Checklist</CardTitle>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">
+                  {new Date(checkResult.checkedAt).toLocaleTimeString()}
+                </span>
+                <Button variant="ghost" size="sm" onClick={runCheck} disabled={loading} className="h-7 w-7 p-0">
+                  <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {seoChecklist.map((item) => (
+                {checks.map((item) => (
                   <div key={item.label} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
                       <StatusIcon status={item.status} />
-                      <span className="text-sm">{item.label}</span>
+                      <div className="min-w-0">
+                        <span className="text-sm block">{item.label}</span>
+                        {item.detail && (
+                          <span className="text-xs text-muted-foreground block truncate">{item.detail}</span>
+                        )}
+                      </div>
                     </div>
-                    <Badge variant={item.status === "pass" ? "default" : "secondary"} className="text-xs">
-                      {item.status === "pass" ? "Pass" : "Review"}
+                    <Badge
+                      variant={item.status === "pass" ? "default" : item.status === "warn" ? "secondary" : "destructive"}
+                      className="text-xs ml-2 shrink-0"
+                    >
+                      {item.status === "pass" ? "Pass" : item.status === "warn" ? "Review" : "Fail"}
                     </Badge>
                   </div>
                 ))}
@@ -176,25 +264,40 @@ const AdminSEO = () => {
         )}
 
         {/* Page-Level SEO */}
-        {showPageStatus && (
+        {showPageStatus && checkResult && (
           <Card className="animate-fade-in">
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-lg">Page SEO Status</CardTitle>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">
+                  {new Date(checkResult.checkedAt).toLocaleTimeString()}
+                </span>
+                <Button variant="ghost" size="sm" onClick={runCheck} disabled={loading} className="h-7 w-7 p-0">
+                  <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
                 {pages.map((page) => (
-                  <div key={page.path} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
-                    <div>
-                      <p className="text-sm font-medium">{page.title}</p>
-                      <p className="text-xs text-muted-foreground">{page.path}</p>
+                  <div key={page.path} className="py-2 border-b border-border/50 last:border-0">
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-medium truncate">{page.title || "No title"}</p>
+                        <p className="text-xs text-muted-foreground">{page.path}</p>
+                      </div>
+                      <div className="flex gap-1 shrink-0 ml-2">
+                        <Badge variant={page.title ? "default" : "destructive"} className="text-[10px]">Title</Badge>
+                        <Badge variant={page.description ? "default" : "destructive"} className="text-[10px]">Desc</Badge>
+                        <Badge variant={page.hasOG ? "default" : "secondary"} className="text-[10px]">OG</Badge>
+                        <Badge variant={page.hasSchema ? "default" : "secondary"} className="text-[10px]">Schema</Badge>
+                      </div>
                     </div>
-                    <div className="flex gap-1">
-                      <Badge variant={page.hasTitle ? "default" : "destructive"} className="text-[10px]">Title</Badge>
-                      <Badge variant={page.hasDesc ? "default" : "destructive"} className="text-[10px]">Desc</Badge>
-                      <Badge variant={page.hasOG ? "default" : "secondary"} className="text-[10px]">OG</Badge>
-                      <Badge variant={page.hasSchema ? "default" : "secondary"} className="text-[10px]">Schema</Badge>
-                    </div>
+                    {page.description && (
+                      <p className="text-xs text-muted-foreground truncate mt-1">
+                        {page.description.substring(0, 120)}…
+                      </p>
+                    )}
                   </div>
                 ))}
               </div>

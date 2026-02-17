@@ -29,3 +29,6 @@ verify_jwt = false
 
 [functions.pagespeed-audit]
 verify_jwt = false
+
+[functions.seo-checklist]
+verify_jwt = false
