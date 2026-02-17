@@ -4,6 +4,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { supabase } from "@/integrations/supabase/client";
+import { logAdminActivity } from "@/hooks/useAdminActivity";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -132,6 +133,7 @@ const AdminBlogPosts = () => {
       }
 
       toast.success(`Blog post "${result.post.title}" generated successfully!`);
+      logAdminActivity("blog_generated", result.post.title);
       setAiDialogOpen(false);
       setAiTopic("");
       setAiCategory("");
@@ -225,6 +227,7 @@ const AdminBlogPosts = () => {
 
         if (error) throw error;
         toast.success("Post updated successfully");
+        logAdminActivity("blog_updated", formData.title);
 
         // Send notification if post is being published for the first time
         if (!wasPublished && isNowPublished) {
@@ -245,6 +248,7 @@ const AdminBlogPosts = () => {
 
         if (error) throw error;
         toast.success("Post created successfully");
+        logAdminActivity("blog_created", formData.title);
 
         // Send notification if new post is published
         if (isNowPublished && data) {
@@ -276,6 +280,7 @@ const AdminBlogPosts = () => {
       toast.error(error.message);
     } else {
       toast.success("Post deleted");
+      logAdminActivity("blog_deleted");
       fetchPosts();
     }
   };

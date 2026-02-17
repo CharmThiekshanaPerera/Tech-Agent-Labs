@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Lock, Mail, Loader2, KeyRound, Eye, EyeOff } from "lucide-react";
 import logo from "@/assets/logo.png";
+import { logAdminActivity } from "@/hooks/useAdminActivity";
 
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
@@ -87,6 +88,7 @@ const AdminLogin = () => {
         }
 
         toast.success("Welcome back, Admin!");
+        logAdminActivity("login", `Admin logged in`);
         navigate("/admin");
       }
     } catch (error) {

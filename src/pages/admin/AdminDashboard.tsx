@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, MessageSquare, Calendar, Star, TrendingUp, Users, Eye, Clock, Globe } from "lucide-react";
+import { FileText, MessageSquare, Calendar, Star, TrendingUp, Users, Eye, Clock, Globe, Activity } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from "recharts";
-import { format, subDays, eachDayOfInterval } from "date-fns";
+import { format, subDays, eachDayOfInterval, formatDistanceToNow } from "date-fns";
+import { getActionLabel } from "@/hooks/useAdminActivity";
 
 interface Stats {
   totalPosts: number;
@@ -35,11 +36,13 @@ const AdminDashboard = () => {
   const [demoStatusData, setDemoStatusData] = useState<any[]>([]);
   const [visitsOverTime, setVisitsOverTime] = useState<any[]>([]);
   const [topPages, setTopPages] = useState<any[]>([]);
+  const [activityLogs, setActivityLogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchStats();
     fetchChartData();
+    fetchActivityLogs();
   }, []);
 
   const fetchStats = async () => {
@@ -70,6 +73,14 @@ const AdminDashboard = () => {
       uniquePages: 0,
     });
     setLoading(false);
+  };
+
+  const fetchActivityLogs = async () => {
+    const { data } = await (supabase.from("admin_activity_logs" as any) as any)
+      .select("id, action, details, created_at")
+      .order("created_at", { ascending: false })
+      .limit(15);
+    setActivityLogs(data || []);
   };
 
   const fetchChartData = async () => {
@@ -339,6 +350,37 @@ const AdminDashboard = () => {
               ))}
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Admin Activity Log */}
+      <Card className="bg-card border-border/50 mt-8">
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Activity className="w-5 h-5 text-primary" />
+            Recent Admin Activity
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {activityLogs.length > 0 ? (
+            <div className="space-y-3">
+              {activityLogs.map((log) => (
+                <div key={log.id} className="flex items-start justify-between py-2 border-b border-border/30 last:border-0">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium">{getActionLabel(log.action)}</p>
+                    {log.details && (
+                      <p className="text-xs text-muted-foreground truncate mt-0.5">{log.details}</p>
+                    )}
+                  </div>
+                  <span className="text-xs text-muted-foreground shrink-0 ml-3">
+                    {formatDistanceToNow(new Date(log.created_at), { addSuffix: true })}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">No activity recorded yet</p>
+          )}
         </CardContent>
       </Card>
     </AdminLayout>
