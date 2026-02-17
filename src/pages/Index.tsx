@@ -1,28 +1,27 @@
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
-import FeaturesSection from "@/components/FeaturesSection";
-import ServicesSection from "@/components/ServicesSection";
-import StatsSection from "@/components/StatsSection";
-import PartnersSection from "@/components/PartnersSection";
-import GrowthSection from "@/components/GrowthSection";
-import HowToBuySection from "@/components/HowToBuySection";
-import PricingSection from "@/components/PricingSection";
-import TeamSection from "@/components/TeamSection";
-import TestimonialsSection from "@/components/TestimonialsSection";
-import BlogSection from "@/components/BlogSection";
-import FAQSection from "@/components/FAQSection";
-import ContactSection from "@/components/ContactSection";
-import Footer from "@/components/Footer";
-import ParticleBackground from "@/components/ParticleBackground";
-import SocialMediaWidget from "@/components/SocialMediaWidget";
-import ScrollToTopButton from "@/components/ScrollToTopButton";
-import ChatBot from "@/components/ChatBot";
-import WhatsAppButton from "@/components/WhatsAppButton";
 import SEOHead from "@/components/seo/SEOHead";
-import CookieConsent from "@/components/CookieConsent";
 import { useScrollDepthTracking } from "@/hooks/useAnalytics";
+
+// Lazy-load below-the-fold sections for reduced initial JS bundle
+const FeaturesSection = lazy(() => import("@/components/FeaturesSection"));
+const ServicesSection = lazy(() => import("@/components/ServicesSection"));
+const StatsSection = lazy(() => import("@/components/StatsSection"));
+const PartnersSection = lazy(() => import("@/components/PartnersSection"));
+const GrowthSection = lazy(() => import("@/components/GrowthSection"));
+const HowToBuySection = lazy(() => import("@/components/HowToBuySection"));
+const TestimonialsSection = lazy(() => import("@/components/TestimonialsSection"));
+const BlogSection = lazy(() => import("@/components/BlogSection"));
+const FAQSection = lazy(() => import("@/components/FAQSection"));
+const ContactSection = lazy(() => import("@/components/ContactSection"));
+const Footer = lazy(() => import("@/components/Footer"));
+const SocialMediaWidget = lazy(() => import("@/components/SocialMediaWidget"));
+const ScrollToTopButton = lazy(() => import("@/components/ScrollToTopButton"));
+const ChatBot = lazy(() => import("@/components/ChatBot"));
+const WhatsAppButton = lazy(() => import("@/components/WhatsAppButton"));
+const CookieConsent = lazy(() => import("@/components/CookieConsent"));
 
 const Index = () => {
   const location = useLocation();
@@ -61,29 +60,32 @@ const Index = () => {
         ]}
       />
       <div className="min-h-screen bg-background scroll-smooth">
-        <ParticleBackground />
         <Navbar />
-        <SocialMediaWidget />
-        <WhatsAppButton />
-        <ScrollToTopButton />
-        <ChatBot />
-        <CookieConsent />
+        <Suspense fallback={null}>
+          <SocialMediaWidget />
+          <WhatsAppButton />
+          <ScrollToTopButton />
+          <ChatBot />
+          <CookieConsent />
+        </Suspense>
         <main className="relative z-10">
           <HeroSection />
-        <FeaturesSection />
-        <ServicesSection />
-        <StatsSection />
-        <PartnersSection />
-        <GrowthSection />
-        <HowToBuySection />
-        {/* <PricingSection /> */}
-        {/* <TeamSection /> */}
-        <TestimonialsSection />
-        <BlogSection />
-        <FAQSection />
-        <ContactSection />
+          <Suspense fallback={<div className="min-h-[200px]" />}>
+            <FeaturesSection />
+            <ServicesSection />
+            <StatsSection />
+            <PartnersSection />
+            <GrowthSection />
+            <HowToBuySection />
+            <TestimonialsSection />
+            <BlogSection />
+            <FAQSection />
+            <ContactSection />
+          </Suspense>
         </main>
-        <Footer />
+        <Suspense fallback={null}>
+          <Footer />
+        </Suspense>
       </div>
     </>
   );

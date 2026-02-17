@@ -85,6 +85,9 @@ const PartnersSection = () => {
               <img
                 src={partner.logo}
                 alt={`${partner.name} company logo`}
+                width={120}
+                height={64}
+                loading="lazy"
                 className="h-10 sm:h-12 lg:h-16 w-auto object-contain opacity-80 group-hover:opacity-100 transition-opacity duration-300"
               />
             </div>
