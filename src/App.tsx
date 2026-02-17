@@ -21,6 +21,8 @@ import AdminResetPassword from "./pages/admin/AdminResetPassword";
 import AdminAnalytics from "./pages/admin/AdminAnalytics";
 import AdminNewsletter from "./pages/admin/AdminNewsletter";
 import AdminSocialAutomation from "./pages/admin/AdminSocialAutomation";
+import AdminChatLogs from "./pages/admin/AdminChatLogs";
+import AdminSEO from "./pages/admin/AdminSEO";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +50,8 @@ const App = () => (
             <Route path="/admin/blog" element={<AdminBlogPosts />} />
             <Route path="/admin/newsletter" element={<AdminNewsletter />} />
             <Route path="/admin/social" element={<AdminSocialAutomation />} />
+            <Route path="/admin/chat-logs" element={<AdminChatLogs />} />
+            <Route path="/admin/seo" element={<AdminSEO />} />
             <Route path="/admin/testimonials" element={<AdminTestimonials />} />
             <Route path="/admin/demos" element={<AdminDemos />} />
             <Route path="/admin/messages" element={<AdminMessages />} />
