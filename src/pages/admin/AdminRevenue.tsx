@@ -19,6 +19,7 @@ import {
   Trash2,
   ArrowUpRight,
   ArrowDownRight,
+  Download,
 } from "lucide-react";
 import { format, subMonths, startOfMonth, endOfMonth, isWithinInterval } from "date-fns";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts";
@@ -160,6 +161,32 @@ const AdminRevenue = () => {
   const formatCurrency = (n: number) =>
     new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n);
 
+  const exportCSV = () => {
+    if (!entries?.length) return;
+    const headers = ["Date", "Type", "Agent", "Customer Name", "Customer Email", "Amount", "Recurring", "Interval", "Status", "Notes"];
+    const rows = entries.map((e) => [
+      e.sale_date,
+      e.type,
+      e.agent_name,
+      e.customer_name || "",
+      e.customer_email || "",
+      e.amount,
+      e.is_recurring ? "Yes" : "No",
+      e.recurring_interval || "",
+      e.status,
+      (e.notes || "").replace(/"/g, '""'),
+    ]);
+    const csv = [headers, ...rows].map((r) => r.map((v) => `"${v}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `revenue-report-${format(new Date(), "yyyy-MM-dd")}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success("CSV downloaded");
+  };
+
   return (
     <AdminLayout title="Revenue Dashboard" description="Track agent sales, subscriptions, and MRR">
       {/* Stats Cards */}
@@ -264,10 +291,14 @@ const AdminRevenue = () => {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-lg">Recent Entries</CardTitle>
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger asChild>
-              <Button size="sm"><Plus className="w-4 h-4 mr-1" /> Add Entry</Button>
-            </DialogTrigger>
+          <div className="flex gap-2">
+            <Button size="sm" variant="outline" onClick={exportCSV} disabled={!entries?.length}>
+              <Download className="w-4 h-4 mr-1" /> Export CSV
+            </Button>
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+              <DialogTrigger asChild>
+                <Button size="sm"><Plus className="w-4 h-4 mr-1" /> Add Entry</Button>
+              </DialogTrigger>
             <DialogContent className="max-w-md">
               <DialogHeader>
                 <DialogTitle>Add Revenue Entry</DialogTitle>
@@ -347,6 +378,7 @@ const AdminRevenue = () => {
               </div>
             </DialogContent>
           </Dialog>
+          </div>
         </CardHeader>
         <CardContent>
           {isLoading ? (
