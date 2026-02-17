@@ -13,6 +13,7 @@ import {
   AlertTriangle,
   XCircle,
 } from "lucide-react";
+import SEOAuditRunner from "@/components/admin/SEOAuditRunner";
 
 const seoChecklist = [
   { label: "Meta title on all pages", status: "pass" },
@@ -75,6 +76,11 @@ const AdminSEO = () => {
 
   return (
     <AdminLayout title="SEO & Performance" description="Monitor search optimization and site performance">
+      {/* Live Audit Runner */}
+      <div className="mb-6">
+        <SEOAuditRunner />
+      </div>
+
       {/* Score Overview */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <Card>
