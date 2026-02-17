@@ -1,3 +1,4 @@
+import { useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +13,10 @@ import {
   CheckCircle2,
   AlertTriangle,
   XCircle,
+  ClipboardCheck,
+  LayoutList,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import SEOAuditRunner from "@/components/admin/SEOAuditRunner";
 
@@ -71,11 +76,35 @@ const StatusIcon = ({ status }: { status: string }) => {
 };
 
 const AdminSEO = () => {
+  const [showChecklist, setShowChecklist] = useState(false);
+  const [showPageStatus, setShowPageStatus] = useState(false);
   const passCount = seoChecklist.filter((i) => i.status === "pass").length;
   const score = Math.round((passCount / seoChecklist.length) * 100);
 
   return (
     <AdminLayout title="SEO & Performance" description="Monitor search optimization and site performance">
+      {/* Quick Action Buttons */}
+      <div className="flex flex-wrap gap-3 mb-6">
+        <Button
+          variant={showChecklist ? "default" : "outline"}
+          onClick={() => setShowChecklist(!showChecklist)}
+          className="gap-2"
+        >
+          <ClipboardCheck className="w-4 h-4" />
+          SEO Checklist
+          {showChecklist ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+        </Button>
+        <Button
+          variant={showPageStatus ? "default" : "outline"}
+          onClick={() => setShowPageStatus(!showPageStatus)}
+          className="gap-2"
+        >
+          <LayoutList className="w-4 h-4" />
+          Page SEO Status
+          {showPageStatus ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+        </Button>
+      </div>
+
       {/* Live Audit Runner */}
       <div className="mb-6">
         <SEOAuditRunner />
@@ -120,32 +149,35 @@ const AdminSEO = () => {
         </Card>
       </div>
 
+      {/* Collapsible Panels */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* SEO Checklist */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">SEO Checklist</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {seoChecklist.map((item) => (
-                <div key={item.label} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <StatusIcon status={item.status} />
-                    <span className="text-sm">{item.label}</span>
+        {showChecklist && (
+          <Card className="animate-fade-in">
+            <CardHeader>
+              <CardTitle className="text-lg">SEO Checklist</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {seoChecklist.map((item) => (
+                  <div key={item.label} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <StatusIcon status={item.status} />
+                      <span className="text-sm">{item.label}</span>
+                    </div>
+                    <Badge variant={item.status === "pass" ? "default" : "secondary"} className="text-xs">
+                      {item.status === "pass" ? "Pass" : "Review"}
+                    </Badge>
                   </div>
-                  <Badge variant={item.status === "pass" ? "default" : "secondary"} className="text-xs">
-                    {item.status === "pass" ? "Pass" : "Review"}
-                  </Badge>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Page-Level SEO */}
-        <div className="space-y-6">
-          <Card>
+        {showPageStatus && (
+          <Card className="animate-fade-in">
             <CardHeader>
               <CardTitle className="text-lg">Page SEO Status</CardTitle>
             </CardHeader>
@@ -168,34 +200,36 @@ const AdminSEO = () => {
               </div>
             </CardContent>
           </Card>
+        )}
+      </div>
 
-          {/* External Tools */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Performance Tools</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {externalTools.map((tool) => (
-                  <a
-                    key={tool.name}
-                    href={tool.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors border border-border/50"
-                  >
-                    <tool.icon className="w-5 h-5 text-primary" />
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">{tool.name}</p>
-                      <p className="text-xs text-muted-foreground">{tool.description}</p>
-                    </div>
-                    <ExternalLink className="w-4 h-4 text-muted-foreground" />
-                  </a>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+      {/* External Tools - always visible */}
+      <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Performance Tools</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {externalTools.map((tool) => (
+                <a
+                  key={tool.name}
+                  href={tool.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors border border-border/50"
+                >
+                  <tool.icon className="w-5 h-5 text-primary" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">{tool.name}</p>
+                    <p className="text-xs text-muted-foreground">{tool.description}</p>
+                  </div>
+                  <ExternalLink className="w-4 h-4 text-muted-foreground" />
+                </a>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </AdminLayout>
   );
