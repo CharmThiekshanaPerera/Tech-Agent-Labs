@@ -145,13 +145,13 @@ const ChatBot = () => {
       {/* Chat Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 hover:shadow-xl hover:scale-110 transition-all duration-300 flex items-center justify-center group animate-bounce ${
+        className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 hover:shadow-xl hover:scale-110 transition-all duration-300 flex items-center justify-center group animate-bounce ${
           isOpen ? "scale-0 opacity-0" : "scale-100 opacity-100"
         }`}
         style={{ animationDuration: "2s", animationIterationCount: "3" }}
         aria-label="Open chat"
       >
-        <Bot className="w-6 h-6" />
+        <Bot className="w-5 h-5 sm:w-6 sm:h-6" />
         <span className="absolute -top-1 -right-1 w-4 h-4 bg-accent rounded-full flex items-center justify-center animate-ping">
           <span className="absolute w-4 h-4 bg-accent rounded-full" />
         </span>
@@ -159,7 +159,7 @@ const ChatBot = () => {
 
       {/* Chat Window */}
       <div
-        className={`fixed bottom-24 right-6 z-50 w-[380px] max-w-[calc(100vw-48px)] bg-card border border-border rounded-2xl shadow-2xl transition-all duration-300 overflow-hidden ${
+        className={`fixed bottom-[4.5rem] right-2 sm:bottom-24 sm:right-6 z-50 w-[calc(100vw-16px)] sm:w-[380px] sm:max-w-[calc(100vw-48px)] max-h-[calc(100vh-6rem)] bg-card border border-border rounded-2xl shadow-2xl transition-all duration-300 overflow-hidden ${
           isOpen
             ? "scale-100 opacity-100 translate-y-0"
             : "scale-95 opacity-0 translate-y-4 pointer-events-none"
