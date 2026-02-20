@@ -61,18 +61,18 @@ const SocialMediaWidget = () => {
       </div>
 
       {/* Mobile Floating Button */}
-      <div className="md:hidden fixed bottom-24 left-6 z-40">
+      <div className="md:hidden fixed bottom-4 left-4 z-40">
         <button
           onClick={() => setIsExpanded(!isExpanded)}
           aria-label="Social media links"
-          className={`w-12 h-12 flex items-center justify-center bg-secondary text-foreground border border-border rounded-full shadow-lg transition-all duration-300 ${isExpanded ? "rotate-45" : ""}`}
+          className={`w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-secondary text-foreground border border-border rounded-full shadow-lg transition-all duration-300 ${isExpanded ? "rotate-45" : ""}`}
         >
-          <MessageCircle className="w-5 h-5" />
+          <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
 
         {/* Mobile Expanded Menu */}
         <div 
-          className={`absolute bottom-16 right-0 flex flex-col gap-2 transition-all duration-300 ${
+          className={`absolute bottom-14 left-0 flex flex-col gap-2 transition-all duration-300 ${
             isExpanded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
           }`}
         >
