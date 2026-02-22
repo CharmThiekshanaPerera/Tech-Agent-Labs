@@ -58,7 +58,7 @@ const SocialMediaWidget = () => {
       </div>
 
       {/* Mobile Fixed Bottom Bar - Always visible */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 flex justify-around items-center px-4 py-2.5 bg-background/90 backdrop-blur-sm border-t border-border/50">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 flex justify-around items-center px-4 py-2.5 bg-transparent backdrop-blur-none border-t-0">
         {socialLinks.map((social) => (
           <a
             key={social.name}
