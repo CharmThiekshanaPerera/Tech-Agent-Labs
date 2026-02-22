@@ -29,7 +29,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section id="home" aria-label="Hero Section - Meet Your AI Teammates" className="relative min-h-[100svh] flex items-center justify-center pt-14 sm:pt-20 pb-16 sm:pb-8 overflow-hidden">
+    <section id="home" aria-label="Hero Section - Meet Your AI Teammates" className="relative sm:min-h-screen flex items-start sm:items-center justify-center pt-14 sm:pt-20 pb-36 sm:pb-8 overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 grid-pattern opacity-50" />
       <div className="absolute top-1/4 left-1/4 w-48 sm:w-72 lg:w-96 h-48 sm:h-72 lg:h-96 bg-primary/10 rounded-full blur-[80px] sm:blur-[120px]" />
@@ -114,7 +114,7 @@ const HeroSection = () => {
             </div>
 
             {/* Trust Indicators */}
-            <div className="grid grid-cols-3 gap-4 sm:gap-6 mt-8 sm:mt-12 animate-fade-up" style={{ animationDelay: '0.4s' }}>
+            <div className="grid grid-cols-3 gap-4 sm:gap-6 mt-8 sm:mt-12 mb-8 sm:mb-0 px-8 sm:px-0 animate-fade-up" style={{ animationDelay: '0.4s' }}>
               <div className="text-center lg:text-left">
                 <p className="text-xl sm:text-2xl md:text-3xl font-bold text-primary">500+</p>
                 <p className="text-muted-foreground text-xs sm:text-sm">Agents Deployed</p>
