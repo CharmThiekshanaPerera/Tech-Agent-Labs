@@ -57,8 +57,8 @@ const SocialMediaWidget = () => {
         ))}
       </div>
 
-      {/* Mobile Fixed Bottom Bar - Always visible */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 flex justify-around items-center px-4 py-2.5 bg-transparent backdrop-blur-none border-t-0">
+      {/* Mobile Fixed Bottom Bar - Always visible, leaves space for WhatsApp (left) and ChatBot (right) */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 flex justify-center items-center gap-2 px-16 py-2 bg-transparent">
         {socialLinks.map((social) => (
           <a
             key={social.name}
@@ -66,7 +66,7 @@ const SocialMediaWidget = () => {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Follow us on ${social.name}`}
-            className={`w-10 h-10 flex items-center justify-center ${social.bgColor} rounded-full text-white shadow-md active:scale-95 transition-transform`}
+            className={`w-11 h-11 flex items-center justify-center ${social.bgColor} rounded-full text-white shadow-md active:scale-95 transition-transform`}
           >
             <social.icon className="w-4 h-4" />
           </a>
