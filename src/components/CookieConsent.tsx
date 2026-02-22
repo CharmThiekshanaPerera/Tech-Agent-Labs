@@ -132,7 +132,7 @@ const CookieConsent = () => {
   );
 
   if (!showBanner && consentStatus !== "pending") {
-    return <SettingsButton />;
+    return null;
   }
 
   if (!showBanner) return null;
