@@ -29,7 +29,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section id="home" aria-label="Hero Section - Meet Your AI Teammates" className="relative min-h-screen flex items-center justify-center pt-16 sm:pt-20 pb-8 overflow-hidden">
+    <section id="home" aria-label="Hero Section - Meet Your AI Teammates" className="relative min-h-[100svh] flex items-center justify-center pt-14 sm:pt-20 pb-16 sm:pb-8 overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 grid-pattern opacity-50" />
       <div className="absolute top-1/4 left-1/4 w-48 sm:w-72 lg:w-96 h-48 sm:h-72 lg:h-96 bg-primary/10 rounded-full blur-[80px] sm:blur-[120px]" />
@@ -73,7 +73,7 @@ const HeroSection = () => {
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start animate-fade-up" style={{ animationDelay: '0.3s' }}>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start animate-fade-up [&>*]:w-full sm:[&>*]:w-auto" style={{ animationDelay: '0.3s' }}>
               <Button
                 variant="glow"
                 size="responsive"
@@ -140,7 +140,7 @@ const HeroSection = () => {
                 alt="Tech Agent Labs AI Assistant - Your friendly automation partner"
                 width={448}
                 height={448}
-                className="relative w-48 h-48 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 xl:w-[28rem] xl:h-[28rem] object-contain drop-shadow-[0_0_30px_rgba(34,255,102,0.5)] sm:drop-shadow-[0_0_50px_rgba(34,255,102,0.5)] hover:drop-shadow-[0_0_70px_rgba(34,255,102,0.7)] transition-all duration-500 hover:scale-105"
+                className="relative w-36 h-36 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 xl:w-[28rem] xl:h-[28rem] object-contain drop-shadow-[0_0_30px_rgba(34,255,102,0.5)] sm:drop-shadow-[0_0_50px_rgba(34,255,102,0.5)] hover:drop-shadow-[0_0_70px_rgba(34,255,102,0.7)] transition-all duration-500 hover:scale-105"
               />
             </div>
           </div>
