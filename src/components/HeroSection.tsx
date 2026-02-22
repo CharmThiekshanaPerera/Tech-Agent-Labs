@@ -50,10 +50,6 @@ const HeroSection = () => {
           {/* Content */}
           <div className="flex-1 text-center lg:text-left order-2 lg:order-1">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-primary/10 border border-primary/30 mb-4 sm:mb-6 animate-fade-up">
-              <span className="text-base sm:text-lg">🚀</span>
-              <span className="text-primary text-xs sm:text-sm font-medium">AI Agents That Actually Work</span>
-            </div>
 
             {/* Title */}
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 animate-fade-up leading-tight" style={{ animationDelay: '0.1s' }}>
