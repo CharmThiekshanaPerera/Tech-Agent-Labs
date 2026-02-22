@@ -1,9 +1,17 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Sparkles } from "lucide-react";
+import { Menu, X, Sparkles, Facebook, Instagram, Twitter, Linkedin, Youtube } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+
+const socialLinks = [
+  { name: "Facebook", icon: Facebook, href: "https://facebook.com/techagentlabs", bg: "bg-[#1877F2]" },
+  { name: "Instagram", icon: Instagram, href: "https://instagram.com/techagentlabs", bg: "bg-[#E4405F]" },
+  { name: "Twitter", icon: Twitter, href: "https://twitter.com/techagentlabs", bg: "bg-[#1DA1F2]" },
+  { name: "LinkedIn", icon: Linkedin, href: "https://linkedin.com/company/techagentlabs", bg: "bg-[#0A66C2]" },
+  { name: "YouTube", icon: Youtube, href: "https://youtube.com/@techagentlabs", bg: "bg-[#FF0000]" },
+];
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -226,6 +234,21 @@ const Navbar = () => {
                 Start a Demo
                 <Sparkles className="w-4 h-4 opacity-70 group-hover:opacity-100 group-hover:rotate-12 transition-all" />
               </Button>
+              {/* Social Media Icons */}
+              <div className="flex items-center justify-center gap-3 mt-4 pt-4 border-t border-border/50">
+                {socialLinks.map((social) => (
+                  <a
+                    key={social.name}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Follow us on ${social.name}`}
+                    className={`w-9 h-9 flex items-center justify-center ${social.bg} rounded-full text-white active:scale-95 transition-transform`}
+                  >
+                    <social.icon className="w-4 h-4" />
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         )}
