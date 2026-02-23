@@ -95,6 +95,9 @@ const BlogPostModal = ({ post, open, onOpenChange }: BlogPostModalProps) => {
               src={post.image_url || "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=800&h=400&fit=crop"}
               alt={`Featured image for blog post: ${post.title}`}
               className="w-full h-full object-cover"
+              loading="lazy"
+              width={800}
+              height={400}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
             <span className="absolute top-3 left-3 sm:top-4 sm:left-4 px-2.5 sm:px-3 py-1 bg-primary/90 text-primary-foreground text-xs font-medium rounded-full">

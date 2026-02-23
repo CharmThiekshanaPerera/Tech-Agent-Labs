@@ -92,6 +92,9 @@ const Footer = () => {
                 src={logo} 
                 alt="Tech Agent Labs logo" 
                 className="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-[0_0_10px_rgba(0,255,128,0.3)]"
+                loading="lazy"
+                width={48}
+                height={48}
               />
               <span className="font-bold text-lg sm:text-xl text-foreground">
                 Tech Agent <span className="text-primary text-glow">Labs</span>

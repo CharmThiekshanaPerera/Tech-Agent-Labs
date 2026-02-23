@@ -73,6 +73,9 @@ const AgentDetailModal = ({ agent, isOpen, onClose, onContactClick }: AgentDetai
                 src={agent.image} 
                 alt={`${agent.title} illustration`}
                 className="relative w-48 h-48 md:w-56 md:h-56 object-contain drop-shadow-[0_0_30px_rgba(34,255,102,0.4)] animate-float"
+                loading="lazy"
+                width={224}
+                height={224}
               />
             </div>
             

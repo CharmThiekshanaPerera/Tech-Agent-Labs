@@ -139,6 +139,9 @@ const BlogSection = () => {
                           src={post.image_url || "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=600&h=400&fit=crop"}
                           alt={`Featured image for blog post: ${post.title}`}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          loading="lazy"
+                          width={600}
+                          height={400}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
                         <span className="absolute top-4 left-4 px-3 py-1 bg-primary/90 text-primary-foreground text-xs font-medium rounded-full">
@@ -176,7 +179,7 @@ const BlogSection = () => {
                             {/* Share Dropdown */}
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
-                                <button className="p-2 rounded-lg hover:bg-secondary/80 text-muted-foreground hover:text-foreground transition-colors">
+                                <button className="p-2 rounded-lg hover:bg-secondary/80 text-muted-foreground hover:text-foreground transition-colors" aria-label={`Share ${post.title}`}>
                                   <Share2 className="w-4 h-4" />
                                 </button>
                               </DropdownMenuTrigger>
