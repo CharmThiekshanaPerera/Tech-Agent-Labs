@@ -1,4 +1,5 @@
 import { Twitter, Linkedin, Youtube, Facebook, Instagram } from "lucide-react";
+import TikTokIcon from "@/components/icons/TikTokIcon";
 
 const socialLinks = [
   { 
@@ -35,6 +36,13 @@ const socialLinks = [
     href: "https://youtube.com/@techagentlabs",
     color: "hover:bg-[#FF0000]",
     bgColor: "bg-[#FF0000]"
+  },
+  { 
+    name: "TikTok", 
+    icon: TikTokIcon, 
+    href: "https://tiktok.com/@techagentlabs",
+    color: "hover:bg-[#000000]",
+    bgColor: "bg-[#000000]"
   },
 ];
 

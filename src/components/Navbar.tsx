@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Menu, X, Sparkles, Facebook, Instagram, Twitter, Linkedin, Youtube } from "lucide-react";
+import TikTokIcon from "@/components/icons/TikTokIcon";
 import { useNavigate, useLocation } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ const socialLinks = [
   { name: "Twitter", icon: Twitter, href: "https://twitter.com/techagentlabs", bg: "bg-[#1DA1F2]" },
   { name: "LinkedIn", icon: Linkedin, href: "https://linkedin.com/company/techagentlabs", bg: "bg-[#0A66C2]" },
   { name: "YouTube", icon: Youtube, href: "https://youtube.com/@techagentlabs", bg: "bg-[#FF0000]" },
+  { name: "TikTok", icon: TikTokIcon, href: "https://tiktok.com/@techagentlabs", bg: "bg-[#000000]" },
 ];
 
 const Navbar = () => {
