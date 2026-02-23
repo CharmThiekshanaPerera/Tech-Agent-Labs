@@ -1,55 +1,58 @@
 
 
-# Mobile Hero Section and Social Media Improvements
+# Combined Mobile + Desktop SEO Audit Report
 
-## Overview
-Fix three issues on the mobile home page: social media icons hidden behind a toggle, CTA buttons potentially clipped or hard to tap, and overall hero section visual polish for small screens.
+## Problem
+The current "Download Report" only includes results from the last audit run (either mobile or desktop). You want a single downloadable report that contains results from both strategies, plus the SEO Checklist and Page SEO Status.
+
+## Solution
+Update the `SEOAuditRunner` component to store results for both mobile and desktop strategies separately, and generate a combined report when downloading.
 
 ## Changes
 
-### 1. Social Media Widget -- Always Visible on Mobile
-**File: `src/components/SocialMediaWidget.tsx`**
+### 1. Update `SEOAuditRunner.tsx` state management
+- Change from storing a single `result` to storing two results: `mobileResult` and `desktopResult`
+- When an audit completes, save it to the appropriate slot based on strategy
+- Display whichever result matches the currently selected strategy tab
+- Show indicators for which strategies have been run (e.g., green dot next to "Mobile" / "Desktop" buttons)
 
-- Replace the current mobile floating button (hidden behind a toggle tap) with a **fixed horizontal bar** at the bottom of the screen showing all 5 social icons in a row.
-- Each icon will have its brand background color always visible (not just on hover), making them eye-catching and immediately tappable.
-- Remove the expand/collapse toggle logic for mobile -- icons are always shown.
-- Desktop sidebar widget stays unchanged.
-- Position the bar so it doesn't overlap with WhatsApp or ChatBot buttons (e.g., fixed bottom-0 with a slim bar spanning full width).
+### 2. Add "Run Both" button
+- Add a new button option: "Run Both" that sequentially runs mobile then desktop audits
+- Shows a combined progress indicator ("Running mobile... 1/2", "Running desktop... 2/2")
 
-### 2. Hero Section -- Mobile-Optimized Layout
-**File: `src/components/HeroSection.tsx`**
+### 3. Update the Download Report function
+- If both mobile and desktop results exist, include both in a single report file
+- Report structure:
+  - Header (URL, date)
+  - Mobile Results section (category scores + opportunities)
+  - Desktop Results section (category scores + opportunities)
+  - SEO Checklist Results (from props)
+  - Page SEO Status (from props)
+- If only one strategy has been run, include just that one with a note
 
-- Reduce the logo/mascot size further on very small screens (< 375px) to free up vertical space for buttons.
-- Ensure the 3 CTA buttons stack vertically with full width on mobile so they are clearly visible and easy to tap.
-- Add `w-full` to each button on small screens to make them span the container.
-- Tighten vertical spacing (margins/paddings) on mobile so all content -- badge, title, subtitle, buttons, and trust indicators -- fits within the viewport without excessive scrolling.
-- Make the hero section use `min-h-[100svh]` instead of `min-h-screen` for better mobile browser viewport handling (accounts for address bar).
-
-### 3. Button Sizing for Mobile
-**File: `src/components/ui/button.tsx`**
-
-- No changes needed -- the existing `responsive` size variant already handles mobile vs desktop sizing. The fix is in how HeroSection applies widths.
-
-### 4. WhatsApp and ChatBot Positioning Adjustment
-**Files: `src/components/WhatsAppButton.tsx`, `src/components/ChatBot.tsx`**
-
-- Adjust bottom positioning to account for the new fixed social media bar at the bottom (shift both up by the bar height, roughly `bottom-16` instead of current values).
-
----
+### 4. UI indicators
+- Show small badges on Mobile/Desktop buttons indicating if results are cached (e.g., a checkmark or timestamp)
+- The Download Report button label updates to reflect what's included ("Download Full Report" when both are available vs "Download Report (Mobile only)")
 
 ## Technical Details
 
-**SocialMediaWidget mobile rewrite:**
-- Mobile section becomes a `fixed bottom-0 left-0 right-0` horizontal flex bar with `justify-around`.
-- Each icon gets its brand `bgColor` applied directly (always visible, not just on hover).
-- Bar has a `bg-background/90 backdrop-blur-sm border-t border-border/50` background.
-- `useState` for `isExpanded` can be removed entirely since mobile icons are always shown.
+**File: `src/components/admin/SEOAuditRunner.tsx`**
 
-**HeroSection CTA button wrapper:**
-- Change from `flex flex-col sm:flex-row` to include `[&>*]:w-full sm:[&>*]:w-auto` so buttons take full width on mobile but auto-size on larger screens.
+State changes:
+```
+// Before
+const [result, setResult] = useState<AuditResult | null>(null);
 
-**Positioning chain (bottom of screen, mobile):**
-- Social bar: `bottom-0` (full-width bar, ~48px tall)
-- WhatsApp button: `bottom-16` (above social bar)
-- ChatBot button: positioned at `bottom-16 right-4` (above social bar)
+// After  
+const [mobileResult, setMobileResult] = useState<AuditResult | null>(null);
+const [desktopResult, setDesktopResult] = useState<AuditResult | null>(null);
+const [runningBoth, setRunningBoth] = useState(false);
+```
 
+The `runAudit` function saves to the correct state slot based on strategy. A new `runBothAudits` function runs mobile first, then desktop sequentially.
+
+The `downloadReport` function iterates over both results (if available), writing separate sections for each strategy into the same text file.
+
+The displayed result is derived from whichever strategy tab is currently selected: `const displayResult = strategy === "mobile" ? mobileResult : desktopResult`.
+
+No changes needed to `AdminSEO.tsx` or the edge functions.
