@@ -1,58 +1,83 @@
 
 
-# Combined Mobile + Desktop SEO Audit Report
+# Fix SEO Audit Issues
 
-## Problem
-The current "Download Report" only includes results from the last audit run (either mobile or desktop). You want a single downloadable report that contains results from both strategies, plus the SEO Checklist and Page SEO Status.
+Based on the audit report, here are the issues to fix grouped by category:
 
-## Solution
-Update the `SEOAuditRunner` component to store results for both mobile and desktop strategies separately, and generate a combined report when downloading.
+## Issues Summary
+
+**Performance Issues (Mobile: 44/100, Desktop: 66/100):**
+1. Images not lazy loaded (BlogSection, TestimonialsSection, AgentDetailModal, Footer, Navbar, etc.)
+2. Images missing explicit `width` and `height` attributes
+3. Large image payloads (need format/size optimization hints)
+
+**Accessibility Issues:**
+4. "Buttons do not have an accessible name" - some buttons may lack aria-labels
+5. "Links rely on color to be distinguishable" - links styled as `text-primary` without underline
+
+**SEO Checklist:**
+6. Lazy loading warning - most images across components lack `loading="lazy"`
+
+**Page SEO Status:**
+7. `/blog`, `/privacy-policy`, and `/nonexistent-page-404-test` pages show the same default title/description in the server-rendered HTML (this is a SPA limitation with client-side `<SEOHead>` - the edge function fetches the raw HTML before React hydrates)
+
+---
 
 ## Changes
 
-### 1. Update `SEOAuditRunner.tsx` state management
-- Change from storing a single `result` to storing two results: `mobileResult` and `desktopResult`
-- When an audit completes, save it to the appropriate slot based on strategy
-- Display whichever result matches the currently selected strategy tab
-- Show indicators for which strategies have been run (e.g., green dot next to "Mobile" / "Desktop" buttons)
+### 1. Add `loading="lazy"` to all below-the-fold images
 
-### 2. Add "Run Both" button
-- Add a new button option: "Run Both" that sequentially runs mobile then desktop audits
-- Shows a combined progress indicator ("Running mobile... 1/2", "Running desktop... 2/2")
+**Files:** `BlogSection.tsx`, `TestimonialsSection.tsx`, `AgentDetailModal.tsx`, `Footer.tsx`, `ServicesSection.tsx` (agent images if any)
 
-### 3. Update the Download Report function
-- If both mobile and desktop results exist, include both in a single report file
-- Report structure:
-  - Header (URL, date)
-  - Mobile Results section (category scores + opportunities)
-  - Desktop Results section (category scores + opportunities)
-  - SEO Checklist Results (from props)
-  - Page SEO Status (from props)
-- If only one strategy has been run, include just that one with a note
+Add `loading="lazy"` attribute to all `<img>` tags that are below the fold. The hero logo should remain without lazy (it's LCP).
 
-### 4. UI indicators
-- Show small badges on Mobile/Desktop buttons indicating if results are cached (e.g., a checkmark or timestamp)
-- The Download Report button label updates to reflect what's included ("Download Full Report" when both are available vs "Download Report (Mobile only)")
+### 2. Add explicit `width` and `height` to images missing them
+
+**Files:** `BlogSection.tsx`, `TestimonialsSection.tsx`, `BlogPostModal.tsx`, `Footer.tsx`, `Navbar.tsx`, `AdminSidebar.tsx`, `AgentDetailModal.tsx`
+
+Add `width` and `height` attributes to prevent layout shifts (CLS).
+
+### 3. Fix "Links rely on color to be distinguishable"
+
+**Files:** `NewsletterSubscription.tsx`, `BlogPost.tsx`, `NotFound.tsx`, `CookieConsent.tsx`
+
+Add `underline` or `underline-offset-4` to links that currently only use `text-primary` for differentiation, so they are distinguishable without relying solely on color.
+
+### 4. Add unique SEO meta to the 404 page
+
+**File:** `NotFound.tsx`
+
+Add `<SEOHead>` with a proper title ("Page Not Found - Tech Agent Labs") and `noIndex={true}` so crawlers skip it.
+
+### 5. Ensure all interactive buttons have accessible names
+
+Review and add `aria-label` to any buttons that only contain icons without text content. The ChatBot suggested questions buttons have visible text so they're fine. Verify the close/minimize buttons in modals.
+
+---
 
 ## Technical Details
 
-**File: `src/components/admin/SEOAuditRunner.tsx`**
+### BlogSection.tsx (line ~138)
+- Add `loading="lazy"` and `width={600} height={400}` to blog card images
 
-State changes:
-```
-// Before
-const [result, setResult] = useState<AuditResult | null>(null);
+### TestimonialsSection.tsx (line ~136)
+- Add `loading="lazy"` and `width={56} height={56}` to avatar images
 
-// After  
-const [mobileResult, setMobileResult] = useState<AuditResult | null>(null);
-const [desktopResult, setDesktopResult] = useState<AuditResult | null>(null);
-const [runningBoth, setRunningBoth] = useState(false);
-```
+### Footer.tsx (line ~91)
+- Add `loading="lazy"` and `width/height` to footer logo
 
-The `runAudit` function saves to the correct state slot based on strategy. A new `runBothAudits` function runs mobile first, then desktop sequentially.
+### Navbar.tsx (line ~162)
+- Logo is above the fold, keep `loading="eager"`, ensure `width/height` are set
 
-The `downloadReport` function iterates over both results (if available), writing separate sections for each strategy into the same text file.
+### BlogPostModal.tsx (line ~94)
+- Add `loading="lazy"` and `width={800} height={400}`
 
-The displayed result is derived from whichever strategy tab is currently selected: `const displayResult = strategy === "mobile" ? mobileResult : desktopResult`.
+### AgentDetailModal.tsx (line ~72)
+- Add `loading="lazy"` and `width/height`
 
-No changes needed to `AdminSEO.tsx` or the edge functions.
+### NotFound.tsx
+- Import and add `<SEOHead>` with title "Page Not Found | Tech Agent Labs", noIndex true
+
+### Links accessibility
+- In `NewsletterSubscription.tsx`, `BlogPost.tsx`, and other files: change `text-primary hover:underline` to `text-primary underline underline-offset-4 hover:decoration-primary` so links are always visually distinguishable
+
