@@ -95,7 +95,28 @@ const AuditItemRow = ({ audit }: { audit: AuditItem }) => {
   );
 };
 
-const SEOAuditRunner = () => {
+interface CheckItem {
+  label: string;
+  status: "pass" | "warn" | "fail";
+  detail?: string;
+}
+
+interface PageItem {
+  path: string;
+  title: string | null;
+  description: string | null;
+  hasOG: boolean;
+  hasSchema: boolean;
+  ogImage: string | null;
+}
+
+interface SEOAuditRunnerProps {
+  checklistItems?: CheckItem[];
+  pageItems?: PageItem[];
+  checkedAt?: string;
+}
+
+const SEOAuditRunner = ({ checklistItems, pageItems, checkedAt }: SEOAuditRunnerProps) => {
   const [url, setUrl] = useState("https://techagentlabs.com");
   const [strategy, setStrategy] = useState<"mobile" | "desktop">("mobile");
   const [loading, setLoading] = useState(false);
@@ -168,6 +189,38 @@ const SEOAuditRunner = () => {
       });
     } else {
       lines.push("All audits passed! No issues found.");
+    }
+
+    // SEO Checklist section
+    if (checklistItems && checklistItems.length > 0) {
+      lines.push("");
+      lines.push("");
+      lines.push("SEO Checklist Results");
+      lines.push("=".repeat(40));
+      if (checkedAt) lines.push(`Checked at: ${new Date(checkedAt).toLocaleString()}`);
+      const passCount = checklistItems.filter((i) => i.status === "pass").length;
+      lines.push(`Score: ${Math.round((passCount / checklistItems.length) * 100)}% (${passCount}/${checklistItems.length} passed)`);
+      lines.push("-".repeat(30));
+      checklistItems.forEach((item) => {
+        const icon = item.status === "pass" ? "✓" : item.status === "warn" ? "⚠" : "✗";
+        lines.push(`  ${icon} [${item.status.toUpperCase()}] ${item.label}`);
+        if (item.detail) lines.push(`    → ${item.detail}`);
+      });
+    }
+
+    // Page SEO Status section
+    if (pageItems && pageItems.length > 0) {
+      lines.push("");
+      lines.push("");
+      lines.push("Page SEO Status");
+      lines.push("=".repeat(40));
+      pageItems.forEach((page) => {
+        lines.push(`  ${page.path}`);
+        lines.push(`    Title: ${page.title || "Missing"}`);
+        lines.push(`    Description: ${page.description ? page.description.substring(0, 120) : "Missing"}`);
+        lines.push(`    Open Graph: ${page.hasOG ? "Yes" : "No"} | Schema: ${page.hasSchema ? "Yes" : "No"}`);
+        lines.push("");
+      });
     }
 
     const blob = new Blob([lines.join("\n")], { type: "text/plain" });
