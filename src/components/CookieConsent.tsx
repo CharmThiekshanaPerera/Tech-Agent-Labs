@@ -211,7 +211,7 @@ const CookieConsent = () => {
                 We use cookies to analyze site traffic and optimize your experience. 
                 By clicking "Accept", you consent to our use of cookies for analytics (Google Analytics & Microsoft Clarity). 
                 Read our{" "}
-                <a href="/privacy-policy" className="text-primary hover:underline">
+                <a href="/privacy-policy" className="text-primary underline underline-offset-4 hover:decoration-primary">
                   Privacy Policy
                 </a>{" "}
                 for more information.

@@ -60,7 +60,7 @@ const NewsletterSubscription = ({ variant = "default", className = "" }: Newslet
         <div>
           <p className="text-foreground font-medium">You're subscribed!</p>
           <p className="text-sm text-muted-foreground">
-            Get the latest AI insights from <a href="https://techagentlabs.com" className="text-primary hover:underline">Tech Agent Labs</a> delivered to your inbox.
+            Get the latest AI insights from <a href="https://techagentlabs.com" className="text-primary underline underline-offset-4 hover:decoration-primary">Tech Agent Labs</a> delivered to your inbox.
           </p>
         </div>
       </div>
@@ -99,7 +99,7 @@ const NewsletterSubscription = ({ variant = "default", className = "" }: Newslet
         </div>
         <p className="text-muted-foreground mb-6">
           Join thousands of professionals receiving the latest AI automation trends, tips, and exclusive content from{" "}
-          <a href="https://techagentlabs.com" className="text-primary hover:underline font-medium">Tech Agent Labs</a>.
+          <a href="https://techagentlabs.com" className="text-primary underline underline-offset-4 hover:decoration-primary font-medium">Tech Agent Labs</a>.
         </p>
         <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
           <Input
@@ -121,7 +121,7 @@ const NewsletterSubscription = ({ variant = "default", className = "" }: Newslet
         </form>
         <p className="text-xs text-muted-foreground mt-4">
           No spam, ever. Unsubscribe anytime. Read our{" "}
-          <a href="/privacy-policy" className="text-primary hover:underline">Privacy Policy</a>.
+          <a href="/privacy-policy" className="text-primary underline underline-offset-4 hover:decoration-primary">Privacy Policy</a>.
         </p>
       </div>
     );
@@ -135,7 +135,7 @@ const NewsletterSubscription = ({ variant = "default", className = "" }: Newslet
       </div>
       <p className="text-muted-foreground text-sm mb-4">
         Subscribe to get the latest AI insights from{" "}
-        <a href="https://techagentlabs.com" className="text-primary hover:underline">Tech Agent Labs</a>.
+        <a href="https://techagentlabs.com" className="text-primary underline underline-offset-4 hover:decoration-primary">Tech Agent Labs</a>.
       </p>
       <form onSubmit={handleSubmit} className="space-y-3">
         <Input

@@ -137,6 +137,9 @@ const TestimonialsSection = () => {
                     src={currentTestimonial.avatar_url}
                     alt={`${currentTestimonial.name} - ${currentTestimonial.role} at ${currentTestimonial.company}`}
                     className="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover"
+                    loading="lazy"
+                    width={56}
+                    height={56}
                   />
                 ) : (
                   <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-lg">
