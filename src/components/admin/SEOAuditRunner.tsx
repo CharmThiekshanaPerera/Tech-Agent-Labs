@@ -18,6 +18,7 @@ import {
   Shield,
   Search,
   Gauge,
+  Download,
 } from "lucide-react";
 
 interface AuditCategory {
@@ -111,30 +112,18 @@ const SEOAuditRunner = () => {
         body: { url, strategy },
       });
 
-      if (fnError) {
-        throw new Error(fnError.message || "Edge function error");
-      }
-
-      if (data?.error) {
-        throw new Error(data.error);
-      }
+      if (fnError) throw new Error(fnError.message || "Edge function error");
+      if (data?.error) throw new Error(data.error);
 
       const categories: AuditCategory[] = Object.values(
         data.lighthouseResult.categories as Record<string, any>
-      ).map((cat: any) => ({
-        id: cat.id,
-        title: cat.title,
-        score: cat.score,
-      }));
+      ).map((cat: any) => ({ id: cat.id, title: cat.title, score: cat.score }));
 
-      // Pick the most impactful audits (failed/warning ones first)
       const allAudits = data.lighthouseResult.audits as Record<string, any>;
       const importantAudits: AuditItem[] = Object.values(allAudits)
         .filter(
           (a: any) =>
-            a.score !== null &&
-            a.score < 1 &&
-            a.title &&
+            a.score !== null && a.score < 1 && a.title &&
             !a.id.startsWith("diagnostic") &&
             a.scoreDisplayMode !== "informative" &&
             a.scoreDisplayMode !== "notApplicable" &&
@@ -143,24 +132,50 @@ const SEOAuditRunner = () => {
         .sort((a: any, b: any) => (a.score ?? 1) - (b.score ?? 1))
         .slice(0, 15)
         .map((a: any) => ({
-          id: a.id,
-          title: a.title,
-          description: a.description,
-          score: a.score,
-          displayValue: a.displayValue,
+          id: a.id, title: a.title, description: a.description,
+          score: a.score, displayValue: a.displayValue,
         }));
 
-      setResult({
-        categories,
-        audits: importantAudits,
-        strategy,
-        fetchTime: new Date().toLocaleTimeString(),
-      });
+      setResult({ categories, audits: importantAudits, strategy, fetchTime: new Date().toLocaleTimeString() });
     } catch (err: any) {
       setError(err.message || "Failed to run audit. Please try again.");
     } finally {
       setLoading(false);
     }
+  };
+
+  const downloadReport = () => {
+    if (!result) return;
+    const lines: string[] = [];
+    lines.push("SEO & Performance Audit Report");
+    lines.push("=".repeat(40));
+    lines.push(`URL: ${url}`);
+    lines.push(`Strategy: ${result.strategy}`);
+    lines.push(`Generated: ${result.fetchTime}`);
+    lines.push("");
+    lines.push("Category Scores");
+    lines.push("-".repeat(30));
+    result.categories.forEach((cat) => {
+      lines.push(`  ${cat.title}: ${cat.score !== null ? Math.round(cat.score * 100) : "N/A"}/100`);
+    });
+    lines.push("");
+    if (result.audits.length > 0) {
+      lines.push("Opportunities & Diagnostics");
+      lines.push("-".repeat(30));
+      result.audits.forEach((a) => {
+        const pct = a.score !== null ? Math.round(a.score * 100) : "N/A";
+        lines.push(`  [${pct}/100] ${a.title}${a.displayValue ? ` — ${a.displayValue}` : ""}`);
+      });
+    } else {
+      lines.push("All audits passed! No issues found.");
+    }
+
+    const blob = new Blob([lines.join("\n")], { type: "text/plain" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `seo-audit-${result.strategy}-${new Date().toISOString().slice(0, 10)}.txt`;
+    a.click();
+    URL.revokeObjectURL(a.href);
   };
 
   return (
@@ -247,6 +262,10 @@ const SEOAuditRunner = () => {
               <p className="text-xs text-muted-foreground">
                 {result.strategy === "mobile" ? "📱 Mobile" : "🖥️ Desktop"} • Tested at {result.fetchTime}
               </p>
+              <Button variant="outline" size="sm" onClick={downloadReport} className="gap-1.5">
+                <Download className="w-4 h-4" />
+                Download Report
+              </Button>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
