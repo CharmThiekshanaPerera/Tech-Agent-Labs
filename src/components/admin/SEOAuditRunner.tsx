@@ -19,6 +19,7 @@ import {
   Search,
   Gauge,
   Download,
+  Layers,
 } from "lucide-react";
 
 interface AuditCategory {
@@ -116,84 +117,127 @@ interface SEOAuditRunnerProps {
   checkedAt?: string;
 }
 
+const formatResultSection = (result: AuditResult, lines: string[]) => {
+  const label = result.strategy === "mobile" ? "📱 Mobile" : "🖥️ Desktop";
+  lines.push(`${label} Results (tested at ${result.fetchTime})`);
+  lines.push("-".repeat(30));
+  lines.push("Category Scores:");
+  result.categories.forEach((cat) => {
+    lines.push(`  ${cat.title}: ${cat.score !== null ? Math.round(cat.score * 100) : "N/A"}/100`);
+  });
+  if (result.audits.length > 0) {
+    lines.push("");
+    lines.push("Opportunities & Diagnostics:");
+    result.audits.forEach((a) => {
+      const pct = a.score !== null ? Math.round(a.score * 100) : "N/A";
+      lines.push(`  [${pct}/100] ${a.title}${a.displayValue ? ` — ${a.displayValue}` : ""}`);
+    });
+  } else {
+    lines.push("  All audits passed!");
+  }
+};
+
 const SEOAuditRunner = ({ checklistItems, pageItems, checkedAt }: SEOAuditRunnerProps) => {
   const [url, setUrl] = useState("https://techagentlabs.com");
   const [strategy, setStrategy] = useState<"mobile" | "desktop">("mobile");
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<AuditResult | null>(null);
+  const [mobileResult, setMobileResult] = useState<AuditResult | null>(null);
+  const [desktopResult, setDesktopResult] = useState<AuditResult | null>(null);
+  const [runningBoth, setRunningBoth] = useState(false);
+  const [bothProgress, setBothProgress] = useState("");
   const [error, setError] = useState<string | null>(null);
+
+  const displayResult = strategy === "mobile" ? mobileResult : desktopResult;
+  const hasBothResults = mobileResult !== null && desktopResult !== null;
+  const hasAnyResult = mobileResult !== null || desktopResult !== null;
+
+  const runSingleAudit = async (strat: "mobile" | "desktop"): Promise<AuditResult> => {
+    const { data, error: fnError } = await supabase.functions.invoke("pagespeed-audit", {
+      body: { url, strategy: strat },
+    });
+
+    if (fnError) throw new Error(fnError.message || "Edge function error");
+    if (data?.error) throw new Error(data.error);
+
+    const categories: AuditCategory[] = Object.values(
+      data.lighthouseResult.categories as Record<string, any>
+    ).map((cat: any) => ({ id: cat.id, title: cat.title, score: cat.score }));
+
+    const allAudits = data.lighthouseResult.audits as Record<string, any>;
+    const importantAudits: AuditItem[] = Object.values(allAudits)
+      .filter(
+        (a: any) =>
+          a.score !== null && a.score < 1 && a.title &&
+          !a.id.startsWith("diagnostic") &&
+          a.scoreDisplayMode !== "informative" &&
+          a.scoreDisplayMode !== "notApplicable" &&
+          a.scoreDisplayMode !== "manual"
+      )
+      .sort((a: any, b: any) => (a.score ?? 1) - (b.score ?? 1))
+      .slice(0, 15)
+      .map((a: any) => ({
+        id: a.id, title: a.title, description: a.description,
+        score: a.score, displayValue: a.displayValue,
+      }));
+
+    return { categories, audits: importantAudits, strategy: strat, fetchTime: new Date().toLocaleTimeString() };
+  };
 
   const runAudit = async () => {
     setLoading(true);
     setError(null);
-    setResult(null);
-
     try {
-      const { data, error: fnError } = await supabase.functions.invoke("pagespeed-audit", {
-        body: { url, strategy },
-      });
-
-      if (fnError) throw new Error(fnError.message || "Edge function error");
-      if (data?.error) throw new Error(data.error);
-
-      const categories: AuditCategory[] = Object.values(
-        data.lighthouseResult.categories as Record<string, any>
-      ).map((cat: any) => ({ id: cat.id, title: cat.title, score: cat.score }));
-
-      const allAudits = data.lighthouseResult.audits as Record<string, any>;
-      const importantAudits: AuditItem[] = Object.values(allAudits)
-        .filter(
-          (a: any) =>
-            a.score !== null && a.score < 1 && a.title &&
-            !a.id.startsWith("diagnostic") &&
-            a.scoreDisplayMode !== "informative" &&
-            a.scoreDisplayMode !== "notApplicable" &&
-            a.scoreDisplayMode !== "manual"
-        )
-        .sort((a: any, b: any) => (a.score ?? 1) - (b.score ?? 1))
-        .slice(0, 15)
-        .map((a: any) => ({
-          id: a.id, title: a.title, description: a.description,
-          score: a.score, displayValue: a.displayValue,
-        }));
-
-      setResult({ categories, audits: importantAudits, strategy, fetchTime: new Date().toLocaleTimeString() });
+      const result = await runSingleAudit(strategy);
+      if (strategy === "mobile") setMobileResult(result);
+      else setDesktopResult(result);
     } catch (err: any) {
-      setError(err.message || "Failed to run audit. Please try again.");
+      setError(err.message || "Failed to run audit.");
     } finally {
       setLoading(false);
     }
   };
 
+  const runBothAudits = async () => {
+    setLoading(true);
+    setRunningBoth(true);
+    setError(null);
+    try {
+      setBothProgress("Running mobile audit... (1/2)");
+      const mobile = await runSingleAudit("mobile");
+      setMobileResult(mobile);
+
+      setBothProgress("Running desktop audit... (2/2)");
+      const desktop = await runSingleAudit("desktop");
+      setDesktopResult(desktop);
+    } catch (err: any) {
+      setError(err.message || "Failed to run audit.");
+    } finally {
+      setLoading(false);
+      setRunningBoth(false);
+      setBothProgress("");
+    }
+  };
+
   const downloadReport = () => {
-    if (!result) return;
+    if (!hasAnyResult) return;
     const lines: string[] = [];
     lines.push("SEO & Performance Audit Report");
     lines.push("=".repeat(40));
     lines.push(`URL: ${url}`);
-    lines.push(`Strategy: ${result.strategy}`);
-    lines.push(`Generated: ${result.fetchTime}`);
+    lines.push(`Generated: ${new Date().toLocaleString()}`);
     lines.push("");
-    lines.push("Category Scores");
-    lines.push("-".repeat(30));
-    result.categories.forEach((cat) => {
-      lines.push(`  ${cat.title}: ${cat.score !== null ? Math.round(cat.score * 100) : "N/A"}/100`);
-    });
-    lines.push("");
-    if (result.audits.length > 0) {
-      lines.push("Opportunities & Diagnostics");
-      lines.push("-".repeat(30));
-      result.audits.forEach((a) => {
-        const pct = a.score !== null ? Math.round(a.score * 100) : "N/A";
-        lines.push(`  [${pct}/100] ${a.title}${a.displayValue ? ` — ${a.displayValue}` : ""}`);
-      });
-    } else {
-      lines.push("All audits passed! No issues found.");
+
+    if (mobileResult) {
+      formatResultSection(mobileResult, lines);
+      lines.push("");
+    }
+    if (desktopResult) {
+      if (mobileResult) lines.push("");
+      formatResultSection(desktopResult, lines);
+      lines.push("");
     }
 
-    // SEO Checklist section
     if (checklistItems && checklistItems.length > 0) {
-      lines.push("");
       lines.push("");
       lines.push("SEO Checklist Results");
       lines.push("=".repeat(40));
@@ -208,7 +252,6 @@ const SEOAuditRunner = ({ checklistItems, pageItems, checkedAt }: SEOAuditRunner
       });
     }
 
-    // Page SEO Status section
     if (pageItems && pageItems.length > 0) {
       lines.push("");
       lines.push("");
@@ -223,13 +266,22 @@ const SEOAuditRunner = ({ checklistItems, pageItems, checkedAt }: SEOAuditRunner
       });
     }
 
+    const label = hasBothResults ? "full" : mobileResult ? "mobile" : "desktop";
     const blob = new Blob([lines.join("\n")], { type: "text/plain" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `seo-audit-${result.strategy}-${new Date().toISOString().slice(0, 10)}.txt`;
+    a.download = `seo-audit-${label}-${new Date().toISOString().slice(0, 10)}.txt`;
     a.click();
     URL.revokeObjectURL(a.href);
   };
+
+  const downloadLabel = hasBothResults
+    ? "Download Full Report"
+    : mobileResult
+    ? "Download Report (Mobile)"
+    : desktopResult
+    ? "Download Report (Desktop)"
+    : "Download Report";
 
   return (
     <Card>
@@ -255,38 +307,66 @@ const SEOAuditRunner = ({ checklistItems, pageItems, checkedAt }: SEOAuditRunner
               size="sm"
               onClick={() => setStrategy("mobile")}
               aria-label="Test mobile version"
+              className="relative"
             >
               <Smartphone className="w-4 h-4 mr-1" />
               Mobile
+              {mobileResult && (
+                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-green-500 border-2 border-background" />
+              )}
             </Button>
             <Button
               variant={strategy === "desktop" ? "default" : "outline"}
               size="sm"
               onClick={() => setStrategy("desktop")}
               aria-label="Test desktop version"
+              className="relative"
             >
               <Monitor className="w-4 h-4 mr-1" />
               Desktop
+              {desktopResult && (
+                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-green-500 border-2 border-background" />
+              )}
             </Button>
           </div>
-          <Button onClick={runAudit} disabled={loading || !url.trim()} className="gap-2">
-            {loading ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Analyzing...
-              </>
-            ) : result ? (
-              <>
-                <RotateCcw className="w-4 h-4" />
-                Re-run
-              </>
-            ) : (
-              <>
-                <Play className="w-4 h-4" />
-                Run Audit
-              </>
-            )}
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={runAudit} disabled={loading || !url.trim()} className="gap-2">
+              {loading && !runningBoth ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Analyzing...
+                </>
+              ) : displayResult ? (
+                <>
+                  <RotateCcw className="w-4 h-4" />
+                  Re-run
+                </>
+              ) : (
+                <>
+                  <Play className="w-4 h-4" />
+                  Run Audit
+                </>
+              )}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={runBothAudits}
+              disabled={loading || !url.trim()}
+              className="gap-2"
+            >
+              {runningBoth ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Both...
+                </>
+              ) : (
+                <>
+                  <Layers className="w-4 h-4" />
+                  Run Both
+                </>
+              )}
+            </Button>
+          </div>
         </div>
 
         {/* Loading state */}
@@ -294,7 +374,9 @@ const SEOAuditRunner = ({ checklistItems, pageItems, checkedAt }: SEOAuditRunner
           <div className="text-center py-8 space-y-3">
             <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" />
             <p className="text-sm text-muted-foreground">
-              Running Lighthouse audit on <span className="font-medium text-foreground">{strategy}</span>...
+              {runningBoth ? bothProgress : (
+                <>Running Lighthouse audit on <span className="font-medium text-foreground">{strategy}</span>...</>
+              )}
             </p>
             <p className="text-xs text-muted-foreground">This may take 15-30 seconds</p>
           </div>
@@ -308,21 +390,20 @@ const SEOAuditRunner = ({ checklistItems, pageItems, checkedAt }: SEOAuditRunner
         )}
 
         {/* Results */}
-        {result && !loading && (
+        {displayResult && !loading && (
           <div className="space-y-6">
-            {/* Scores */}
             <div className="flex items-center justify-between">
               <p className="text-xs text-muted-foreground">
-                {result.strategy === "mobile" ? "📱 Mobile" : "🖥️ Desktop"} • Tested at {result.fetchTime}
+                {displayResult.strategy === "mobile" ? "📱 Mobile" : "🖥️ Desktop"} • Tested at {displayResult.fetchTime}
               </p>
               <Button variant="outline" size="sm" onClick={downloadReport} className="gap-1.5">
                 <Download className="w-4 h-4" />
-                Download Report
+                {downloadLabel}
               </Button>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {result.categories.map((cat) => {
+              {displayResult.categories.map((cat) => {
                 const Icon = CATEGORY_ICONS[cat.id] || Zap;
                 return (
                   <div key={cat.id} className="flex flex-col items-center gap-2 p-3 rounded-xl bg-muted/30 border border-border/50">
@@ -336,22 +417,21 @@ const SEOAuditRunner = ({ checklistItems, pageItems, checkedAt }: SEOAuditRunner
               })}
             </div>
 
-            {/* Recommendations */}
-            {result.audits.length > 0 && (
+            {displayResult.audits.length > 0 && (
               <div>
                 <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 text-yellow-500" />
-                  Opportunities & Diagnostics ({result.audits.length})
+                  Opportunities & Diagnostics ({displayResult.audits.length})
                 </h4>
                 <div className="max-h-[400px] overflow-y-auto pr-1">
-                  {result.audits.map((audit) => (
+                  {displayResult.audits.map((audit) => (
                     <AuditItemRow key={audit.id} audit={audit} />
                   ))}
                 </div>
               </div>
             )}
 
-            {result.audits.length === 0 && (
+            {displayResult.audits.length === 0 && (
               <div className="text-center py-6">
                 <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto mb-2" />
                 <p className="text-sm font-medium">All audits passed!</p>
@@ -362,7 +442,7 @@ const SEOAuditRunner = ({ checklistItems, pageItems, checkedAt }: SEOAuditRunner
         )}
 
         {/* Empty state */}
-        {!result && !loading && !error && (
+        {!displayResult && !loading && !error && (
           <div className="text-center py-6 text-muted-foreground">
             <Gauge className="w-8 h-8 mx-auto mb-2 opacity-50" />
             <p className="text-sm">Click "Run Audit" to test your site's SEO & performance</p>
