@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Twitter, Linkedin, Youtube, Facebook, Instagram, Mail, Phone, MapPin, FileDown, Loader2, CheckCircle } from "lucide-react";
+import TikTokIcon from "@/components/icons/TikTokIcon";
 import { useToast } from "@/hooks/use-toast";
 import logo from "@/assets/logo.png";
 import { z } from "zod";
@@ -268,6 +269,15 @@ const Footer = () => {
                 className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-secondary border border-border/50 flex items-center justify-center hover:bg-primary/10 hover:border-primary/30 transition-colors"
               >
                 <Youtube className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-foreground" />
+              </a>
+              <a
+                href="https://tiktok.com/@techagentlabs"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Follow us on TikTok"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-secondary border border-border/50 flex items-center justify-center hover:bg-primary/10 hover:border-primary/30 transition-colors"
+              >
+                <TikTokIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-foreground" />
               </a>
             </div>
 
