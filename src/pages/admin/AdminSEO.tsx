@@ -158,7 +158,7 @@ const AdminSEO = () => {
 
       {/* Live Audit Runner */}
       <div className="mb-6">
-        <SEOAuditRunner />
+        <SEOAuditRunner checklistItems={checkResult?.checks} pageItems={checkResult?.pages} checkedAt={checkResult?.checkedAt} />
       </div>
 
       {/* Score Overview - dynamic when data available */}
