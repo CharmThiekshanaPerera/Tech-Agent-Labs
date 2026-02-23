@@ -136,7 +136,7 @@ const HeroSection = () => {
                 alt="Tech Agent Labs AI Assistant - Your friendly automation partner"
                 width={448}
                 height={448}
-                className="relative w-36 h-36 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 xl:w-[28rem] xl:h-[28rem] object-contain drop-shadow-[0_0_30px_rgba(34,255,102,0.5)] sm:drop-shadow-[0_0_50px_rgba(34,255,102,0.5)] hover:drop-shadow-[0_0_70px_rgba(34,255,102,0.7)] transition-all duration-500 hover:scale-105"
+                className="relative w-44 h-44 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 xl:w-[28rem] xl:h-[28rem] object-contain drop-shadow-[0_0_30px_rgba(34,255,102,0.5)] sm:drop-shadow-[0_0_50px_rgba(34,255,102,0.5)] hover:drop-shadow-[0_0_70px_rgba(34,255,102,0.7)] transition-all duration-500 hover:scale-105"
               />
             </div>
           </div>

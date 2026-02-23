@@ -120,7 +120,7 @@ const BlogSection = () => {
 
         {/* Blog Carousel */}
         {!loading && posts.length > 0 && (
-          <div className="relative px-12 lg:px-16">
+          <div className="relative px-2 sm:px-12 lg:px-16">
             <Carousel
               opts={{
                 align: "start",
@@ -224,8 +224,8 @@ const BlogSection = () => {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="flex -left-2 lg:-left-4 h-10 w-10 bg-secondary/80 border-border hover:bg-primary hover:text-primary-foreground" />
-              <CarouselNext className="flex -right-2 lg:-right-4 h-10 w-10 bg-secondary/80 border-border hover:bg-primary hover:text-primary-foreground" />
+              <CarouselPrevious className="flex -left-1 sm:-left-2 lg:-left-4 h-8 w-8 sm:h-10 sm:w-10 bg-secondary/80 border-border hover:bg-primary hover:text-primary-foreground" />
+              <CarouselNext className="flex -right-1 sm:-right-2 lg:-right-4 h-8 w-8 sm:h-10 sm:w-10 bg-secondary/80 border-border hover:bg-primary hover:text-primary-foreground" />
             </Carousel>
           </div>
         )}
