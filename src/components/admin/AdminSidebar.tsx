@@ -19,7 +19,7 @@ import {
   DollarSign,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo.webp";
 import { useState } from "react";
 
 interface AdminSidebarProps {

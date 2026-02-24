@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Twitter, Linkedin, Youtube, Facebook, Instagram, Mail, Phone, MapPin, FileDown, Loader2, CheckCircle } from "lucide-react";
 import TikTokIcon from "@/components/icons/TikTokIcon";
 import { useToast } from "@/hooks/use-toast";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo.webp";
 import { z } from "zod";
 
 const emailSchema = z.string().trim().email({ message: "Please enter a valid email address" }).max(255);
