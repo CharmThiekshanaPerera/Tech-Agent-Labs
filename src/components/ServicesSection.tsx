@@ -13,14 +13,14 @@ import {
 import { useAnalytics } from "@/hooks/useAnalytics";
 
 // Agent images
-import supportAgentImg from "@/assets/agents/support-agent.png";
-import marketingAgentImg from "@/assets/agents/marketing-agent.png";
-import analyticsAgentImg from "@/assets/agents/analytics-agent.png";
-import operationsAgentImg from "@/assets/agents/operations-agent.png";
-import salesAgentImg from "@/assets/agents/sales-agent.png";
-import contentAgentImg from "@/assets/agents/content-agent.png";
-import webAgentImg from "@/assets/agents/web-agent.png";
-import customAgentImg from "@/assets/agents/custom-agent.png";
+import supportAgentImg from "@/assets/agents/support-agent.webp";
+import marketingAgentImg from "@/assets/agents/marketing-agent.webp";
+import analyticsAgentImg from "@/assets/agents/analytics-agent.webp";
+import operationsAgentImg from "@/assets/agents/operations-agent.webp";
+import salesAgentImg from "@/assets/agents/sales-agent.webp";
+import contentAgentImg from "@/assets/agents/content-agent.webp";
+import webAgentImg from "@/assets/agents/web-agent.webp";
+import customAgentImg from "@/assets/agents/custom-agent.webp";
 import AgentDetailModal from "./AgentDetailModal";
 
 const agents = [

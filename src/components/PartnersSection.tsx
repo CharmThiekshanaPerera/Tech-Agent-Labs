@@ -1,13 +1,13 @@
 import { useEffect, useRef } from "react";
 
-import techcorpLogo from "@/assets/partners/techcorp.png";
-import innovatelabsLogo from "@/assets/partners/innovatelabs.png";
-import futureaiLogo from "@/assets/partners/futureai.png";
-import dataflowLogo from "@/assets/partners/dataflow.png";
-import cloudnineLogo from "@/assets/partners/cloudnine.png";
-import smartsysLogo from "@/assets/partners/smartsys.png";
-import nextgenLogo from "@/assets/partners/nextgen.png";
-import aiventuresLogo from "@/assets/partners/aiventures.png";
+import techcorpLogo from "@/assets/partners/techcorp.webp";
+import innovatelabsLogo from "@/assets/partners/innovatelabs.webp";
+import futureaiLogo from "@/assets/partners/futureai.webp";
+import dataflowLogo from "@/assets/partners/dataflow.webp";
+import cloudnineLogo from "@/assets/partners/cloudnine.webp";
+import smartsysLogo from "@/assets/partners/smartsys.webp";
+import nextgenLogo from "@/assets/partners/nextgen.webp";
+import aiventuresLogo from "@/assets/partners/aiventures.webp";
 
 const partners = [
   { name: "TechCorp", logo: techcorpLogo },

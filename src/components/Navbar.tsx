@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Menu, X, Sparkles, Facebook, Instagram, Twitter, Linkedin, Youtube } from "lucide-react";
 import TikTokIcon from "@/components/icons/TikTokIcon";
 import { useNavigate, useLocation } from "react-router-dom";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo.webp";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
