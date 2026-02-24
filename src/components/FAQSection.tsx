@@ -99,7 +99,7 @@ const FAQSection = () => {
           </p>
           <a
             href="#contact"
-            className="inline-flex items-center gap-2 text-primary font-medium hover:underline"
+            className="inline-flex items-center gap-2 text-primary font-medium underline underline-offset-4 hover:decoration-primary"
           >
             Contact our team for personalized assistance
           </a>

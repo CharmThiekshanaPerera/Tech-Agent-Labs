@@ -22,6 +22,11 @@
     
     <!-- AI/LLM Crawlers (GEO - Generative Engine Optimization) -->
     <meta name="ai-content-declaration" content="This website provides accurate, factual information about AI agents and business automation services." />
+    <meta name="ai-purpose" content="commercial, informational" />
+    <meta name="citation_title" content="Tech Agent Labs | AI Agents Marketplace &amp; Custom Development Studio" />
+    <meta name="citation_author" content="Tech Agent Labs" />
+    <meta name="citation_date" content="2026-02-24" />
+    <meta name="citation_online_date" content="2026-02-24" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -84,11 +89,11 @@
     }
     </script>
 
-    <!-- Organization Schema (Enhanced for GEO) -->
+    <!-- Organization Schema (Enhanced for GEO + AEO 2026) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Organization",
+      "@type": ["Organization", "Corporation"],
       "@id": "https://techagentlabs.com/#organization",
       "name": "Tech Agent Labs",
       "legalName": "Tech Agent Labs Inc.",
@@ -135,13 +140,32 @@
         "Sales Automation",
         "Workflow Automation",
         "Enterprise AI Solutions",
-        "Generative AI"
+        "Generative AI",
+        "Large Language Models",
+        "Agentic AI",
+        "AI Orchestration"
       ],
       "slogan": "AI Agents That Actually Work",
       "brand": {
         "@type": "Brand",
         "name": "Tech Agent Labs",
         "logo": "https://techagentlabs.com/logo.png"
+      },
+      "about": [
+        {"@type": "Thing", "name": "AI Agents", "description": "Autonomous AI software that performs business tasks"},
+        {"@type": "Thing", "name": "Business Automation", "description": "Using AI to automate repetitive business workflows"},
+        {"@type": "Thing", "name": "Agentic AI", "description": "AI systems that act autonomously to complete goals"}
+      ],
+      "mentions": [
+        {"@type": "Thing", "name": "Salesforce", "url": "https://www.salesforce.com"},
+        {"@type": "Thing", "name": "HubSpot", "url": "https://www.hubspot.com"},
+        {"@type": "Thing", "name": "Zendesk", "url": "https://www.zendesk.com"},
+        {"@type": "Thing", "name": "Slack", "url": "https://slack.com"}
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "AI Agent Products",
+        "numberOfItems": 8
       }
     }
     </script>
@@ -477,6 +501,40 @@
           "name": "Home",
           "item": "https://techagentlabs.com/"
         }
+      ]
+    }
+    </script>
+
+    <!-- ProfilePage Schema (AEO 2026 - helps AI engines identify authoritative pages) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfilePage",
+      "dateCreated": "2023-01-01",
+      "dateModified": "2026-02-24",
+      "mainEntity": {
+        "@id": "https://techagentlabs.com/#organization"
+      }
+    }
+    </script>
+
+    <!-- ItemList Schema for AI Agent Catalog (AEO - enhances carousel/list results) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "AI Agents Catalog",
+      "description": "Browse our production-ready AI agents for business automation",
+      "numberOfItems": 8,
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Support Agent", "url": "https://techagentlabs.com/#services"},
+        {"@type": "ListItem", "position": 2, "name": "Marketing Agent", "url": "https://techagentlabs.com/#services"},
+        {"@type": "ListItem", "position": 3, "name": "Analytics Agent", "url": "https://techagentlabs.com/#services"},
+        {"@type": "ListItem", "position": 4, "name": "Operations Agent", "url": "https://techagentlabs.com/#services"},
+        {"@type": "ListItem", "position": 5, "name": "Sales Agent", "url": "https://techagentlabs.com/#services"},
+        {"@type": "ListItem", "position": 6, "name": "Content Agent", "url": "https://techagentlabs.com/#services"},
+        {"@type": "ListItem", "position": 7, "name": "Web Agent", "url": "https://techagentlabs.com/#services"},
+        {"@type": "ListItem", "position": 8, "name": "Custom Agent", "url": "https://techagentlabs.com/#services"}
       ]
     }
     </script>
