@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tech Agent Labs — Admin Panel Guide</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #1a1a2e; line-height: 1.7; background: #f8f9fc; }
+  .container { max-width: 860px; margin: 0 auto; padding: 40px 24px; }
+  h1 { font-size: 2.2rem; color: #0f0f23; margin-bottom: 8px; }
+  .subtitle { color: #64748b; font-size: 1.05rem; margin-bottom: 40px; }
+  h2 { font-size: 1.4rem; color: #0f0f23; margin: 36px 0 12px; padding-bottom: 8px; border-bottom: 2px solid #e2e8f0; }
+  h3 { font-size: 1.1rem; color: #334155; margin: 20px 0 8px; }
+  p, li { color: #334155; font-size: 0.95rem; }
+  ul { padding-left: 24px; margin: 8px 0 16px; }
+  li { margin-bottom: 6px; }
+  .badge { display: inline-block; background: #6366f1; color: #fff; font-size: 0.7rem; padding: 2px 10px; border-radius: 12px; margin-left: 8px; vertical-align: middle; text-transform: uppercase; letter-spacing: 0.5px; }
+  .section-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+  .section-card h3 { margin-top: 0; }
+  .icon { width: 20px; height: 20px; vertical-align: middle; margin-right: 6px; }
+  .toc { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px 28px; margin-bottom: 32px; }
+  .toc h3 { margin-top: 0; font-size: 1rem; color: #0f0f23; }
+  .toc ol { padding-left: 20px; }
+  .toc li { margin-bottom: 4px; }
+  .toc a { color: #6366f1; text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .footer { text-align: center; color: #94a3b8; font-size: 0.85rem; margin-top: 48px; padding-top: 24px; border-top: 1px solid #e2e8f0; }
+  @media print { body { background: #fff; } .container { padding: 20px; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>🛡️ Admin Panel Guide</h1>
+<p class="subtitle">Tech Agent Labs — Complete reference for all administrative features and functionalities.</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ol>
+    <li><a href="#login">Login &amp; Authentication</a></li>
+    <li><a href="#dashboard">Dashboard Overview</a></li>
+    <li><a href="#analytics">Analytics</a></li>
+    <li><a href="#revenue">Revenue Tracking</a></li>
+    <li><a href="#chat-logs">AI Chat Logs</a></li>
+    <li><a href="#blog">Blog Posts</a></li>
+    <li><a href="#newsletter">Newsletter Management</a></li>
+    <li><a href="#social">Social Media Automation</a></li>
+    <li><a href="#testimonials">Testimonials</a></li>
+    <li><a href="#demos">Demo Bookings</a></li>
+    <li><a href="#messages">Contact Messages</a></li>
+    <li><a href="#documents">Documents</a></li>
+    <li><a href="#seo">SEO &amp; Performance</a></li>
+    <li><a href="#settings">Settings</a></li>
+  </ol>
+</div>
+
+<!-- 1. LOGIN -->
+<h2 id="login">1. Login &amp; Authentication</h2>
+<div class="section-card">
+  <p>Access the admin panel at <strong>/admin-login</strong>. Only users with the <strong>admin</strong> role can sign in. The system uses email/password authentication with role-based access control (RBAC).</p>
+  <h3>Key Features</h3>
+  <ul>
+    <li><strong>Secure login</strong> — Email + password authentication via the backend auth system.</li>
+    <li><strong>Role verification</strong> — After login, the system checks the <code>user_roles</code> table to confirm admin status.</li>
+    <li><strong>Password reset</strong> — Admins can request a password reset email from the login page.</li>
+    <li><strong>Session persistence</strong> — Sessions are maintained across browser refreshes.</li>
+    <li><strong>Activity logging</strong> — Every admin login is recorded in the activity log.</li>
+  </ul>
+</div>
+
+<!-- 2. DASHBOARD -->
+<h2 id="dashboard">2. Dashboard Overview</h2>
+<div class="section-card">
+  <p>The main dashboard (<strong>/admin</strong>) provides a bird's-eye view of your website's key metrics and recent activity.</p>
+  <h3>What You'll See</h3>
+  <ul>
+    <li><strong>KPI Cards</strong> — Total blog posts, contact messages (with unread count), demo bookings (with pending count), testimonials, and total site visits.</li>
+    <li><strong>Site Visits Chart</strong> — Area chart showing daily visitor trends over the last 30 days.</li>
+    <li><strong>Messages Over Time</strong> — Area chart of incoming contact messages.</li>
+    <li><strong>Demo Bookings Chart</strong> — Bar chart of demo booking submissions over time.</li>
+    <li><strong>Demo Status Pie Chart</strong> — Visual breakdown of demo statuses (pending, confirmed, completed, cancelled).</li>
+    <li><strong>Recent Activity Log</strong> — The latest 15 admin actions (e.g., logins, blog edits, message reads).</li>
+  </ul>
+</div>
+
+<!-- 3. ANALYTICS -->
+<h2 id="analytics">3. Analytics</h2>
+<div class="section-card">
+  <p>The Analytics page (<strong>/admin/analytics</strong>) offers deeper insights into lead generation and conversion performance.</p>
+  <h3>Features</h3>
+  <ul>
+    <li><strong>Time Range Selector</strong> — Toggle between 7-day, 30-day, and 90-day views.</li>
+    <li><strong>KPI Cards</strong> — Total leads, demo bookings, contact messages, and period-over-period change percentage.</li>
+    <li><strong>Conversion Funnel</strong> — Visual funnel from site visitors → contact submissions → demo bookings, with conversion rates.</li>
+    <li><strong>Trends Tab</strong> — Area and bar charts showing contact messages and demo bookings over time.</li>
+    <li><strong>Demo Status Tab</strong> — Detailed breakdown of demo statuses with individual cards and pie chart.</li>
+    <li><strong>Lead Sources Tab</strong> — Top inquiry types from contact form subjects, ranked with progress bars.</li>
+    <li><strong>Response Metrics</strong> — Pie chart showing replied vs. unread vs. read message statuses.</li>
+  </ul>
+</div>
+
+<!-- 4. REVENUE -->
+<h2 id="revenue">4. Revenue Tracking</h2>
+<div class="section-card">
+  <p>The Revenue page (<strong>/admin/revenue</strong>) is a manual revenue dashboard for tracking sales and financial performance.</p>
+  <h3>Features</h3>
+  <ul>
+    <li><strong>Add Revenue Entry</strong> — Record sales, subscriptions, or one-time payments with details like agent name, customer info, amount, date, status, and notes.</li>
+    <li><strong>Edit &amp; Delete</strong> — Modify or remove existing entries.</li>
+    <li><strong>KPI Summary</strong> — Total revenue, Monthly Recurring Revenue (MRR), total number of sales, and growth percentage.</li>
+    <li><strong>Revenue Trend Chart</strong> — Area chart showing revenue over time.</li>
+    <li><strong>Revenue by Agent</strong> — Bar chart breaking down revenue by AI agent product.</li>
+    <li><strong>Recurring Payments</strong> — Mark entries as recurring with configurable intervals (monthly, quarterly, yearly).</li>
+    <li><strong>CSV Export</strong> — Download all revenue data as a CSV file for external analysis.</li>
+  </ul>
+</div>
+
+<!-- 5. CHAT LOGS -->
+<h2 id="chat-logs">5. AI Chat Logs</h2>
+<div class="section-card">
+  <p>The AI Chat Logs page (<strong>/admin/chat-logs</strong>) lets you review every conversation visitors have had with the website's AI chatbot.</p>
+  <h3>Features</h3>
+  <ul>
+    <li><strong>Conversation List</strong> — Browse all chat sessions, sorted by most recent. Shows first message preview, message count, and timestamp.</li>
+    <li><strong>Search</strong> — Search conversations by first message content or session ID.</li>
+    <li><strong>Conversation Detail</strong> — Click any conversation to see the full chat history with user/bot message bubbles.</li>
+    <li><strong>Metadata</strong> — View the page path where the chat originated and the exact timestamp.</li>
+    <li><strong>Stats Cards</strong> — Total conversations, total messages exchanged, and today's chat count.</li>
+    <li><strong>Delete</strong> — Remove individual chat logs.</li>
+  </ul>
+</div>
+
+<!-- 6. BLOG -->
+<h2 id="blog">6. Blog Posts</h2>
+<div class="section-card">
+  <p>The Blog Posts page (<strong>/admin/blog</strong>) provides full content management for the website's blog.</p>
+  <h3>Features</h3>
+  <ul>
+    <li><strong>Create Posts</strong> — Write new blog posts with title, excerpt, content (Markdown supported), category, and header image URL.</li>
+    <li><strong>Edit &amp; Delete</strong> — Modify existing posts or remove them entirely.</li>
+    <li><strong>Publish/Draft Toggle</strong> — Control whether a post is publicly visible or saved as a draft.</li>
+    <li><strong>Search &amp; Filter</strong> — Search posts by title, excerpt, or category.</li>
+    <li><strong>AI Blog Generation</strong> <span class="badge">AI Powered</span> — Automatically generate complete blog posts using AI, with options to:
+      <ul>
+        <li>Select a topic from predefined categories (AI Agents, Automation, Customer Service, etc.)</li>
+        <li>Choose a blog category</li>
+        <li>Auto-publish immediately or save as draft</li>
+        <li>Auto-generate a header image</li>
+      </ul>
+    </li>
+    <li><strong>Preview</strong> — View the rendered Markdown content with syntax highlighting before publishing.</li>
+    <li><strong>Notifications</strong> — When a post is published, newsletter subscribers are automatically notified via email, and the post is shared to configured social channels.</li>
+  </ul>
+</div>
+
+<!-- 7. NEWSLETTER -->
+<h2 id="newsletter">7. Newsletter Management</h2>
+<div class="section-card">
+  <p>The Newsletter page (<strong>/admin/newsletter</strong>) manages all email subscribers who signed up through the website.</p>
+  <h3>Features</h3>
+  <ul>
+    <li><strong>Subscriber List</strong> — View all subscribers with email, subscription date, and status.</li>
+    <li><strong>Statistics</strong> — Total subscribers, active count, unsubscribed count, and new subscribers this month.</li>
+    <li><strong>Search</strong> — Filter subscribers by email address.</li>
+    <li><strong>Delete Subscribers</strong> — Remove individual subscribers with confirmation dialog.</li>
+    <li><strong>CSV Export</strong> — Export all active subscriber emails and dates as a CSV file for use in external email platforms.</li>
+  </ul>
+</div>
+
+<!-- 8. SOCIAL -->
+<h2 id="social">8. Social Media Automation</h2>
+<div class="section-card">
+  <p>The Social Automation page (<strong>/admin/social</strong>) manages webhook integrations for automatically sharing blog posts to social media.</p>
+  <h3>Features</h3>
+  <ul>
+    <li><strong>Add Webhooks</strong> — Configure webhook URLs for platforms like Discord, Slack, Zapier, Make, IFTTT, and custom endpoints.</li>
+    <li><strong>Enable/Disable</strong> — Toggle individual webhooks on or off without deleting them.</li>
+    <li><strong>Test Webhooks</strong> — Send a test notification to verify the webhook is working correctly.</li>
+    <li><strong>Copy URL</strong> — Quickly copy webhook URLs to clipboard.</li>
+    <li><strong>Delete Webhooks</strong> — Remove webhook configurations.</li>
+    <li><strong>Manual Blog Generation</strong> <span class="badge">AI Powered</span> — Trigger immediate AI blog post generation and automatic sharing to all enabled webhooks.</li>
+    <li><strong>Share Logs</strong> — View history of social shares including timestamps and results.</li>
+  </ul>
+</div>
+
+<!-- 9. TESTIMONIALS -->
+<h2 id="testimonials">9. Testimonials</h2>
+<div class="section-card">
+  <p>The Testimonials page (<strong>/admin/testimonials</strong>) manages customer testimonials displayed on the public website.</p>
+  <h3>Features</h3>
+  <ul>
+    <li><strong>Add Testimonials</strong> — Create new testimonials with name, company, role, content, avatar URL, and star rating (1–5).</li>
+    <li><strong>Edit &amp; Delete</strong> — Modify or remove existing testimonials.</li>
+    <li><strong>Featured Toggle</strong> — Mark testimonials as "featured" to highlight them on the homepage.</li>
+    <li><strong>Rating Display</strong> — Visual star ratings for each testimonial.</li>
+  </ul>
+</div>
+
+<!-- 10. DEMOS -->
+<h2 id="demos">10. Demo Bookings</h2>
+<div class="section-card">
+  <p>The Demo Bookings page (<strong>/admin/demos</strong>) manages all demo requests submitted by potential customers.</p>
+  <h3>Features</h3>
+  <ul>
+    <li><strong>Booking List</strong> — View all demo requests with contact name, company, preferred date/time, status, and submission date.</li>
+    <li><strong>Status Filter</strong> — Filter bookings by status: All, Pending, Confirmed, Completed, or Cancelled.</li>
+    <li><strong>Update Status</strong> — Change a booking's status (e.g., Pending → Confirmed → Completed).</li>
+    <li><strong>View Details</strong> — Open a detail dialog showing full contact information, company, phone, preferred date/time, and any message from the customer.</li>
+    <li><strong>Delete</strong> — Remove demo bookings with confirmation.</li>
+  </ul>
+</div>
+
+<!-- 11. MESSAGES -->
+<h2 id="messages">11. Contact Messages</h2>
+<div class="section-card">
+  <p>The Messages page (<strong>/admin/messages</strong>) displays all contact form submissions from the website.</p>
+  <h3>Features</h3>
+  <ul>
+    <li><strong>Inbox View</strong> — Table showing sender name, email, subject, replied status, and date.</li>
+    <li><strong>Unread Indicators</strong> — Unread messages are highlighted with a blue dot and bold text. The header shows the unread count.</li>
+    <li><strong>Auto-Mark as Read</strong> — Messages are automatically marked as read when you view the detail.</li>
+    <li><strong>Reply Tracking</strong> — Toggle a "replied" status for each message to track which ones you've responded to.</li>
+    <li><strong>View Details</strong> — Open a detail dialog with full sender info, message content, and timestamp.</li>
+    <li><strong>Reply via Email</strong> — One-click button to open your email client with the sender's address pre-filled.</li>
+    <li><strong>Delete</strong> — Remove messages with confirmation.</li>
+  </ul>
+</div>
+
+<!-- 12. DOCUMENTS -->
+<h2 id="documents">12. Documents</h2>
+<div class="section-card">
+  <p>The Documents page (<strong>/admin/documents</strong>) manages project files and downloadable resources.</p>
+  <h3>Features</h3>
+  <ul>
+    <li><strong>Upload Documents</strong> — Upload files (PDF, DOCX, images, etc.) with a name, description, and file type.</li>
+    <li><strong>Edit Metadata</strong> — Update the name and description of existing documents.</li>
+    <li><strong>Active/Inactive Toggle</strong> — Control whether a document is publicly accessible or hidden.</li>
+    <li><strong>Download</strong> — Download any uploaded document directly from the admin panel.</li>
+    <li><strong>Delete</strong> — Remove documents permanently.</li>
+    <li><strong>File Storage</strong> — Files are stored securely in the cloud with automatic URL generation.</li>
+  </ul>
+</div>
+
+<!-- 13. SEO -->
+<h2 id="seo">13. SEO &amp; Performance</h2>
+<div class="section-card">
+  <p>The SEO &amp; Performance page (<strong>/admin/seo</strong>) provides tools for monitoring and optimizing the website's search engine visibility and load speed.</p>
+  <h3>Features</h3>
+  <ul>
+    <li><strong>SEO Checklist</strong> — Automated scan of all pages checking for:
+      <ul>
+        <li>Page titles and meta descriptions</li>
+        <li>Open Graph tags (og:title, og:description, og:image)</li>
+        <li>JSON-LD structured data</li>
+        <li>Canonical tags</li>
+        <li>Robots.txt and sitemap.xml</li>
+      </ul>
+    </li>
+    <li><strong>Page SEO Status</strong> — Per-page breakdown showing title, description, OG presence, schema presence, and OG image for every route.</li>
+    <li><strong>Lighthouse Audit Runner</strong> <span class="badge">Live Audit</span> — Run Google PageSpeed Insights audits for both mobile and desktop, showing:
+      <ul>
+        <li>Performance, Accessibility, Best Practices, and SEO scores</li>
+        <li>Core Web Vitals (LCP, FID, CLS, FCP, TTFB)</li>
+        <li>Specific opportunities and diagnostics with savings estimates</li>
+      </ul>
+    </li>
+    <li><strong>Export Results</strong> — Export full audit results as a formatted text report.</li>
+    <li><strong>External Tools</strong> — Quick links to Google Search Console, PageSpeed Insights, Rich Results Test, Schema Validator, Mobile-Friendly Test, and Security Headers checker.</li>
+  </ul>
+</div>
+
+<!-- 14. SETTINGS -->
+<h2 id="settings">14. Settings</h2>
+<div class="section-card">
+  <p>The Settings page (<strong>/admin/settings</strong>) provides account management options for the logged-in admin.</p>
+  <h3>Features</h3>
+  <ul>
+    <li><strong>Change Password</strong> — Update your admin account password with new + confirm password fields and visibility toggles.</li>
+    <li><strong>Validation</strong> — Ensures passwords match and meet minimum length requirements before submission.</li>
+  </ul>
+</div>
+
+<!-- GENERAL NOTES -->
+<h2>General Notes</h2>
+<div class="section-card">
+  <ul>
+    <li><strong>Activity Logging</strong> — All significant admin actions (logins, CRUD operations, status changes) are automatically logged and visible on the dashboard.</li>
+    <li><strong>Responsive Design</strong> — The admin panel is fully responsive with a collapsible sidebar on mobile devices.</li>
+    <li><strong>Role-Based Access</strong> — Only users with the "admin" role can access any admin page. Unauthorized users are redirected to the login page.</li>
+    <li><strong>Real-Time Data</strong> — Most pages fetch live data from the database on load with loading indicators.</li>
+    <li><strong>Toast Notifications</strong> — Success and error messages appear as toast notifications for all actions.</li>
+  </ul>
+</div>
+
+<div class="footer">
+  <p>Tech Agent Labs — Admin Panel Guide<br>Generated March 2026 • For internal use only</p>
+</div>
+
+</div>
+</body>
+</html>
