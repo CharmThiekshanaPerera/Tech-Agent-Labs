@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { X, Send, Bot, User, Sparkles } from "lucide-react";
+import { X, Send, Bot, User, Sparkles, Phone, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { streamChat } from "@/lib/streamChat";
 import { supabase } from "@/integrations/supabase/client";
 import ReactMarkdown from "react-markdown";
+import VoiceCall from "@/components/chat/VoiceCall";
 
 interface Message {
   id: string;
@@ -15,6 +16,7 @@ const generateSessionId = () => `chat_${Date.now()}_${Math.random().toString(36)
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [mode, setMode] = useState<"chat" | "voice">("chat");
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -38,14 +40,14 @@ const ChatBot = () => {
   }, [messages]);
 
   useEffect(() => {
-    if (isOpen && inputRef.current) {
+    if (isOpen && inputRef.current && mode === "chat") {
       inputRef.current.focus();
     }
-  }, [isOpen]);
+  }, [isOpen, mode]);
 
   const saveChat = useCallback(async (msgs: Message[]) => {
     const chatMessages = msgs
-      .filter((m) => m.id !== "1") // exclude initial greeting
+      .filter((m) => m.id !== "1")
       .map((m) => ({ role: m.role, content: m.content }));
     if (chatMessages.length === 0) return;
 
@@ -175,7 +177,7 @@ const ChatBot = () => {
               <h3 className="font-semibold text-primary-foreground">AI Support</h3>
               <p className="text-xs text-primary-foreground/70 flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                Powered by AI • Booking Assistant
+                {mode === "chat" ? "Powered by AI • Booking Assistant" : "Voice Call • AI Assistant"}
               </p>
             </div>
           </div>
@@ -190,102 +192,140 @@ const ChatBot = () => {
           </Button>
         </div>
 
-        {/* Messages */}
-        <div className="h-[350px] overflow-y-auto p-4 space-y-4 bg-muted/30">
-          {messages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex gap-2 ${message.role === "user" ? "flex-row-reverse" : ""}`}
-            >
-              <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                  message.role === "user"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted border border-border"
-                }`}
-              >
-                {message.role === "user" ? (
-                  <User className="w-4 h-4" />
-                ) : (
-                  <Bot className="w-4 h-4 text-primary" />
-                )}
-              </div>
-              <div
-                className={`max-w-[75%] rounded-2xl px-4 py-2.5 ${
-                  message.role === "user"
-                    ? "bg-primary text-primary-foreground rounded-br-md"
-                    : "bg-card border border-border rounded-bl-md"
-                }`}
-              >
-                <div className="text-sm leading-relaxed prose prose-sm dark:prose-invert max-w-none [&>p]:my-1 [&>ul]:my-1 [&>ol]:my-1">
-                  <ReactMarkdown>{message.content}</ReactMarkdown>
-                </div>
-              </div>
-            </div>
-          ))}
-
-          {isLoading && messages[messages.length - 1]?.role !== "assistant" && (
-            <div className="flex gap-2">
-              <div className="w-8 h-8 rounded-full bg-muted border border-border flex items-center justify-center">
-                <Bot className="w-4 h-4 text-primary" />
-              </div>
-              <div className="bg-card border border-border rounded-2xl rounded-bl-md px-4 py-3">
-                <div className="flex gap-1">
-                  <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                  <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                  <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div ref={messagesEndRef} />
+        {/* Mode Tabs */}
+        <div className="flex border-b border-border bg-card">
+          <button
+            onClick={() => setMode("chat")}
+            className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium transition-colors ${
+              mode === "chat"
+                ? "text-primary border-b-2 border-primary"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <MessageSquare className="w-4 h-4" />
+            Chat
+          </button>
+          <button
+            onClick={() => setMode("voice")}
+            className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-medium transition-colors ${
+              mode === "voice"
+                ? "text-primary border-b-2 border-primary"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Phone className="w-4 h-4" />
+            Voice Call
+          </button>
         </div>
 
-        {/* Suggested Questions */}
-        {messages.length === 1 && (
-          <div className="px-4 py-2 border-t border-border bg-card/50">
-            <p className="text-xs text-muted-foreground mb-2">Quick questions:</p>
-            <div className="flex flex-wrap gap-2">
-              {suggestedQuestions.map((question) => (
-                <button
-                  key={question}
-                  onClick={() => handleSend(question)}
-                  className="text-xs px-3 py-1.5 rounded-full bg-muted hover:bg-primary/10 hover:text-primary border border-border transition-colors"
+        {mode === "chat" ? (
+          <>
+            {/* Messages */}
+            <div className="h-[300px] overflow-y-auto p-4 space-y-4 bg-muted/30">
+              {messages.map((message) => (
+                <div
+                  key={message.id}
+                  className={`flex gap-2 ${message.role === "user" ? "flex-row-reverse" : ""}`}
                 >
-                  {question}
-                </button>
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                      message.role === "user"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted border border-border"
+                    }`}
+                  >
+                    {message.role === "user" ? (
+                      <User className="w-4 h-4" />
+                    ) : (
+                      <Bot className="w-4 h-4 text-primary" />
+                    )}
+                  </div>
+                  <div
+                    className={`max-w-[75%] rounded-2xl px-4 py-2.5 ${
+                      message.role === "user"
+                        ? "bg-primary text-primary-foreground rounded-br-md"
+                        : "bg-card border border-border rounded-bl-md"
+                    }`}
+                  >
+                    <div className="text-sm leading-relaxed prose prose-sm dark:prose-invert max-w-none [&>p]:my-1 [&>ul]:my-1 [&>ol]:my-1">
+                      <ReactMarkdown>{message.content}</ReactMarkdown>
+                    </div>
+                  </div>
+                </div>
               ))}
+
+              {isLoading && messages[messages.length - 1]?.role !== "assistant" && (
+                <div className="flex gap-2">
+                  <div className="w-8 h-8 rounded-full bg-muted border border-border flex items-center justify-center">
+                    <Bot className="w-4 h-4 text-primary" />
+                  </div>
+                  <div className="bg-card border border-border rounded-2xl rounded-bl-md px-4 py-3">
+                    <div className="flex gap-1">
+                      <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                      <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                      <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div ref={messagesEndRef} />
             </div>
+
+            {/* Suggested Questions */}
+            {messages.length === 1 && (
+              <div className="px-4 py-2 border-t border-border bg-card/50">
+                <p className="text-xs text-muted-foreground mb-2">Quick questions:</p>
+                <div className="flex flex-wrap gap-2">
+                  {suggestedQuestions.map((question) => (
+                    <button
+                      key={question}
+                      onClick={() => handleSend(question)}
+                      className="text-xs px-3 py-1.5 rounded-full bg-muted hover:bg-primary/10 hover:text-primary border border-border transition-colors"
+                    >
+                      {question}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Input */}
+            <div className="p-3 border-t border-border bg-card">
+              <div className="flex gap-2">
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Ask about bookings, agents, pricing..."
+                  aria-label="Type your message"
+                  className="flex-1 px-4 py-2.5 bg-muted border border-border rounded-xl text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
+                />
+                <Button
+                  onClick={() => handleSend()}
+                  disabled={!inputValue.trim() || isLoading}
+                  className="rounded-xl px-4"
+                  aria-label="Send message"
+                >
+                  <Send className="w-4 h-4" />
+                </Button>
+              </div>
+              <p className="text-[10px] text-muted-foreground text-center mt-2">
+                AI-powered booking assistant • Tech Agent Labs
+              </p>
+            </div>
+          </>
+        ) : (
+          /* Voice Call Mode */
+          <div className="h-[350px] flex flex-col items-center justify-center bg-muted/30 px-6">
+            <VoiceCall />
+            <p className="text-[10px] text-muted-foreground text-center mt-4">
+              Voice-powered AI assistant • Tech Agent Labs
+            </p>
           </div>
         )}
-
-        {/* Input */}
-        <div className="p-3 border-t border-border bg-card">
-          <div className="flex gap-2">
-            <input
-              ref={inputRef}
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Ask about bookings, agents, pricing..."
-              aria-label="Type your message"
-              className="flex-1 px-4 py-2.5 bg-muted border border-border rounded-xl text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
-            />
-            <Button
-              onClick={() => handleSend()}
-              disabled={!inputValue.trim() || isLoading}
-              className="rounded-xl px-4"
-              aria-label="Send message"
-            >
-              <Send className="w-4 h-4" />
-            </Button>
-          </div>
-          <p className="text-[10px] text-muted-foreground text-center mt-2">
-            AI-powered booking assistant • Tech Agent Labs
-          </p>
-        </div>
       </div>
     </>
   );
