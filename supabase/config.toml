@@ -32,3 +32,6 @@ verify_jwt = false
 
 [functions.seo-checklist]
 verify_jwt = false
+
+[functions.elevenlabs-conversation-token]
+verify_jwt = false
